@@ -1,6 +1,6 @@
 # Changelog
 
-The following is a list of notable changes to the Mantine Flip component.  
+The following is a list of notable changes to the Mantine Marquee component.  
 Minor versions that are not listed in the changelog are bug fixes and small improvements.
 
 ## 1.0.16 (2024-06-10)

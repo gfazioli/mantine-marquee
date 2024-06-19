@@ -8,7 +8,7 @@
     "start": "next start"
   },
   "dependencies": {
-    "@gfazioli/mantine-flip": "workspace:*",
+    "@gfazioli/mantine-marquee": "workspace:*",
     "@mantine/core": "7.10.1",
     "@mantine/dates": "^7.10.1",
     "@mantine/hooks": "7.10.1",

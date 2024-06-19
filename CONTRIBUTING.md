@@ -8,11 +8,11 @@ When encountering issues with software or applications, submitting a detailed bu
 
 Furthermore, providing information such as system specifications, error messages, and screenshots can aid in pinpointing the root cause of the bug. By utilizing platforms like GitHub, users can create issue tickets with relevant details, facilitating effective communication between users and developers. Remember, a comprehensive bug report not only assists in bug resolution but also improves the overall quality of the software.
 
-🐛 [GitHub issue](https://github.com/gfazioli/mantine-flip/issues)
+🐛 [GitHub issue](https://github.com/gfazioli/mantine-marquee/issues)
 
 
 ## Code contributors
 
 Here's a list of all the people who have contributed to the codebase of this project so far:
 
-[![Contributors list](https://contrib.rocks/image?repo=gfazioli/mantine-flip)](https://github.com/gfazioli/mantine-flip/graphs/contributors)
+[![Contributors list](https://contrib.rocks/image?repo=gfazioli/mantine-marquee)](https://github.com/gfazioli/mantine-marquee/graphs/contributors)

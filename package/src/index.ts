@@ -1,10 +1,8 @@
-export { Flip } from './Flip';
+export { Marquee } from './Marquee';
 export type {
-  FlipBaseProps,
-  FlipCssVariables,
-  FlipDirection,
-  FlipFactory,
-  FlipIn,
-  FlipOut,
-} from './Flip';
-export { useFlipContext } from './Flip.context';
+  MarqueeBaseProps,
+  MarqueeCssVariables,
+  MarqueeFactory,
+  MarqueeProps,
+  MarqueeStylesNames,
+} from './Marquee';

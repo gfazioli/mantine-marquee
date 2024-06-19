@@ -1,0 +1,128 @@
+.root {
+  --marquee-gap-xs: 1px;
+  --marquee-gap-sm: 2px;
+  --marquee-gap-md: 4px;
+  --marquee-gap-lg: 8px;
+  --marquee-gap-xl: 16px;
+  --marquee-gap: var(---marquee-gap-xl, 16px);
+
+  --marquee-fade-edge-size-xs: 11%;
+  --marquee-fade-edge-size-sm: 22%;
+  --marquee-fade-edge-size-md: 33%;
+  --marquee-fade-edge-size-lg: 55%;
+  --marquee-fade-edge-size-xl: 77%;
+  --marquee-fade-edge-size: var(--marquee-fade-edge-size-sm, 11%);
+
+  @mixin where-light {
+    --marquee-fade-edge-color: var(--mantine-color-white);
+  }
+
+  @mixin where-dark {
+    --marquee-fade-edge-color: var(--mantine-color-dark-7);
+  }
+} /* styles.css */
+
+.root {
+  position: relative; /* relative */
+  display: flex; /* flex */
+  height: 100%; /* h-full */
+  width: 100%; /* w-full */
+  flex-direction: column; /* flex-col */
+  overflow: hidden; /* overflow-hidden */
+}
+
+.marqueeContainer {
+  display: flex;
+  overflow: hidden;
+  padding: 0;
+  gap: var(--marquee-gap);
+  flex-direction: var(--marquee-direction);
+}
+
+.marqueeContent {
+  display: flex;
+  justify-content: space-around;
+  gap: var(--marquee-gap);
+  animation: marquee var(--marquee-duration) linear infinite;
+  animation-direction: var(--marquee-animation-direction, normal);
+  animation-play-state: var(--marquee-play-state, running);
+}
+
+.marqueeContentVertical {
+  flex-direction: column;
+  animation: marquee-vertical var(--marquee-duration) linear infinite;
+  animation-direction: var(--marquee-animation-direction, normal);
+  animation-play-state: var(--marquee-play-state, running);
+}
+
+@keyframes marquee {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(calc(-100% - var(--marquee-gap)));
+  }
+}
+
+@keyframes marquee-vertical {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(calc(-100% - var(--marquee-gap)));
+  }
+}
+
+.marqueeFadeEdgeLeft,
+.marqueeFadeEdgeRight {
+  pointer-events: none; /* pointer-events-none */
+  position: absolute; /* absolute */
+  top: 0; /* inset-y-0 */
+  bottom: 0;
+  width: var(--marquee-fade-edge-size);
+}
+
+.marqueeFadeEdgeTop,
+.marqueeFadeEdgeBottom {
+  pointer-events: none; /* pointer-events-none */
+  position: absolute; /* absolute */
+  left: 0; /* inset-x-0 */
+  right: 0;
+  height: var(--marquee-fade-edge-size);
+}
+
+.marqueeFadeEdgeLeft {
+  left: 0; /* left-0 */
+  background: linear-gradient(
+    to right,
+    var(--marquee-fade-edge-color),
+    #ffffff00
+  ); /* bg-gradient-to-r from-white dark:from-background */
+}
+
+.marqueeFadeEdgeRight {
+  right: 0; /* right-0 */
+  background: linear-gradient(
+    to left,
+    var(--marquee-fade-edge-color),
+    #ffffff00
+  ); /* bg-gradient-to-l from-white dark:from-background */
+}
+
+.marqueeFadeEdgeTop {
+  top: 0; /* top-0 */
+  background: linear-gradient(
+    to bottom,
+    var(--marquee-fade-edge-color),
+    #ffffff00
+  ); /* bg-gradient-to-b from-white dark:from-background */
+}
+
+.marqueeFadeEdgeBottom {
+  bottom: 0; /* bottom-0 */
+  background: linear-gradient(
+    to top,
+    var(--marquee-fade-edge-color),
+    #ffffff00
+  ); /* bg-gradient-to-t from-white dark:from-background */
+}

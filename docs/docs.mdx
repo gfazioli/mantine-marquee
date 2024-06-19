@@ -3,47 +3,32 @@ import * as demos from './demos';
 
 ## Installation
 
-<InstallScript packages="@gfazioli/mantine-flip" />
+<InstallScript packages="@gfazioli/mantine-marquee" />
 
 After installation import package styles at the root of your application:
 
 ```tsx
-import '@gfazioli/mantine-flip/styles.css';
+import '@gfazioli/mantine-marquee/styles.css';
 ```
 
 ## Usage
 
+The `Marquee` component allows you to create a marquee effect with any content.
+
+
 <Demo data={demos.configurator} />
 
-## Uncontrollded
+## Multiple
 
-<Demo data={demos.uncontrolled} />
+The `Marquee` component allows you to create a marquee effect with multiple items.
 
-## Controllded
+<Demo data={demos.multiple} />
 
-You may control the state of the card by setting the `flipped` prop to `true` or `false`.
-This is useful when you want to control the state of the card from the parent component.
+### Vertical
 
-<Demo data={demos.controlled} />
+The `Marquee` component allows you to create a marquee effect with multiple items in vertical direction.
 
-> **Inital face and Flip.Target**
->
-> For controlled Flip components, you will use `useState` to determine which side of the component to initially show.
-> Additionally, you will not need to use `Flip.Target` for buttons, but you can control them manually to keep the states synchronized.
+<Demo data={demos.multipleVertical} />
 
 
-## Default Flipped (face)
 
-You may display the initial face of the card by setting the `defaultFlipped` prop to `true`.
-
-<Demo data={demos.defaultFlipped} />
-
-## More examples
-
-### Credit card
-
-<Demo data={demos.creditCard} />
-
-### Signin form
-
-<Demo data={demos.signin} />
