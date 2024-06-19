@@ -14,17 +14,20 @@ function Wrapper(props: any) {
   }
 
   return (
-    <Marquee {...props} w={560} h={300}>
+    <Marquee {...props} w={560} h={430}>
       <BoxComponent bg="red">Hello World #1</BoxComponent>
       <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
       <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
       <BoxComponent bg="lime">Goodbye #4</BoxComponent>
+      <BoxComponent bg="orange">Hello World #5</BoxComponent>
+      <BoxComponent bg="dark">Hope you like it #6</BoxComponent>
+      <BoxComponent bg="green">Have a nice day #7</BoxComponent>
     </Marquee>
   );
 }
 
 const code = `
-import { BorderBeam } from '@gfazioli/mantine-marquee'';
+import { Marquee } from '@gfazioli/mantine-marquee';
 
 function Demo() {
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
@@ -80,7 +83,7 @@ export const configurator: MantineDemo = {
       type: 'number',
       initialValue: 4,
       libraryValue: 4,
-      min: 1,
+      min: 2,
       max: 20,
     },
     {
@@ -89,7 +92,7 @@ export const configurator: MantineDemo = {
       initialValue: 10,
       libraryValue: 10,
       step: 0.1,
-      min: 0,
+      min: 0.1,
       max: 60,
     },
     { type: 'size', prop: 'gap', initialValue: 'sm', libraryValue: 'sm' },

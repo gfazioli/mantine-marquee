@@ -16,8 +16,8 @@ export default {
     gap: 'xl',
   },
   argTypes: {
-    repeat: { control: { type: 'range', min: 1, max: 20, step: 1 } },
-    duration: { control: { type: 'range', min: 0.1, max: 100, step: 0.1 } },
+    repeat: { control: { type: 'range', min: 2, max: 20, step: 1 } },
+    duration: { control: { type: 'range', min: 0.1, max: 20, step: 0.1 } },
   },
 };
 

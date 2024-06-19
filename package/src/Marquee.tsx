@@ -12,7 +12,7 @@ import {
   useProps,
   useStyles,
 } from '@mantine/core';
-import React from 'react';
+import React, { useMemo } from 'react';
 
 import classes from './Marquee.module.css';
 
@@ -35,7 +35,7 @@ export interface MarqueeBaseProps {
   reverse?: boolean;
 
   /**
-   * Number of times to clone the children
+   * Number of times to clone the children. Minimum value is 2.
    */
   repeat?: number;
 
@@ -50,7 +50,7 @@ export interface MarqueeBaseProps {
   pauseOnHover?: boolean;
 
   /**
-   * Animation speed/duration in seconds
+   * Animation speed/duration in seconds. Minimum value is 0.1.
    */
   duration?: number;
 
@@ -149,6 +149,39 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
     varsResolver,
   });
 
+  const renderContent = useMemo(
+    () =>
+      Array.from({ length: repeat < 2 ? 2 : repeat }).map((_, i) => (
+        <div
+          key={`marquee-item-${repeat}-${gap}-${duration}-${i}`}
+          className={`${classes.marqueeContent} ${vertical ? classes.marqueeContentVertical : ''}`}
+        >
+          {children}
+        </div>
+      )),
+    [repeat, vertical, children]
+  );
+
+  const renderFadeEdges = useMemo(
+    () =>
+      fadeEdges ? (
+        <>
+          {vertical ? (
+            <>
+              <div className={classes.marqueeFadeEdgeBottom} />
+              <div className={classes.marqueeFadeEdgeTop} />
+            </>
+          ) : (
+            <>
+              <div className={classes.marqueeFadeEdgeRight} />
+              <div className={classes.marqueeFadeEdgeLeft} />
+            </>
+          )}
+        </>
+      ) : null,
+    [vertical, fadeEdges]
+  );
+
   return (
     <Box {...getStyles('root')} {...others}>
       <Box
@@ -157,25 +190,9 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
         onMouseEnter={() => setOver(true)}
         onMouseLeave={() => setOver(false)}
       >
-        {Array(repeat)
-          .fill(0)
-          .map((_, i) => (
-            <div
-              key={i}
-              className={`${classes.marqueeContent} ${
-                vertical ? classes.marqueeContentVertical : ''
-              }`}
-            >
-              {children}
-            </div>
-          ))}
+        {renderContent}
       </Box>
-      {fadeEdges && (
-        <div className={vertical ? classes.marqueeFadeEdgeBottom : classes.marqueeFadeEdgeRight} />
-      )}
-      {fadeEdges && (
-        <div className={vertical ? classes.marqueeFadeEdgeTop : classes.marqueeFadeEdgeLeft} />
-      )}
+      {renderFadeEdges}
     </Box>
   );
 });

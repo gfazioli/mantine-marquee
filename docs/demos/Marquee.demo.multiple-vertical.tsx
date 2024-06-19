@@ -31,7 +31,7 @@ function Wrapper(props: any) {
 }
 
 const code = `
-import { BorderBeam } from '@gfazioli/mantine-marquee'';
+import { Marquee } from '@gfazioli/mantine-marquee';
 
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
