@@ -1,7 +1,7 @@
 # Mantine Marquee Component
 
 <p align="center">
-  <img alt="" src="https://github.com/gfazioli/mantine-marquee/assets/432181/cf1917a3-e7eb-4ecb-a525-85ff933c601d">
+  <img width="866" alt="image" src="https://github.com/gfazioli/mantine-marquee/assets/432181/d9d37b48-ab49-44c7-9315-4ad9a48e70f8">
 </p>
 
 ---
@@ -50,23 +50,20 @@ import '@gfazioli/mantine-marquee/styles.css';
 import { Marquee } from '@gfazioli/mantine-marquee';
 
 function Demo() {
+  function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
+    return (
+      <Box {...props} p="md" w="200px" c="white" style={{ borderRadius: '8px' }}>
+        {children}
+      </Box>
+    );
+  }
+
   return (
-    <Marquee h={200} w={200}>
-
-        <Paper radius="md" withBorder p="lg" shadow="md">
-          <h3>Front Card</h3>
-          <Marquee.Target>
-            <Button>Marquee Back</Button>
-          </Marquee.Target>
-        </Paper>
-
-        <Paper radius="md" withBorder p="lg" shadow="md">
-          <h3>Back Card</h3>
-          <Marquee.Target>
-            <Button>Marquee Front</Button>
-          </Marquee.Target>
-        </Paper>
-
+    <Marquee {...props} w={560} h={300}>
+      <BoxComponent bg="red">Hello World #1</BoxComponent>
+      <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
+      <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
+      <BoxComponent bg="lime">Goodbye #4</BoxComponent>
     </Marquee>
   );
 }
