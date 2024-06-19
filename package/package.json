@@ -13,9 +13,9 @@
     "typescript",
     "react-component",
     "animation",
-    "card",
-    "flip",
-    "widget"
+    "marquee",
+    "scroll",
+    "branding"
   ],
   "main": "./dist/cjs/index.cjs",
   "module": "./dist/esm/index.mjs",
