@@ -29,15 +29,50 @@ export type MarqueeCssVariables = {
 };
 
 export interface MarqueeBaseProps {
+  /**
+   * Reverse animation direction
+   */
   reverse?: boolean;
+
+  /**
+   * Number of times to clone the children
+   */
   repeat?: number;
+
+  /**
+   * Vertical layout
+   */
   vertical?: boolean;
+
+  /**
+   * Pause animation on hover
+   */
   pauseOnHover?: boolean;
+
+  /**
+   * Animation speed/duration in seconds
+   */
   duration?: number;
+
+  /**
+   * Add fade edges
+   */
   fadeEdges?: boolean;
-  fadeEdgesSize?: MantineSize | `compact-${MantineSize}` | (string & {});
+
+  /**
+   * Fade edges size
+   */
+  fadeEdgesSize?: MantineSize | (string & {});
+
+  /**
+   * Fade edges color
+   */
   fadeEdgesColor?: MantineColor;
-  gap?: MantineSize | `compact-${MantineSize}` | (string & {});
+
+  /**
+   * Gap between marquee items
+   */
+  gap?: MantineSize | (string & {});
 
   /** Content */
   children?: React.ReactNode;

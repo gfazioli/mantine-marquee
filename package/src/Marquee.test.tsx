@@ -18,7 +18,7 @@ describe('@mantine/core/Marquee', () => {
   });
 
   it('supports perspective prop', () => {
-    const { container } = render(<Marquee perspective="500px" />);
+    const { container } = render(<Marquee gap="500px" />);
     expect(container.querySelector('.mantine-Marquee-root')).toHaveStyle({ perspective: '500px' });
   });
 });
