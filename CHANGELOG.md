@@ -3,6 +3,12 @@
 The following is a list of notable changes to the Mantine Marquee component.  
 Minor versions that are not listed in the changelog are bug fixes and small improvements.
 
+## 2.0.4 (2024-09-29)
+
+- 📦️ Updated Mantine 7.13
+- ✨ support @layer
+- 💫 Adds `dev` branch
+
 ## 1.0.16 (2024-06-10)
 
 - 📝 Minor fixes on CHANGELOG, CONTRIBUTING and CODE_OF_CONDUCT
