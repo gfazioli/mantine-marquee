@@ -6,18 +6,13 @@
 
 ---
 
-<p align="center">
-  <a aria-label="NPM version" href="https://www.npmjs.com/package/@gfazioli/mantine-marquee">
-    <img alt="NPM version" src="https://img.shields.io/npm/v/%40gfazioli%2Fmantine-marquee?style=for-the-badge">
-  </a>
+<div align="center">
   
-  <a aria-label="NPM version" href="https://www.npmjs.com/package/@gfazioli/mantine-marquee">
-    <img alt="NPM Downloads" src="https://img.shields.io/npm/dm/%40gfazioli%2Fmantine-marquee?style=for-the-badge">
-  </a>
+  [![NPM version](https://img.shields.io/npm/v/%40gfazioli%2Fmantine-marquee?style=for-the-badge)](https://www.npmjs.com/package/@gfazioli/mantine-marquee)
+  [![NPM Downloads](https://img.shields.io/npm/dm/%40gfazioli%2Fmantine-marquee?style=for-the-badge)](https://www.npmjs.com/package/@gfazioli/mantine-marquee)
+  ![NPM License](https://img.shields.io/npm/l/%40gfazioli%2Fmantine-marquee?style=for-the-badge)
 
-  <img alt="NPM License" src="https://img.shields.io/npm/l/%40gfazioli%2Fmantine-marquee?style=for-the-badge">
-
-</p>
+</div>
 
 ## Overview
 
