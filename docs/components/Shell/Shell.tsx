@@ -34,7 +34,7 @@ export function Shell({ children }: ShellProps) {
 
   return (
     <AppShell header={{ height: 60 }}>
-      <AppShell.Header className={RemoveScroll.classNames.zeroRight}>
+      <AppShell.Header className={cx(RemoveScroll.classNames.zeroRight, classes.header)}>
         <Container size="lg" px="md" className={classes.inner}>
           <Group>
             <a

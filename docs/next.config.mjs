@@ -22,7 +22,6 @@ try {
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   output: 'export',
   basePath: process.env.NODE_ENV === 'production' ? `/${repository}` : undefined,
   pageExtensions: ['ts', 'tsx', 'mdx'],

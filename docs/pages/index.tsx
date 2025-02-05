@@ -1,3 +1,4 @@
+import React from 'react';
 import { DocsTabs } from '../components/DocsTabs';
 import { PageHeader } from '../components/PageHeader';
 import { Shell } from '../components/Shell';
