@@ -39,13 +39,7 @@
     "react": "^18.x || ^19.x",
     "react-dom": "^18.x || ^19.x"
   },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/gfazioli/mantine-marquee.git"
-  },
+  "repository": "https://github.com/gfazioli/mantine-marquee.git",
   "types": "./dist/types/index.d.ts",
-  "version": "2.2.0",
-  "workspaces": [
-    "docs"
-  ]
+  "version": "2.2.0"
 }

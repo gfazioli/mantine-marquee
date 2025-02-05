@@ -12,11 +12,6 @@ import { $ } from 'zx';
 import { run } from './run';
 import { updateVersion } from './update-version';
 
-function getRepositoryInfo(gitUrl: string) {
-  const [user, repo] = gitUrl.replace('https://github.com/', '').replace('.git', '').split('/');
-  return { user, repo };
-}
-
 const packageJsonPath = path.join(process.cwd(), 'package/package.json');
 const packageJson = fs.readJsonSync(packageJsonPath);
 const { argv } = yargs(hideBin(process.argv)) as any;
@@ -118,7 +113,7 @@ async function release() {
 
   open(
     githubRelease({
-      ...getRepositoryInfo(packageJson.repository.url),
+      repoUrl: (packageJson.repository.url || packageJson.repository).replace('.git', ''),
       tag: nextVersion,
       title: nextVersion,
     })
