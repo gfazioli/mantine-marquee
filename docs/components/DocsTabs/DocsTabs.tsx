@@ -1,11 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { Tabs } from '@mantine/core';
 import { useRouter } from 'next/router';
-import { IconAdjustments, IconCode, IconFileText } from '@tabler/icons-react';
-import { Container, Tabs } from '@mantine/core';
 import { PropsTablesList } from '../PropsTable';
-import { StylesApiTablesList } from '../StylesApiTable';
 import { TableOfContents } from '../TableOfContents';
 import classes from './DocsTabs.module.css';
+import { StylesApiTablesList } from '../StylesApiTable';
 
 interface DocsTabsProps {
   children: React.ReactNode;
@@ -39,7 +38,7 @@ export function DocsTabs({
 
   return (
     <Tabs
-      variant="pills"
+      variant="outline"
       value={activeTab}
       classNames={{ root: classes.root, list: classes.tabsList, tab: classes.tab }}
       keepMounted={false}
@@ -50,65 +49,42 @@ export function DocsTabs({
       }}
     >
       <div className={classes.tabsWrapper}>
-        <Container size="lg">
-          <Tabs.List>
-            <Tabs.Tab value="docs">
-              <div className={classes.tabInner}>
-                <IconFileText size={20} stroke={1.5} className={classes.tabIcon} />
-                Documentation
-              </div>
-            </Tabs.Tab>
-            {hasProps && (
-              <Tabs.Tab value="props">
-                <div className={classes.tabInner}>
-                  <IconCode size={20} stroke={1.5} className={classes.tabIcon} />
-                  Props
-                </div>
-              </Tabs.Tab>
-            )}
-            {hasStyles && (
-              <Tabs.Tab value="styles-api">
-                <div className={classes.tabInner}>
-                  <IconAdjustments size={20} stroke={1.5} className={classes.tabIcon} />
-                  Styles API
-                </div>
-              </Tabs.Tab>
-            )}
-          </Tabs.List>
-        </Container>
+        <Tabs.List>
+          <Tabs.Tab value="docs">Documentation</Tabs.Tab>
+          {hasProps && <Tabs.Tab value="props">Props</Tabs.Tab>}
+          {hasStyles && <Tabs.Tab value="styles-api">Styles API</Tabs.Tab>}
+        </Tabs.List>
       </div>
 
-      <Container size="lg">
-        <Tabs.Panel value="docs">
-          <div className={classes.tabContent} data-main>
-            <div className={classes.main} id="mdx">
-              {children}
-            </div>
-
-            <div className={classes.tableOfContents}>
-              <TableOfContents withTabs />
-            </div>
+      <Tabs.Panel value="docs">
+        <div className={classes.tabContent} data-main>
+          <div className={classes.main} id="mdx">
+            {children}
           </div>
-        </Tabs.Panel>
 
-        <Tabs.Panel value="props">
-          <div className={classes.tabContent} data-secondary>
-            <PropsTablesList components={componentsProps!} data={docgen} />
+          <div className={classes.tableOfContents}>
+            <TableOfContents withTabs />
           </div>
-        </Tabs.Panel>
+        </div>
+      </Tabs.Panel>
 
-        <Tabs.Panel value="styles-api">
-          <div className={classes.tabContent} data-secondary>
-            {stylesApiData && (
-              <StylesApiTablesList
-                data={stylesApiData}
-                components={componentsStyles!}
-                componentPrefix={componentPrefix}
-              />
-            )}
-          </div>
-        </Tabs.Panel>
-      </Container>
+      <Tabs.Panel value="props">
+        <div className={classes.tabContent} data-secondary>
+          <PropsTablesList components={componentsProps!} data={docgen} />
+        </div>
+      </Tabs.Panel>
+
+      <Tabs.Panel value="styles-api">
+        <div className={classes.tabContent} data-secondary>
+          {stylesApiData && (
+            <StylesApiTablesList
+              data={stylesApiData}
+              components={componentsStyles!}
+              componentPrefix={componentPrefix}
+            />
+          )}
+        </div>
+      </Tabs.Panel>
     </Tabs>
   );
 }
