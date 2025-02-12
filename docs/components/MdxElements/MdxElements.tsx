@@ -1,11 +1,11 @@
-import { Anchor, Code, Image, Title } from "@mantine/core";
-import { Demo } from "@mantinex/demo";
-import { CodeHighlight } from "@mantinex/shiki";
-import cx from "clsx";
-import type { MDXComponents } from "mdx/types";
-import React from "react";
-import { MdxInfo } from "../MdxInfo/MdxInfo";
-import classes from "./MdxElements.module.css";
+import React from 'react';
+import cx from 'clsx';
+import type { MDXComponents } from 'mdx/types';
+import { Anchor, Code, Image, Title } from '@mantine/core';
+import { Demo } from '@mantinex/demo';
+import { CodeHighlight } from '@mantinex/shiki';
+import { MdxInfo } from '../MdxInfo/MdxInfo';
+import classes from './MdxElements.module.css';
 
 export function MdxTitle({
   id,
@@ -15,17 +15,9 @@ export function MdxTitle({
 }: React.ComponentPropsWithoutRef<typeof Title>) {
   return (
     <>
-      <div
-        id={id}
-        data-heading={children}
-        data-order={order}
-        className={classes.titleOffset}
-      />
+      <div id={id} data-heading={children} data-order={order} className={classes.titleOffset} />
       <Title order={order} className={classes.title} {...others}>
-        <a
-          className={cx(classes.titleLink, "mantine-focus-auto")}
-          href={`#${id}`}
-        >
+        <a className={cx(classes.titleLink, 'mantine-focus-auto')} href={`#${id}`}>
           {children}
         </a>
       </Title>
@@ -47,7 +39,7 @@ function getCode(children: any) {
   return children.props.children;
 }
 
-export function MdxPre({ children }: React.ComponentPropsWithoutRef<"pre">) {
+export function MdxPre({ children }: React.ComponentPropsWithoutRef<'pre'>) {
   return (
     <CodeHighlight
       className={classes.code}
@@ -57,22 +49,19 @@ export function MdxPre({ children }: React.ComponentPropsWithoutRef<"pre">) {
   );
 }
 
-export function MdxParagraph(props: React.ComponentPropsWithoutRef<"p">) {
+export function MdxParagraph(props: React.ComponentPropsWithoutRef<'p'>) {
   return <p className={classes.paragraph} {...props} />;
 }
 
-export function MdxUl(props: React.ComponentPropsWithoutRef<"ul">) {
+export function MdxUl(props: React.ComponentPropsWithoutRef<'ul'>) {
   return <ul className={classes.ul} {...props} />;
 }
 
-export function MdxLi(props: React.ComponentPropsWithoutRef<"li">) {
+export function MdxLi(props: React.ComponentPropsWithoutRef<'li'>) {
   return <li className={classes.li} {...props} />;
 }
 
-export function MdxLink({
-  href,
-  ...others
-}: React.ComponentPropsWithoutRef<"a">) {
+export function MdxLink({ href, ...others }: React.ComponentPropsWithoutRef<'a'>) {
   return <Anchor className={classes.link} href={href} {...others} />;
 }
 
@@ -83,8 +72,8 @@ export function useMDXComponents(components: MDXComponents): MDXComponents {
     li: MdxLi,
     p: MdxParagraph,
     a: MdxLink,
-    blockquote: MdxInfo,
     code: Code as any,
+    blockquote: MdxInfo,
     h1: h(1),
     h2: h(2),
     h3: h(3),

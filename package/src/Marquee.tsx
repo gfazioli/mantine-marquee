@@ -1,19 +1,18 @@
+import React, { useMemo } from 'react';
 import {
   Box,
   BoxProps,
-  Factory,
-  MantineColor,
-  MantineSize,
-  StylesApiProps,
   createVarsResolver,
+  Factory,
   factory,
   getSize,
   getThemeColor,
+  MantineColor,
+  MantineSize,
+  StylesApiProps,
   useProps,
   useStyles,
 } from '@mantine/core';
-import React, { useMemo } from 'react';
-
 import classes from './Marquee.module.css';
 
 export type MarqueeStylesNames = 'root';

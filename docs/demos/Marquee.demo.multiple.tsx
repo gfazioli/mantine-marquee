@@ -1,24 +1,12 @@
-import { Marquee } from "@gfazioli/mantine-marquee";
-import { Box } from "@mantine/core";
-import { MantineDemo } from "@mantinex/demo";
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import { Marquee } from '@gfazioli/mantine-marquee';
+import { Box } from '@mantine/core';
+import { MantineDemo } from '@mantinex/demo';
 
 function Wrapper() {
-  function BoxComponent({
-    children,
-    ...props
-  }: {
-    children: ReactNode;
-    [key: string]: any;
-  }) {
+  function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
-      <Box
-        {...props}
-        p="md"
-        w="200px"
-        c="white"
-        style={{ borderRadius: "8px" }}
-      >
+      <Box {...props} p="md" w="200px" c="white" style={{ borderRadius: '8px' }}>
         {children}
       </Box>
     );
@@ -74,7 +62,7 @@ function Demo() {
 `;
 
 export const multiple: MantineDemo = {
-  type: "code",
+  type: 'code',
   component: Wrapper,
   code,
 };

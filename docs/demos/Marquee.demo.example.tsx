@@ -1,6 +1,5 @@
-import { Marquee } from "@gfazioli/mantine-marquee";
-import { ThemeIcon } from "@mantine/core";
-import { MantineDemo } from "@mantinex/demo";
+import { ReactNode } from 'react';
+import { Marquee } from '@gfazioli/mantine-marquee';
 import {
   IconBrand4chan,
   IconBrandAmazon,
@@ -9,29 +8,24 @@ import {
   IconBrandMantine,
   IconBrandWhatsapp,
   IconBrandWordpress,
-} from "@tabler/icons-react";
-import { ReactNode } from "react";
+} from '@tabler/icons-react';
+import { ThemeIcon } from '@mantine/core';
+import { MantineDemo } from '@mantinex/demo';
 
 function Wrapper(props: any) {
   const iconsBrand = [
-    <IconBrand4chan style={{ width: "70%", height: "70%" }} />,
-    <IconBrandWhatsapp style={{ width: "70%", height: "70%" }} />,
-    <IconBrandWordpress style={{ width: "70%", height: "70%" }} />,
-    <IconBrandBing style={{ width: "70%", height: "70%" }} />,
-    <IconBrandGithub style={{ width: "70%", height: "70%" }} />,
-    <IconBrandMantine style={{ width: "70%", height: "70%" }} />,
-    <IconBrandAmazon style={{ width: "70%", height: "70%" }} />,
+    <IconBrand4chan style={{ width: '70%', height: '70%' }} />,
+    <IconBrandWhatsapp style={{ width: '70%', height: '70%' }} />,
+    <IconBrandWordpress style={{ width: '70%', height: '70%' }} />,
+    <IconBrandBing style={{ width: '70%', height: '70%' }} />,
+    <IconBrandGithub style={{ width: '70%', height: '70%' }} />,
+    <IconBrandMantine style={{ width: '70%', height: '70%' }} />,
+    <IconBrandAmazon style={{ width: '70%', height: '70%' }} />,
   ];
 
-  function BoxComponent({
-    children,
-    ...props
-  }: {
-    children: ReactNode;
-    [key: string]: any;
-  }) {
+  function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
-      <ThemeIcon {...props} variant="transparent" size={"120px"}>
+      <ThemeIcon {...props} variant="transparent" size={'120px'}>
         {children}
       </ThemeIcon>
     );
@@ -88,7 +82,7 @@ function Demo() {
 `;
 
 export const example: MantineDemo = {
-  type: "code",
+  type: 'code',
   component: Wrapper,
   code,
 };

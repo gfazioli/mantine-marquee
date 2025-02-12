@@ -1,53 +1,53 @@
-import { Marquee } from "@gfazioli/mantine-marquee";
-import { Avatar, Card, Group, Rating, Stack, Text, Title } from "@mantine/core";
-import { MantineDemo } from "@mantinex/demo";
-import { ReactNode } from "react";
+import { ReactNode } from 'react';
+import { Marquee } from '@gfazioli/mantine-marquee';
+import { Avatar, Card, Group, Rating, Stack, Text, Title } from '@mantine/core';
+import { MantineDemo } from '@mantinex/demo';
 
 function Wrapper() {
   const testimonials = [
     {
-      name: "John Doe",
+      name: 'John Doe',
       avatar:
-        "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-9.png",
+        'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-9.png',
       text:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod " +
-        "tempor incididunt ut labore et dolore magna aliqua.",
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod ' +
+        'tempor incididunt ut labore et dolore magna aliqua.',
       rating: 4,
     },
     {
-      name: "Jane Doe",
+      name: 'Jane Doe',
       avatar:
-        "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-10.png",
+        'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-10.png',
       text:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod " +
-        "tempor incididunt ut labore et dolore magna aliqua.",
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod ' +
+        'tempor incididunt ut labore et dolore magna aliqua.',
       rating: 4,
     },
     {
-      name: "Jessica Doe",
+      name: 'Jessica Doe',
       avatar:
-        "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png",
+        'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-1.png',
       text:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod " +
-        "tempor incididunt ut labore et dolore magna aliqua.",
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod ' +
+        'tempor incididunt ut labore et dolore magna aliqua.',
       rating: 2,
     },
     {
-      name: "Jack Doe",
+      name: 'Jack Doe',
       avatar:
-        "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png",
+        'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-2.png',
       text:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod " +
-        "tempor incididunt ut labore et dolore magna aliqua.",
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod ' +
+        'tempor incididunt ut labore et dolore magna aliqua.',
       rating: 5,
     },
     {
-      name: "Jill Doe",
+      name: 'Jill Doe',
       avatar:
-        "https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png",
+        'https://raw.githubusercontent.com/mantinedev/mantine/master/.demo/avatars/avatar-3.png',
       text:
-        "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod " +
-        "tempor incididunt ut labore et dolore magna aliqua.",
+        'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod ' +
+        'tempor incididunt ut labore et dolore magna aliqua.',
       rating: 3,
     },
   ];
@@ -66,7 +66,7 @@ function Wrapper() {
   }) {
     return (
       <Card w={200} shadow="sm" padding="lg" radius="md" withBorder>
-        <Card.Section p={"md"}>
+        <Card.Section p={'md'}>
           <Group>
             <Avatar size="md" radius="xl" src={avatar} />
             <Title order={4}>{name}</Title>
@@ -197,11 +197,11 @@ export const testimonials = [
 `;
 
 export const feedbacks: MantineDemo = {
-  type: "code",
+  type: 'code',
   component: Wrapper,
   code: [
-    { fileName: "Demo.tsx", code },
-    { fileName: "testimonials.ts", code: testimonials },
+    { fileName: 'Demo.tsx', code },
+    { fileName: 'testimonials.ts', code: testimonials },
   ],
   centered: true,
 };

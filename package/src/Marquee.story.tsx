@@ -1,5 +1,5 @@
-import { Box } from '@mantine/core';
 import React from 'react';
+import { Box } from '@mantine/core';
 import { Marquee, MarqueeProps } from './Marquee';
 
 export default {
