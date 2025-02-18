@@ -1,7 +1,9 @@
 # Mantine Marquee Component
 
-<p align="center">
-  <img width="866" alt="image" src="https://github.com/gfazioli/mantine-marquee/assets/432181/d9d37b48-ab49-44c7-9315-4ad9a48e70f8">
+<div align="center">
+  
+  ![image](https://github.com/gfazioli/mantine-marquee/assets/432181/d9d37b48-ab49-44c7-9315-4ad9a48e70f8)
+
 </p>
 
 ---

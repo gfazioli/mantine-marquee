@@ -65,4 +65,5 @@ export const multipleVertical: MantineDemo = {
   component: Wrapper,
   code,
   centered: true,
+  defaultExpanded: false,
 };

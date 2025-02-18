@@ -204,4 +204,5 @@ export const feedbacks: MantineDemo = {
     { fileName: 'testimonials.ts', code: testimonials },
   ],
   centered: true,
+  defaultExpanded: false,
 };
