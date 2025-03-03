@@ -4,7 +4,7 @@
   
   ![image](https://github.com/gfazioli/mantine-marquee/assets/432181/d9d37b48-ab49-44c7-9315-4ad9a48e70f8)
 
-</p>
+</div>
 
 ---
 
