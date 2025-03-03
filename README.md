@@ -21,9 +21,18 @@
 
 This component is created on top of the [Mantine](https://mantine.dev/) library.
 
-It allows to create a marquee effect with any content.
+[![Mantine UI Library](https://img.shields.io/badge/-MANTINE_UI_LIBRARY-blue?style=for-the-badge&labelColor=black&logo=mantine
+)](https://mantine.dev/)
 
-You can find more components on the [Mantine Extensions Hub](https://mantine-extensions.vercel.app/) library.
+It provides the capability to generate a dynamic marquee effect, enabling the display of a wide variety of content in a visually engaging manner. This effect can enhance the overall user experience by drawing attention to important information, announcements, or promotions, allowing for a more interactive and captivating presentation.
+
+[![Demo and Documentation](https://img.shields.io/badge/-Demo_%26_Documentation-blue?style=for-the-badge&labelColor=black&logo=typescript
+)](https://gfazioli.github.io/mantine-marquee/)
+[![Mantine Extensions HUB](https://img.shields.io/badge/-Mantine_Extensions_Hub-blue?style=for-the-badge&labelColor=blue
+)](https://mantine-extensions.vercel.app/)
+
+👉 You can find more components on the [Mantine Extensions Hub](https://mantine-extensions.vercel.app/) library.
+
 
 ## Installation
 
