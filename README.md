@@ -26,6 +26,8 @@ This component is created on top of the [Mantine](https://mantine.dev/) library.
 
 It provides the capability to generate a dynamic marquee effect, enabling the display of a wide variety of content in a visually engaging manner. This effect can enhance the overall user experience by drawing attention to important information, announcements, or promotions, allowing for a more interactive and captivating presentation.
 
+[![Mantine Extensions](https://img.shields.io/badge/-Watch_the_Video-blue?style=for-the-badge&labelColor=black&logo=youtube
+)](https://www.youtube.com/playlist?list=PL85tTROKkZrWyqCcmNCdWajpx05-cTal4)
 [![Demo and Documentation](https://img.shields.io/badge/-Demo_%26_Documentation-blue?style=for-the-badge&labelColor=black&logo=typescript
 )](https://gfazioli.github.io/mantine-marquee/)
 [![Mantine Extensions HUB](https://img.shields.io/badge/-Mantine_Extensions_Hub-blue?style=for-the-badge&labelColor=blue
