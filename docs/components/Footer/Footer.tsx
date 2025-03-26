@@ -161,7 +161,7 @@ export const Footer: React.FC<FooterProps> = () => {
             <Text fz={12} inline>
               <Group gap={4} component={'span'} justify="flex-start">
                 Built with{' '}
-                <Anchor fz={13} href="https://vercel.com/frameworks/nextjs">
+                <Anchor fz={13} href="https://github.com/mantinedev/extension-template">
                   <Group gap={4} component={'span'}>
                     <IconBrandMantine size={16} /> Mantine Extension Template
                   </Group>
