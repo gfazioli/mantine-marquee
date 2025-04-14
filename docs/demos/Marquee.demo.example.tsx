@@ -12,7 +12,7 @@ import {
 import { ThemeIcon } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
 
-function Wrapper(props: any) {
+function Wrapper() {
   const iconsBrand = [
     <IconBrand4chan style={{ width: '70%', height: '70%' }} />,
     <IconBrandWhatsapp style={{ width: '70%', height: '70%' }} />,
@@ -25,7 +25,7 @@ function Wrapper(props: any) {
 
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
-      <ThemeIcon {...props} variant="transparent" size={'120px'}>
+      <ThemeIcon {...props} variant="transparent" size="120px">
         {children}
       </ThemeIcon>
     );

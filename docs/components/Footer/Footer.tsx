@@ -35,7 +35,7 @@ const VerticalLinks = ({ list }: { list: VerticalLink[] }) => {
   return (
     <>
       {list
-        .filter((item) => !packageJson.repository.includes(item.href))
+        .filter((item) => !packageJson.homepage.includes(item.href))
         .map((item) => (
           <Group key={item.key}>
             <Anchor

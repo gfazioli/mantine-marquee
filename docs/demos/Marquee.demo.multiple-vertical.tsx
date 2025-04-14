@@ -3,7 +3,7 @@ import { Marquee } from '@gfazioli/mantine-marquee';
 import { Box, Flex } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
 
-function Wrapper(props: any) {
+function Wrapper() {
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
       <Box {...props} p="md" w="200px" c="white" style={{ borderRadius: '8px' }}>
