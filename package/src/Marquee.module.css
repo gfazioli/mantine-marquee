@@ -13,16 +13,12 @@
   --marquee-fade-edge-size-xl: 77%;
   --marquee-fade-edge-size: var(--marquee-fade-edge-size-sm, 11%);
 
-  @mixin where-light {
-    --marquee-fade-edge-color: var(--mantine-color-white);
+  --marquee-fade-edge-color: var(--mantine-color-white);
+
+  @mixin dark {
+    --marquee-fade-edge-color: var(--mantine-color-body);
   }
 
-  @mixin where-dark {
-    --marquee-fade-edge-color: var(--mantine-color-dark-7);
-  }
-} /* styles.css */
-
-.root {
   position: relative; /* relative */
   display: flex; /* flex */
   height: 100%; /* h-full */
@@ -59,6 +55,7 @@
   from {
     transform: translateX(0);
   }
+
   to {
     transform: translateX(calc(-100% - var(--marquee-gap)));
   }
@@ -68,6 +65,7 @@
   from {
     transform: translateY(0);
   }
+
   to {
     transform: translateY(calc(-100% - var(--marquee-gap)));
   }
@@ -96,7 +94,7 @@
   background: linear-gradient(
     to right,
     var(--marquee-fade-edge-color),
-    #ffffff00
+    #fff0
   ); /* bg-gradient-to-r from-white dark:from-background */
 }
 
@@ -105,7 +103,7 @@
   background: linear-gradient(
     to left,
     var(--marquee-fade-edge-color),
-    #ffffff00
+    #fff0
   ); /* bg-gradient-to-l from-white dark:from-background */
 }
 
@@ -114,7 +112,7 @@
   background: linear-gradient(
     to bottom,
     var(--marquee-fade-edge-color),
-    #ffffff00
+    #fff0
   ); /* bg-gradient-to-b from-white dark:from-background */
 }
 
@@ -123,6 +121,6 @@
   background: linear-gradient(
     to top,
     var(--marquee-fade-edge-color),
-    #ffffff00
+    #fff0
   ); /* bg-gradient-to-t from-white dark:from-background */
 }
