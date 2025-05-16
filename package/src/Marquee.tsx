@@ -86,13 +86,19 @@ export type MarqueeFactory = Factory<{
   vars: MarqueeCssVariables;
 }>;
 
-export const defaultProps: Partial<MarqueeProps> = {};
+export const defaultProps: Partial<MarqueeProps> = {
+  reverse: false,
+  repeat: 2,
+  vertical: false,
+  pauseOnHover: false,
+  duration: 20,
+  fadeEdges: false,
+  fadeEdgesSize: 'xs',
+  gap: 'xl',
+};
 
 const varsResolver = createVarsResolver<MarqueeFactory>(
-  (
-    theme,
-    { reverse, repeat, vertical, pauseOnHover, duration, fadeEdgesColor, fadeEdgesSize, gap }
-  ) => {
+  (theme, { reverse, vertical, duration, fadeEdgesColor, fadeEdgesSize, gap }) => {
     return {
       root: {
         '--marquee-animation-direction': reverse ? 'reverse' : 'normal',
@@ -114,15 +120,15 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
   const [over, setOver] = React.useState(false);
 
   const {
-    reverse = false,
-    repeat = 2,
-    vertical = false,
+    reverse,
+    repeat,
+    vertical,
     pauseOnHover,
-    duration = 20,
-    fadeEdges = false,
-    fadeEdgesSize = 'xs',
-    gap = 'xl',
-    fadeEdgesColor = 'white',
+    duration,
+    fadeEdges,
+    fadeEdgesSize,
+    gap,
+    fadeEdgesColor,
 
     classNames,
     style,
