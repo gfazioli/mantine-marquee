@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Marquee } from '@gfazioli/mantine-marquee';
-import { Box } from '@mantine/core';
+import { Box, Center } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
 
 function Wrapper(props: any) {
@@ -13,15 +13,17 @@ function Wrapper(props: any) {
   }
 
   return (
-    <Marquee {...props} w={544} h={58}>
-      <BoxComponent bg="red">Hello World #1</BoxComponent>
-      <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
-      <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
-      <BoxComponent bg="lime">Goodbye #4</BoxComponent>
-      <BoxComponent bg="orange">Hello World #5</BoxComponent>
-      <BoxComponent bg="dark">Hope you like it #6</BoxComponent>
-      <BoxComponent bg="green">Have a nice day #7</BoxComponent>
-    </Marquee>
+    <Center w={544} h={500}>
+      <Marquee {...props} w="100%">
+        <BoxComponent bg="red">Hello World #1</BoxComponent>
+        <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
+        <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
+        <BoxComponent bg="lime">Goodbye #4</BoxComponent>
+        <BoxComponent bg="orange">Hello World #5</BoxComponent>
+        <BoxComponent bg="dark">Hope you like it #6</BoxComponent>
+        <BoxComponent bg="green">Have a nice day #7</BoxComponent>
+      </Marquee>
+    </Center>
   );
 }
 
