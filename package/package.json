@@ -41,5 +41,5 @@
   },
   "repository": "https://github.com/gfazioli/mantine-marquee.git",
   "types": "./dist/types/index.d.ts",
-  "version": "2.3.0"
+  "version": "2.3.1"
 }
