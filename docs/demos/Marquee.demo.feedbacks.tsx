@@ -199,8 +199,8 @@ export const feedbacks: MantineDemo = {
   type: 'code',
   component: Wrapper,
   code: [
-    { fileName: 'Demo.tsx', code },
-    { fileName: 'testimonials.ts', code: testimonials },
+    { fileName: 'Demo.tsx', code, language: 'tsx' },
+    { fileName: 'testimonials.ts', code: testimonials, language: 'js' },
   ],
   centered: true,
   defaultExpanded: false,
