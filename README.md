@@ -1,8 +1,6 @@
 # Mantine Marquee Component
 
-https://github.com/user-attachments/assets/285cdda3-cd62-46a3-b028-816c34217530
-
----
+<img width="2752" height="1536" alt="Gemini_Generated_Image_l9tg4xl9tg4xl9tg" src="https://github.com/user-attachments/assets/ba683bc2-06f8-4cc1-b017-30c4a99c3e8c" />
 
 <div align="center">
   
@@ -78,3 +76,6 @@ function Demo() {
 [![Star History Chart](https://api.star-history.com/svg?repos=gfazioli/mantine-marquee&type=Timeline)](https://www.star-history.com/#gfazioli/mantine-marquee&Timeline)
 
 </div>
+
+---
+https://github.com/user-attachments/assets/285cdda3-cd62-46a3-b028-816c34217530
