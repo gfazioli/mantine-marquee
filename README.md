@@ -1,6 +1,6 @@
 # Mantine Marquee Component
 
-<img width="2752" height="1536" alt="Gemini_Generated_Image_l9tg4xl9tg4xl9tg" src="https://github.com/user-attachments/assets/ba683bc2-06f8-4cc1-b017-30c4a99c3e8c" />
+<img width="2752" height="1536" alt="mantine Marquee" src="https://github.com/user-attachments/assets/b1dcfa14-87f1-4058-b3ba-17833bbded2e" />
 
 <div align="center">
   
@@ -77,5 +77,4 @@ function Demo() {
 
 </div>
 
----
 https://github.com/user-attachments/assets/285cdda3-cd62-46a3-b028-816c34217530
