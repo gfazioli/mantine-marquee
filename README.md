@@ -1,6 +1,6 @@
 # Mantine Marquee Component
 
-<img width="2752" height="1536" alt="mantine Marquee" src="https://github.com/user-attachments/assets/b1dcfa14-87f1-4058-b3ba-17833bbded2e" />
+<img width="2752" height="1536" alt="mantine Marquee" src="https://github.com/user-attachments/assets/a9e02a7d-acc3-4f0a-a453-fb1f85f3a195" />
 
 <div align="center">
   
