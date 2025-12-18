@@ -15,19 +15,13 @@
 
 This component is created on top of the [Mantine](https://mantine.dev/) library.
 
-[![Mantine UI Library](https://img.shields.io/badge/-MANTINE_UI_LIBRARY-blue?style=for-the-badge&labelColor=black&logo=mantine
-)](https://mantine.dev/)
+[Mantine Marquee](https://gfazioli.github.io/mantine-marquee/) is a versatile React component for the Mantine ecosystem that renders continuous, seamless scrolling of any child elements—cards, boxes, text, or avatars—either horizontally or vertically. It exposes ergonomic props to control behavior and presentation: reverse toggles direction, vertical switches axis, fadeEdges adds gradient masking with configurable size and color, pauseOnHover halts motion on interaction, and duration/gap/repeat fine‑tune speed, spacing, and loop continuity. 
 
-It provides the capability to generate a dynamic marquee effect, enabling the display of a wide variety of content in a visually engaging manner. This effect can enhance the overall user experience by drawing attention to important information, announcements, or promotions, allowing for a more interactive and captivating presentation.
+The component fits neatly into layouts with explicit width/height and Mantine spacing props, and ships with dedicated stylesheets, including an optional @layer import for clean, scoped CSS integration. Example demos show simple colored boxes, mirrored horizontal tracks, stacked vertical tracks, and testimonial cards with avatars and ratings—all demonstrating how arbitrary React content can be animated into a polished marquee without custom animation code.
 
-[![Mantine Extensions](https://img.shields.io/badge/-Watch_the_Video-blue?style=for-the-badge&labelColor=black&logo=youtube
-)](https://www.youtube.com/playlist?list=PL85tTROKkZrWyqCcmNCdWajpx05-cTal4)
-[![Demo and Documentation](https://img.shields.io/badge/-Demo_%26_Documentation-blue?style=for-the-badge&labelColor=black&logo=typescript
-)](https://gfazioli.github.io/mantine-marquee/)
-[![Mantine Extensions HUB](https://img.shields.io/badge/-Mantine_Extensions_Hub-blue?style=for-the-badge&labelColor=blue
-)](https://mantine-extensions.vercel.app/)
-
-👉 You can find more components on the [Mantine Extensions Hub](https://mantine-extensions.vercel.app/) library.
+> [!note]
+>
+> → [Demo and Documentation](https://gfazioli.github.io/mantine-marquee/) → [Youtube Video](https://www.youtube.com/playlist?list=PL85tTROKkZrWyqCcmNCdWajpx05-cTal4) → [More Mantine Components](https://mantine-extensions.vercel.app/)
 
 
 ## Installation
@@ -71,10 +65,8 @@ function Demo() {
   );
 }
 ```
-<div align="center">
-  
-[![Star History Chart](https://api.star-history.com/svg?repos=gfazioli/mantine-marquee&type=Timeline)](https://www.star-history.com/#gfazioli/mantine-marquee&Timeline)
-
-</div>
-
+---
 https://github.com/user-attachments/assets/285cdda3-cd62-46a3-b028-816c34217530
+
+---
+[![Star History Chart](https://api.star-history.com/svg?repos=gfazioli/mantine-marquee&type=Timeline)](https://www.star-history.com/#gfazioli/mantine-marquee&Timeline)
