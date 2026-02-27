@@ -1,6 +1,6 @@
 # Mantine Marquee Component
 
-<img alt="Mantine Marquee" src="https://github.com/gfazioli/mantine-marquee/blob/master/logo.png" />
+<img alt="Mantine Marquee" src="https://github.com/gfazioli/mantine-marquee/blob/master/logo.jpeg" />
 
 <div align="center">
   
