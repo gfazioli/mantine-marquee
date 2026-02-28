@@ -11,21 +11,88 @@
   --marquee-fade-edge-size-md: 33%;
   --marquee-fade-edge-size-lg: 55%;
   --marquee-fade-edge-size-xl: 77%;
-  --marquee-fade-edge-size: var(--marquee-fade-edge-size-sm, 11%);
+  --marquee-fade-edge-size: var(--marquee-fade-edge-size-xs, 11%);
 
-  --marquee-fade-edge-color: var(--mantine-color-white);
-
-  @mixin dark {
-    --marquee-fade-edge-color: var(--mantine-color-body);
-  }
-
-  position: relative; /* relative */
-  display: flex; /* flex */
-  height: 100%; /* h-full */
-  width: 100%; /* w-full */
-  flex-direction: column; /* flex-col */
-  overflow: hidden; /* overflow-hidden */
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  flex-direction: column;
+  overflow: hidden;
 }
+
+/* ============================================================
+   Fade edges — CSS mask-image system
+
+   Shape is driven by the data-fade-edges attribute value:
+     "linear"  → gradient fade on leading/trailing edges (current)
+     "ellipse" → radial vignette all around (future)
+
+   Orientation is driven by data-vertical attribute:
+     absent    → horizontal scroll
+     present   → vertical scroll
+
+   The --marquee-fade-edge-size token controls the fade extent
+   in all shapes (linear: edge %, ellipse: clearance from border).
+
+   isolation: isolate is required on the masked element to prevent
+   Safari compositing glitches with will-change: transform children.
+   ============================================================ */
+
+.root[data-fade-edges='linear'] {
+  isolation: isolate;
+  -webkit-mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--marquee-fade-edge-size),
+    black calc(100% - var(--marquee-fade-edge-size)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to right,
+    transparent,
+    black var(--marquee-fade-edge-size),
+    black calc(100% - var(--marquee-fade-edge-size)),
+    transparent
+  );
+}
+
+.root[data-fade-edges='linear'][data-vertical] {
+  -webkit-mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black var(--marquee-fade-edge-size),
+    black calc(100% - var(--marquee-fade-edge-size)),
+    transparent
+  );
+  mask-image: linear-gradient(
+    to bottom,
+    transparent,
+    black var(--marquee-fade-edge-size),
+    black calc(100% - var(--marquee-fade-edge-size)),
+    transparent
+  );
+}
+
+/* ============================================================
+   Future shape: ellipse
+   Radial vignette that fades all around the scroll area.
+   --marquee-fade-edge-size controls how much border is faded.
+
+.root[data-fade-edges='ellipse'] {
+  isolation: isolate;
+  -webkit-mask-image: radial-gradient(
+    ellipse at center,
+    black calc(100% - var(--marquee-fade-edge-size) * 2),
+    transparent 100%
+  );
+  mask-image: radial-gradient(
+    ellipse at center,
+    black calc(100% - var(--marquee-fade-edge-size) * 2),
+    transparent 100%
+  );
+}
+   ============================================================ */
 
 .marqueeContainer {
   display: flex;
@@ -72,58 +139,4 @@
   to {
     transform: translateY(calc(-100% - var(--marquee-gap)));
   }
-}
-
-.marqueeFadeEdgeLeft,
-.marqueeFadeEdgeRight {
-  pointer-events: none; /* pointer-events-none */
-  position: absolute; /* absolute */
-  top: 0; /* inset-y-0 */
-  bottom: 0;
-  width: var(--marquee-fade-edge-size);
-}
-
-.marqueeFadeEdgeTop,
-.marqueeFadeEdgeBottom {
-  pointer-events: none; /* pointer-events-none */
-  position: absolute; /* absolute */
-  left: 0; /* inset-x-0 */
-  right: 0;
-  height: var(--marquee-fade-edge-size);
-}
-
-.marqueeFadeEdgeLeft {
-  left: 0; /* left-0 */
-  background: linear-gradient(
-    to right,
-    var(--marquee-fade-edge-color),
-    #fff0
-  ); /* bg-gradient-to-r from-white dark:from-background */
-}
-
-.marqueeFadeEdgeRight {
-  right: 0; /* right-0 */
-  background: linear-gradient(
-    to left,
-    var(--marquee-fade-edge-color),
-    #fff0
-  ); /* bg-gradient-to-l from-white dark:from-background */
-}
-
-.marqueeFadeEdgeTop {
-  top: 0; /* top-0 */
-  background: linear-gradient(
-    to bottom,
-    var(--marquee-fade-edge-color),
-    #fff0
-  ); /* bg-gradient-to-b from-white dark:from-background */
-}
-
-.marqueeFadeEdgeBottom {
-  bottom: 0; /* bottom-0 */
-  background: linear-gradient(
-    to top,
-    var(--marquee-fade-edge-color),
-    #fff0
-  ); /* bg-gradient-to-t from-white dark:from-background */
 }

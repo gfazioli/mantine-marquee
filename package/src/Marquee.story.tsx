@@ -12,7 +12,6 @@ export default {
     duration: 10,
     fadeEdges: false,
     fadeEdgesSize: 'xs',
-    fadeEdgesColor: '',
     gap: 'xl',
   },
   argTypes: {

@@ -103,11 +103,5 @@ export const configurator: MantineDemo = {
       initialValue: 'sm',
       libraryValue: 'xs',
     },
-    {
-      type: 'color',
-      prop: 'fadeEdgesColor',
-      initialValue: '',
-      libraryValue: '',
-    },
   ],
 };
