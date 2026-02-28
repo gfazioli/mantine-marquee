@@ -29,7 +29,6 @@
 
 .marqueeContainer {
   display: flex;
-  overflow: hidden;
   padding: 0;
   gap: var(--marquee-gap);
   flex-direction: var(--marquee-direction);
@@ -42,6 +41,8 @@
   animation: marquee var(--marquee-duration) linear infinite;
   animation-direction: var(--marquee-animation-direction, normal);
   animation-play-state: var(--marquee-play-state, running);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 .marqueeContentVertical {
@@ -49,6 +50,8 @@
   animation: marquee-vertical var(--marquee-duration) linear infinite;
   animation-direction: var(--marquee-animation-direction, normal);
   animation-play-state: var(--marquee-play-state, running);
+  will-change: transform;
+  backface-visibility: hidden;
 }
 
 @keyframes marquee {

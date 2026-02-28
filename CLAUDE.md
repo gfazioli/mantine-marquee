@@ -80,9 +80,25 @@ Each demo has two parts: a `Wrapper` function (the actual rendered component) an
 
 Documents the selectors and CSS variables exposed via the Styles API. The `selectors` object must match `MarqueeStylesNames`; the `vars.root` object must match `MarqueeCssVariables` in `Marquee.tsx`. Note: `--marquee-play-state` is intentionally absent — it is set via inline `style` (not through `varsResolver`) because it depends on runtime hover state.
 
+### Animation
+
+The marquee loop works by cloning `children` into `repeat` divs (`.marqueeContent`) that all share the same CSS keyframe animation. Each clone moves by `translateX(calc(-100% - var(--marquee-gap)))`, exactly the distance to the start of the next clone, so the loop is geometrically seamless.
+
+Key CSS decisions:
+- `will-change: transform` on `.marqueeContent` / `.marqueeContentVertical` — tells the browser to promote each clone to a dedicated GPU compositor layer, preventing frame drops.
+- `backface-visibility: hidden` — prevents flickering on Safari/iOS during the animation loop reset.
+- `overflow: hidden` is only on `.root`, not on `.marqueeContainer` — having it on both would create an extra stacking context that can interfere with GPU layer compositing.
+- `--marquee-play-state` is set via inline `style` on `.root` (not via `varsResolver`) because it depends on runtime hover state (`over`); it is inherited by `.marqueeContent` via CSS cascade.
+
+Neither React 19 nor Mantine provides primitives that improve CSS keyframe animation smoothness. The CSS keyframe + `transform` approach is optimal: it runs entirely on the GPU compositor thread without touching layout or paint.
+
 ### Styling
 
 CSS Modules are used with hashed class names (via `hash-css-selector` with prefix `me`). PostCSS with `postcss-preset-mantine` handles Mantine's `@mixin dark` syntax and other extensions. Size tokens (`xs`/`sm`/`md`/`lg`/`xl`) map to explicit CSS custom property scales defined in `.root`.
+
+### Mantine custom component skill
+
+A skill file with the full Mantine component authoring guide lives at `.agents/skills/mantine-custom-components/`. It documents: `factory`/`polymorphicFactory`/`genericFactory`, `useProps`, `useStyles`, `createVarsResolver`, `StylesApiProps`, `BoxProps`, `ElementProps`, `createSafeContext`, theme helper functions (`getSize`, `getSpacing`, `getRadius`, etc.), and compound/polymorphic/generic component patterns. Consult it before modifying or extending the component API.
 
 ### Release workflow
 
