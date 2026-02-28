@@ -13,7 +13,6 @@ export const MarqueeStylesApi: StylesApiData<MarqueeFactory> = {
       '--marquee-duration': 'Animation speed duration',
       '--marquee-gap': 'Space between elements',
       '--marquee-fade-edge-size': 'Fade edge size',
-      '--marquee-fade-edge-color': 'Fade edge color',
     },
   },
 

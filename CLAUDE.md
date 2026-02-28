@@ -25,6 +25,8 @@ To run a single Jest test file:
 yarn jest package/src/Marquee.test.tsx
 ```
 
+> **Important:** `docs/` imports types from the compiled package (`package/dist/types/`), not from source. After changing the TypeScript API in `package/src/`, always run `yarn clean && yarn build` before `yarn test`, otherwise the docs typecheck will fail with stale types.
+
 ## Architecture
 
 ### Package structure
@@ -91,6 +93,22 @@ Key CSS decisions:
 - `--marquee-play-state` is set via inline `style` on `.root` (not via `varsResolver`) because it depends on runtime hover state (`over`); it is inherited by `.marqueeContent` via CSS cascade.
 
 Neither React 19 nor Mantine provides primitives that improve CSS keyframe animation smoothness. The CSS keyframe + `transform` approach is optimal: it runs entirely on the GPU compositor thread without touching layout or paint.
+
+### Fade edges — CSS mask system
+
+`fadeEdges` uses `mask-image` (not DOM overlay divs) for true alpha compositing, independent of the background color. The shape is driven by `data-fade-edges="<shape>"` on `.root`; orientation by `data-vertical` (present when `vertical=true`).
+
+**Current shapes:**
+- `"linear"` — linear gradient fade on leading/trailing edges (horizontal or vertical)
+
+**Future shapes (add CSS rules only, no TypeScript changes needed until `fadeEdgesType` prop is introduced):**
+- `"ellipse"` — radial vignette fade all around (placeholder commented in CSS)
+
+`isolation: isolate` on the masked element is required to prevent Safari compositing glitches when `will-change: transform` children are present.
+
+`postcss-preset-mantine` does NOT include autoprefixer — `-webkit-mask-image` must always be written explicitly alongside `mask-image` in the CSS.
+
+`fadeEdgesColor` was removed in the major release that introduced CSS masks (it was a workaround for the old overlay-div approach and has no semantic meaning with mask-based compositing).
 
 ### Styling
 

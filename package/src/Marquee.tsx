@@ -6,8 +6,6 @@ import {
   Factory,
   factory,
   getSize,
-  getThemeColor,
-  MantineColor,
   MantineSize,
   StylesApiProps,
   useProps,
@@ -23,8 +21,7 @@ export type MarqueeCssVariables = {
     | '--marquee-direction'
     | '--marquee-duration'
     | '--marquee-gap'
-    | '--marquee-fade-edge-size'
-    | '--marquee-fade-edge-color';
+    | '--marquee-fade-edge-size';
 };
 
 export interface MarqueeBaseProps {
@@ -64,11 +61,6 @@ export interface MarqueeBaseProps {
   fadeEdgesSize?: MantineSize | (string & {});
 
   /**
-   * Fade edges color
-   */
-  fadeEdgesColor?: MantineColor;
-
-  /**
    * Gap between marquee items
    */
   gap?: MantineSize | (string & {});
@@ -98,7 +90,7 @@ export const defaultProps: Partial<MarqueeProps> = {
 };
 
 const varsResolver = createVarsResolver<MarqueeFactory>(
-  (theme, { reverse, vertical, duration, fadeEdgesColor, fadeEdgesSize, gap }) => {
+  (_, { reverse, vertical, duration, fadeEdgesSize, gap }) => {
     return {
       root: {
         '--marquee-animation-direction': reverse ? 'reverse' : 'normal',
@@ -106,9 +98,6 @@ const varsResolver = createVarsResolver<MarqueeFactory>(
         '--marquee-duration': `${duration || 20}s`,
         '--marquee-gap': getSize(gap, 'marquee-gap'),
         '--marquee-fade-edge-size': getSize(fadeEdgesSize, 'marquee-fade-edge-size'),
-        '--marquee-fade-edge-color': fadeEdgesColor
-          ? getThemeColor(fadeEdgesColor, theme)
-          : undefined,
       },
     };
   }
@@ -128,7 +117,6 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
     fadeEdges,
     fadeEdgesSize,
     gap,
-    fadeEdgesColor,
 
     classNames,
     style,
@@ -167,28 +155,13 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
     [repeat, vertical, children, gap, duration]
   );
 
-  const renderFadeEdges = useMemo(
-    () =>
-      fadeEdges ? (
-        <>
-          {vertical ? (
-            <>
-              <div className={classes.marqueeFadeEdgeBottom} />
-              <div className={classes.marqueeFadeEdgeTop} />
-            </>
-          ) : (
-            <>
-              <div className={classes.marqueeFadeEdgeRight} />
-              <div className={classes.marqueeFadeEdgeLeft} />
-            </>
-          )}
-        </>
-      ) : null,
-    [vertical, fadeEdges]
-  );
-
   return (
-    <Box {...getStyles('root')} {...others}>
+    <Box
+      {...getStyles('root')}
+      {...others}
+      data-fade-edges={fadeEdges ? 'linear' : undefined}
+      data-vertical={vertical || undefined}
+    >
       <Box
         ref={ref}
         className={classes.marqueeContainer}
@@ -197,7 +170,6 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
       >
         {renderContent}
       </Box>
-      {renderFadeEdges}
     </Box>
   );
 });
