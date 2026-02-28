@@ -4,7 +4,7 @@
   --marquee-gap-md: 4px;
   --marquee-gap-lg: 8px;
   --marquee-gap-xl: 16px;
-  --marquee-gap: var(---marquee-gap-xl, 16px);
+  --marquee-gap: var(--marquee-gap-xl, 16px);
 
   --marquee-fade-edge-size-xs: 11%;
   --marquee-fade-edge-size-sm: 22%;
@@ -37,7 +37,7 @@
 
 .marqueeContent {
   display: flex;
-  justify-content: space-around;
+  justify-content: flex-start;
   gap: var(--marquee-gap);
   animation: marquee var(--marquee-duration) linear infinite;
   animation-direction: var(--marquee-animation-direction, normal);
