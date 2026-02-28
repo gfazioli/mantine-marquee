@@ -41,7 +41,9 @@ function Wrapper() {
 }
 
 const code = `
+import { ReactNode } from 'react';
 import { Marquee } from '@gfazioli/mantine-marquee';
+import { ThemeIcon } from '@mantine/core';
 import {
   IconBrand4chan,
   IconBrandAmazon,

@@ -164,7 +164,7 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
           {children}
         </div>
       )),
-    [repeat, vertical, children]
+    [repeat, vertical, children, gap, duration]
   );
 
   const renderFadeEdges = useMemo(

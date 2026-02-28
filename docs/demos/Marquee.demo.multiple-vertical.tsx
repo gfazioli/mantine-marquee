@@ -31,8 +31,11 @@ function Wrapper() {
 }
 
 const code = `
+import { ReactNode } from 'react';
 import { Marquee } from '@gfazioli/mantine-marquee';
+import { Box, Flex } from '@mantine/core';
 
+function Demo() {
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
       <Box {...props} p="md" w="200px" c="white" style={{ borderRadius: '8px' }}>
