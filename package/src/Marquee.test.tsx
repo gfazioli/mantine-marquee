@@ -56,4 +56,37 @@ describe('Marquee', () => {
     );
     expect(container.querySelector('[data-fade-edges="ellipse"]')).not.toBeNull();
   });
+
+  it('sets data-fade-edges="rect" when fadeEdges="rect"', () => {
+    const { container } = render(
+      <Marquee fadeEdges="rect">
+        <div>Test</div>
+      </Marquee>
+    );
+    expect(container.querySelector('[data-fade-edges="rect"]')).not.toBeNull();
+  });
+
+  it('sets --marquee-fade-edge-size-x and -y to the same value for a single fadeEdgesSize', () => {
+    const { container } = render(
+      <Marquee fadeEdges="rect" fadeEdgesSize="md">
+        <div>Test</div>
+      </Marquee>
+    );
+    const root = container.querySelector('[data-fade-edges="rect"]') as HTMLElement;
+    const style = root.getAttribute('style') || '';
+    expect(style).toContain('--marquee-fade-edge-size-x');
+    expect(style).toContain('--marquee-fade-edge-size-y');
+  });
+
+  it('sets independent --marquee-fade-edge-size-x and -y for a tuple fadeEdgesSize', () => {
+    const { container } = render(
+      <Marquee fadeEdges="rect" fadeEdgesSize={['md', 'xs']}>
+        <div>Test</div>
+      </Marquee>
+    );
+    const root = container.querySelector('[data-fade-edges="rect"]') as HTMLElement;
+    const style = root.getAttribute('style') || '';
+    expect(style).toContain('--marquee-fade-edge-size-x');
+    expect(style).toContain('--marquee-fade-edge-size-y');
+  });
 });

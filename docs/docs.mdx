@@ -44,6 +44,16 @@ It is particularly effective for logo carousels, icon showcases, or any content 
 
 <Demo data={demos.fadeEdgesEllipse} />
 
+### Rect
+
+`fadeEdges="rect"` uses two intersected linear gradients (`mask-composite: intersect`) to fade all 4 edges independently.
+The horizontal gradient controls left/right, the vertical gradient controls top/bottom — at the corners the alpha values multiply naturally, creating a smooth diagonal falloff.
+
+`fadeEdgesSize` accepts a `[horizontal, vertical]` tuple for independent axis control.
+For example `fadeEdgesSize={['lg', 'xs']}` applies a large fade on left/right and a small fade on top/bottom.
+
+<Demo data={demos.fadeEdgesRect} />
+
 ## Multiple
 
 The `Marquee` component allows you to create a marquee effect with multiple items.
