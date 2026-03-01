@@ -13,16 +13,40 @@ import {
 } from '@mantine/core';
 import classes from './Marquee.module.css';
 
-export type MarqueeFadeEdges = boolean | 'linear' | 'ellipse';
+export type MarqueeFadeEdges = boolean | 'linear' | 'ellipse' | 'rect';
 
-function resolveFadeEdges(value: MarqueeFadeEdges | undefined): 'linear' | 'ellipse' | undefined {
+export type MarqueeFadeEdgesSize =
+  | MantineSize
+  | (string & {})
+  | [MantineSize | (string & {}), MantineSize | (string & {})];
+
+function resolveFadeEdges(
+  value: MarqueeFadeEdges | undefined
+): 'linear' | 'ellipse' | 'rect' | undefined {
   if (value === true || value === 'linear') {
     return 'linear';
   }
   if (value === 'ellipse') {
     return 'ellipse';
   }
+  if (value === 'rect') {
+    return 'rect';
+  }
   return undefined;
+}
+
+function resolveFadeEdgeSize(fadeEdgesSize: MarqueeFadeEdgesSize | undefined) {
+  if (fadeEdgesSize === undefined) {
+    return { single: undefined, x: undefined, y: undefined };
+  }
+  if (Array.isArray(fadeEdgesSize)) {
+    const [xVal, yVal] = fadeEdgesSize;
+    const resolvedX = getSize(xVal, 'marquee-fade-edge-size');
+    const resolvedY = getSize(yVal, 'marquee-fade-edge-size');
+    return { single: resolvedX, x: resolvedX, y: resolvedY };
+  }
+  const resolved = getSize(fadeEdgesSize, 'marquee-fade-edge-size');
+  return { single: resolved, x: resolved, y: resolved };
 }
 
 export type MarqueeStylesNames = 'root';
@@ -33,7 +57,9 @@ export type MarqueeCssVariables = {
     | '--marquee-direction'
     | '--marquee-duration'
     | '--marquee-gap'
-    | '--marquee-fade-edge-size';
+    | '--marquee-fade-edge-size'
+    | '--marquee-fade-edge-size-x'
+    | '--marquee-fade-edge-size-y';
 };
 
 export interface MarqueeBaseProps {
@@ -65,14 +91,17 @@ export interface MarqueeBaseProps {
   /**
    * Add fade edges. When `true` or `"linear"`, applies a linear gradient mask
    * on the leading/trailing scroll edges. When `"ellipse"`, applies a radial
-   * elliptical mask that fades all around the border.
+   * elliptical mask that fades all around the border. When `"rect"`, applies
+   * two intersected linear gradients that fade all 4 edges independently.
    */
   fadeEdges?: MarqueeFadeEdges;
 
   /**
-   * Fade edges size
+   * Fade edges size. Accepts a single value applied to all edges,
+   * or a `[horizontal, vertical]` tuple for independent axis control.
+   * Tuple values always refer to `[x, y]` regardless of scroll direction.
    */
-  fadeEdgesSize?: MantineSize | (string & {});
+  fadeEdgesSize?: MarqueeFadeEdgesSize;
 
   /**
    * Gap between marquee items
@@ -105,13 +134,16 @@ export const defaultProps: Partial<MarqueeProps> = {
 
 const varsResolver = createVarsResolver<MarqueeFactory>(
   (_, { reverse, vertical, duration, fadeEdgesSize, gap }) => {
+    const { single, x, y } = resolveFadeEdgeSize(fadeEdgesSize);
     return {
       root: {
         '--marquee-animation-direction': reverse ? 'reverse' : 'normal',
         '--marquee-direction': vertical ? 'column' : 'row',
         '--marquee-duration': `${duration || 20}s`,
         '--marquee-gap': getSize(gap, 'marquee-gap'),
-        '--marquee-fade-edge-size': getSize(fadeEdgesSize, 'marquee-fade-edge-size'),
+        '--marquee-fade-edge-size': single,
+        '--marquee-fade-edge-size-x': x,
+        '--marquee-fade-edge-size-y': y,
       },
     };
   }

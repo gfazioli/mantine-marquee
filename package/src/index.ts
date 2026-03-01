@@ -3,6 +3,7 @@ export type {
   MarqueeBaseProps,
   MarqueeCssVariables,
   MarqueeFadeEdges,
+  MarqueeFadeEdgesSize,
   MarqueeFactory,
   MarqueeProps,
   MarqueeStylesNames,

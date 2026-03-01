@@ -82,6 +82,7 @@ export const configurator: MantineDemo = {
         { value: 'false', label: 'None' },
         { value: 'linear', label: 'Linear' },
         { value: 'ellipse', label: 'Ellipse' },
+        { value: 'rect', label: 'Rect' },
       ],
       initialValue: 'false',
       libraryValue: 'false',
