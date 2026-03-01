@@ -17,6 +17,7 @@ export default {
   argTypes: {
     repeat: { control: { type: 'range', min: 2, max: 20, step: 1 } },
     duration: { control: { type: 'range', min: 0.1, max: 20, step: 0.1 } },
+    fadeEdges: { control: { type: 'select' }, options: [false, 'linear', 'ellipse'] },
   },
 };
 
@@ -42,6 +43,25 @@ export function Usage(props: MarqueeProps) {
 export function Fade(props: MarqueeProps) {
   return (
     <Marquee {...props} fadeEdges h={300}>
+      <Box bg="red" p="md" w="200px">
+        Hello World #1
+      </Box>
+      <Box bg="cyan" p="md" w="200px">
+        Hope you like it #2
+      </Box>
+      <Box bg="blue" p="md" w="200px">
+        Have a nice day #3
+      </Box>
+      <Box bg="lime" p="md" w="200px">
+        Goodbye #4
+      </Box>
+    </Marquee>
+  );
+}
+
+export function FadeEllipse(props: MarqueeProps) {
+  return (
+    <Marquee {...props} fadeEdges="ellipse" fadeEdgesSize="md" h={300}>
       <Box bg="red" p="md" w="200px">
         Hello World #1
       </Box>

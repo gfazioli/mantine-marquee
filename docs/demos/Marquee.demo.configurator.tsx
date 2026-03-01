@@ -4,6 +4,9 @@ import { Box, Center } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
 
 function Wrapper(props: any) {
+  const { fadeEdges: fadeEdgesRaw, ...rest } = props;
+  const fadeEdges = fadeEdgesRaw === 'false' ? false : fadeEdgesRaw;
+
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
       <Box {...props} p="md" w="200px" c="white" style={{ borderRadius: '8px' }}>
@@ -14,7 +17,7 @@ function Wrapper(props: any) {
 
   return (
     <Center w={544} h={500}>
-      <Marquee {...props} w="100%">
+      <Marquee {...rest} fadeEdges={fadeEdges} w="100%">
         <BoxComponent bg="red">Hello World #1</BoxComponent>
         <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
         <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
@@ -69,9 +72,14 @@ export const configurator: MantineDemo = {
     },
     {
       prop: 'fadeEdges',
-      type: 'boolean',
-      initialValue: false,
-      libraryValue: false,
+      type: 'select',
+      data: [
+        { value: 'false', label: 'None' },
+        { value: 'linear', label: 'Linear' },
+        { value: 'ellipse', label: 'Ellipse' },
+      ],
+      initialValue: 'false',
+      libraryValue: 'false',
     },
     {
       prop: 'pauseOnHover',

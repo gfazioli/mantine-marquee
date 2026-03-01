@@ -13,6 +13,18 @@ import {
 } from '@mantine/core';
 import classes from './Marquee.module.css';
 
+export type MarqueeFadeEdges = boolean | 'linear' | 'ellipse';
+
+function resolveFadeEdges(value: MarqueeFadeEdges | undefined): 'linear' | 'ellipse' | undefined {
+  if (value === true || value === 'linear') {
+    return 'linear';
+  }
+  if (value === 'ellipse') {
+    return 'ellipse';
+  }
+  return undefined;
+}
+
 export type MarqueeStylesNames = 'root';
 
 export type MarqueeCssVariables = {
@@ -51,9 +63,11 @@ export interface MarqueeBaseProps {
   duration?: number;
 
   /**
-   * Add fade edges
+   * Add fade edges. When `true` or `"linear"`, applies a linear gradient mask
+   * on the leading/trailing scroll edges. When `"ellipse"`, applies a radial
+   * elliptical mask that fades all around the border.
    */
-  fadeEdges?: boolean;
+  fadeEdges?: MarqueeFadeEdges;
 
   /**
    * Fade edges size
@@ -159,7 +173,7 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
     <Box
       {...getStyles('root')}
       {...others}
-      data-fade-edges={fadeEdges ? 'linear' : undefined}
+      data-fade-edges={resolveFadeEdges(fadeEdges)}
       data-vertical={vertical || undefined}
     >
       <Box

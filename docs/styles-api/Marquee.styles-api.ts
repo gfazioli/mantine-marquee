@@ -12,7 +12,8 @@ export const MarqueeStylesApi: StylesApiData<MarqueeFactory> = {
       '--marquee-direction': 'Horizontal or vertical direction',
       '--marquee-duration': 'Animation speed duration',
       '--marquee-gap': 'Space between elements',
-      '--marquee-fade-edge-size': 'Fade edge size',
+      '--marquee-fade-edge-size':
+        'Fade edge size — controls linear gradient extent and ellipse clearance',
     },
   },
 

@@ -74,11 +74,8 @@
   );
 }
 
-/* ============================================================
-   Future shape: ellipse
-   Radial vignette that fades all around the scroll area.
-   --marquee-fade-edge-size controls how much border is faded.
-
+/* Ellipse: radial vignette that fades all around the scroll area.
+   No [data-vertical] variant needed — radial gradients are orientation-independent. */
 .root[data-fade-edges='ellipse'] {
   isolation: isolate;
   -webkit-mask-image: radial-gradient(
@@ -92,7 +89,6 @@
     transparent 100%
   );
 }
-   ============================================================ */
 
 .marqueeContainer {
   display: flex;
