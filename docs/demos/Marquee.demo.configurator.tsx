@@ -3,8 +3,17 @@ import { Marquee, type MarqueeProps } from '@gfazioli/mantine-marquee';
 import { Box, Center } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
 
-function Wrapper({ fadeEdges: fadeEdgesRaw, vertical, ...rest }: MarqueeProps) {
+function Wrapper({
+  fadeEdges: fadeEdgesRaw,
+  fadeEdgesSize,
+  fadeEdgesSizeY,
+  vertical,
+  ...rest
+}: MarqueeProps & { fadeEdgesSizeY?: number }) {
   const fadeEdges = String(fadeEdgesRaw) === 'false' ? false : fadeEdgesRaw;
+  const x = `${fadeEdgesSize}%`;
+  const y = `${fadeEdgesSizeY ?? fadeEdgesSize}%`;
+  const resolvedSize = fadeEdges === 'rect' ? [x, y] : x;
 
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
@@ -20,6 +29,7 @@ function Wrapper({ fadeEdges: fadeEdgesRaw, vertical, ...rest }: MarqueeProps) {
         {...rest}
         vertical={vertical}
         fadeEdges={fadeEdges}
+        fadeEdgesSize={resolvedSize as any}
         w={vertical ? 200 : '100%'}
         h={vertical ? 500 : 60}
       >
@@ -112,10 +122,22 @@ export const configurator: MantineDemo = {
     },
     { type: 'size', prop: 'gap', initialValue: 'sm', libraryValue: 'xl' },
     {
-      type: 'size',
+      type: 'number',
       prop: 'fadeEdgesSize',
-      initialValue: 'sm',
-      libraryValue: 'xs',
+      initialValue: 20,
+      libraryValue: 11,
+      min: 1,
+      max: 50,
+      step: 1,
+    },
+    {
+      type: 'number',
+      prop: 'fadeEdgesSizeY',
+      initialValue: 20,
+      libraryValue: 20,
+      min: 1,
+      max: 50,
+      step: 1,
     },
   ],
 };
