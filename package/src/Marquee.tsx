@@ -6,12 +6,16 @@ import {
   Factory,
   factory,
   getSize,
+  MantineBreakpoint,
   MantineSize,
   StylesApiProps,
+  useMatches,
   useProps,
   useStyles,
 } from '@mantine/core';
 import classes from './Marquee.module.css';
+
+export type MarqueeVertical = boolean | Partial<Record<MantineBreakpoint, boolean>>;
 
 export type MarqueeFadeEdges = boolean | 'linear' | 'ellipse' | 'rect';
 
@@ -54,7 +58,6 @@ export type MarqueeStylesNames = 'root';
 export type MarqueeCssVariables = {
   root:
     | '--marquee-animation-direction'
-    | '--marquee-direction'
     | '--marquee-duration'
     | '--marquee-gap'
     | '--marquee-fade-edge-size'
@@ -74,9 +77,10 @@ export interface MarqueeBaseProps {
   repeat?: number;
 
   /**
-   * Vertical layout
+   * Vertical layout. Accepts a boolean or a responsive breakpoint object,
+   * e.g. `{ base: true, lg: false }`.
    */
-  vertical?: boolean;
+  vertical?: MarqueeVertical;
 
   /**
    * Pause animation on hover
@@ -133,12 +137,11 @@ export const defaultProps: Partial<MarqueeProps> = {
 };
 
 const varsResolver = createVarsResolver<MarqueeFactory>(
-  (_, { reverse, vertical, duration, fadeEdgesSize, gap }) => {
+  (_, { reverse, duration, fadeEdgesSize, gap }) => {
     const { single, x, y } = resolveFadeEdgeSize(fadeEdgesSize);
     return {
       root: {
         '--marquee-animation-direction': reverse ? 'reverse' : 'normal',
-        '--marquee-direction': vertical ? 'column' : 'row',
         '--marquee-duration': `${duration || 20}s`,
         '--marquee-gap': getSize(gap, 'marquee-gap'),
         '--marquee-fade-edge-size': single,
@@ -175,12 +178,21 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
     ...others
   } = props;
 
+  const resolvedVertical =
+    useMatches<boolean | undefined>(
+      typeof vertical === 'object' && vertical !== null ? vertical : { base: !!vertical }
+    ) ?? false;
+
   const getStyles = useStyles<MarqueeFactory>({
     name: 'Marquee',
     props,
     classes,
     className,
-    style: { ...style, '--marquee-play-state': over && pauseOnHover ? 'paused' : 'running' },
+    style: {
+      ...style,
+      '--marquee-play-state': over && pauseOnHover ? 'paused' : 'running',
+      '--marquee-direction': resolvedVertical ? 'column' : 'row',
+    },
     classNames,
     styles,
     unstyled,
@@ -193,12 +205,12 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
       Array.from({ length: repeat < 2 ? 2 : repeat }).map((_, i) => (
         <div
           key={`marquee-item-${repeat}-${gap}-${duration}-${i}`}
-          className={`${classes.marqueeContent} ${vertical ? classes.marqueeContentVertical : ''}`}
+          className={`${classes.marqueeContent} ${resolvedVertical ? classes.marqueeContentVertical : ''}`}
         >
           {children}
         </div>
       )),
-    [repeat, vertical, children, gap, duration]
+    [repeat, resolvedVertical, children, gap, duration]
   );
 
   return (
@@ -206,7 +218,7 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
       {...getStyles('root')}
       {...others}
       data-fade-edges={resolveFadeEdges(fadeEdges)}
-      data-vertical={vertical || undefined}
+      data-vertical={resolvedVertical || undefined}
     >
       <Box
         ref={ref}

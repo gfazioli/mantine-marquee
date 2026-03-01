@@ -73,6 +73,17 @@ The `Marquee` component allows you to create a marquee effect with multiple item
 
 <Demo data={demos.multipleVertical} />
 
+## Responsive vertical
+
+The `vertical` prop accepts a responsive breakpoint object in addition to a plain boolean.
+This lets you switch between vertical and horizontal layouts at different viewport widths
+using Mantine's `useMatches` hook under the hood.
+
+```tsx
+// Vertical on mobile, horizontal from md breakpoint up
+<Marquee vertical={{ base: true, md: false }}>{/* ... */}</Marquee>
+```
+
 ## Example: Testimonials
 
 Your customers feedback is important to you. Use Marquee to display your testimonials.

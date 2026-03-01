@@ -9,7 +9,6 @@ export const MarqueeStylesApi: StylesApiData<MarqueeFactory> = {
   vars: {
     root: {
       '--marquee-animation-direction': 'Animation direction',
-      '--marquee-direction': 'Horizontal or vertical direction',
       '--marquee-duration': 'Animation speed duration',
       '--marquee-gap': 'Space between elements',
       '--marquee-fade-edge-size':

@@ -91,6 +91,11 @@ Key CSS decisions:
 - `backface-visibility: hidden` — prevents flickering on Safari/iOS during the animation loop reset.
 - `overflow: hidden` is only on `.root`, not on `.marqueeContainer` — having it on both would create an extra stacking context that can interfere with GPU layer compositing.
 - `--marquee-play-state` is set via inline `style` on `.root` (not via `varsResolver`) because it depends on runtime hover state (`over`); it is inherited by `.marqueeContent` via CSS cascade.
+- `--marquee-direction` is set via inline `style` on `.root` (not via `varsResolver`) because `vertical` can be a responsive breakpoint object resolved at runtime by `useMatches`. The `varsResolver` only receives raw props and cannot call hooks.
+
+### Responsive `vertical` prop
+
+`vertical` accepts `boolean | Partial<Record<MantineBreakpoint, boolean>>` (exported as `MarqueeVertical`). Inside the component, `useMatches` is always called (React rules of hooks forbid conditional calls). When the prop is a plain boolean it is wrapped as `{ base: bool }`, which is a no-op for `useMatches`. The resolved boolean is stored as `resolvedVertical` and used for `data-vertical`, class selection, and the `--marquee-direction` inline style.
 
 Neither React 19 nor Mantine provides primitives that improve CSS keyframe animation smoothness. The CSS keyframe + `transform` approach is optimal: it runs entirely on the GPU compositor thread without touching layout or paint.
 
