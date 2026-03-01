@@ -26,8 +26,8 @@ The `Marquee` component allows you to create a marquee effect with any content.
 ## Fade edges
 
 The `fadeEdges` prop adds a smooth fade effect at the edges of the scroll area using CSS `mask-image`.
-It accepts `true`, `"linear"`, or `"ellipse"` — passing `true` is equivalent to `"linear"`.
-Use `fadeEdgesSize` to control how much of the edge is faded (`"xs"` | `"sm"` | `"md"` | `"lg"` | `"xl"`).
+It accepts `true`, `"linear"`, `"ellipse"`, or `"rect"` — passing `true` is equivalent to `"linear"`.
+Use `fadeEdgesSize` to control how much of the edge is faded (`"xs"` | `"sm"` | `"md"` | `"lg"` | `"xl"` or a percentage string).
 
 ### Linear
 
@@ -43,6 +43,13 @@ This is orientation-independent — it works identically for horizontal and vert
 It is particularly effective for logo carousels, icon showcases, or any content where a vignette effect is desired.
 
 <Demo data={demos.fadeEdgesEllipse} />
+
+### Circle
+
+Since the ellipse mask uses `radial-gradient(ellipse closest-side)`, applying `fadeEdges="ellipse"` to a **square** element
+(`w` and `h` are equal) produces a perfectly circular mask. No additional prop is needed — the geometry does the work.
+
+<Demo data={demos.fadeEdgesCircle} />
 
 ### Rect
 
