@@ -102,14 +102,16 @@ The `MarqueeFadeEdges` type is exported from the package. The `resolveFadeEdges(
 
 `fadeEdgesSize` accepts `MantineSize | (string & {}) | [x, y]` tuple. The `MarqueeFadeEdgesSize` type is exported. The `resolveFadeEdgeSize()` helper (internal) splits the value into `{ single, x, y }` — `single` is used by linear/ellipse (backward compat), `x`/`y` by rect. For a single value, all three resolve identically. The varsResolver sets `--marquee-fade-edge-size`, `--marquee-fade-edge-size-x`, and `--marquee-fade-edge-size-y`.
 
+**One-sided gradient technique:** All linear/rect masks use **one-sided gradients** (one per edge) composited with `mask-composite: intersect`, rather than a single double-sided gradient per axis. A double-sided gradient (`transparent → black SIZE → black (100%-SIZE) → transparent`) breaks when `size > 50%` because the left and right stop positions swap, causing the browser to clamp them per CSS spec and produce a hard alpha seam. One-sided gradients (`transparent → black SIZE → black 100%`) can never have overlapping stops, regardless of size.
+
 **Shapes:**
-- `"linear"` — linear gradient fade on leading/trailing edges (horizontal or vertical). Uses `[data-vertical]` to switch between `to right` / `to bottom` gradient direction.
+- `"linear"` — 2 one-sided gradients (left + right, or top + bottom for vertical). Uses `[data-vertical]` to switch between horizontal and vertical directions.
 - `"ellipse"` — radial vignette fade all around. Uses `radial-gradient(ellipse at center, ...)`. Orientation-independent — no `[data-vertical]` variant needed. The `* 2` multiplier on `--marquee-fade-edge-size` makes the fade visually comparable to the linear mode.
-- `"rect"` — two intersected linear gradients (horizontal + vertical) via `mask-composite: intersect` (`-webkit-mask-composite: source-in`). Fades all 4 edges independently. Uses `--marquee-fade-edge-size-x` for left/right and `--marquee-fade-edge-size-y` for top/bottom. No `[data-vertical]` variant needed — the mask covers all 4 edges. At corners the alpha values multiply naturally (e.g. 0.5 × 0.5 = 0.25).
+- `"rect"` — 4 one-sided gradients (left + right + top + bottom) via `mask-composite: intersect` (`-webkit-mask-composite: source-in`). Fades all 4 edges independently. Uses `--marquee-fade-edge-size-x` for left/right and `--marquee-fade-edge-size-y` for top/bottom. No `[data-vertical]` variant needed — the mask covers all 4 edges. At corners the alpha values multiply naturally (e.g. 0.5 × 0.5 = 0.25).
 
 `isolation: isolate` on the masked element is required to prevent Safari compositing glitches when `will-change: transform` children are present.
 
-`postcss-preset-mantine` does NOT include autoprefixer — `-webkit-mask-image` must always be written explicitly alongside `mask-image` in the CSS. For rect, `-webkit-mask-composite: source-in` must also be written explicitly alongside `mask-composite: intersect`.
+`postcss-preset-mantine` does NOT include autoprefixer — `-webkit-mask-image` and `-webkit-mask-composite: source-in` must always be written explicitly alongside `mask-image` and `mask-composite: intersect` in the CSS.
 
 `fadeEdgesColor` was removed in the major release that introduced CSS masks (it was a workaround for the old overlay-div approach and has no semantic meaning with mask-based compositing).
 
