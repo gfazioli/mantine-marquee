@@ -43,49 +43,91 @@
   isolation: isolate;
   -webkit-mask-image: linear-gradient(
     to right,
-    transparent,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
+    rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
+    rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
+    rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
     black var(--marquee-fade-edge-size),
     black calc(100% - var(--marquee-fade-edge-size)),
-    transparent
+    rgba(0, 0, 0, 0.9) calc(100% - var(--marquee-fade-edge-size) * 0.9),
+    rgba(0, 0, 0, 0.65) calc(100% - var(--marquee-fade-edge-size) * 0.7),
+    rgba(0, 0, 0, 0.35) calc(100% - var(--marquee-fade-edge-size) * 0.5),
+    rgba(0, 0, 0, 0.1) calc(100% - var(--marquee-fade-edge-size) * 0.25),
+    transparent 100%
   );
   mask-image: linear-gradient(
     to right,
-    transparent,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
+    rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
+    rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
+    rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
     black var(--marquee-fade-edge-size),
     black calc(100% - var(--marquee-fade-edge-size)),
-    transparent
+    rgba(0, 0, 0, 0.9) calc(100% - var(--marquee-fade-edge-size) * 0.9),
+    rgba(0, 0, 0, 0.65) calc(100% - var(--marquee-fade-edge-size) * 0.7),
+    rgba(0, 0, 0, 0.35) calc(100% - var(--marquee-fade-edge-size) * 0.5),
+    rgba(0, 0, 0, 0.1) calc(100% - var(--marquee-fade-edge-size) * 0.25),
+    transparent 100%
   );
 }
 
 .root[data-fade-edges='linear'][data-vertical] {
   -webkit-mask-image: linear-gradient(
     to bottom,
-    transparent,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
+    rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
+    rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
+    rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
     black var(--marquee-fade-edge-size),
     black calc(100% - var(--marquee-fade-edge-size)),
-    transparent
+    rgba(0, 0, 0, 0.9) calc(100% - var(--marquee-fade-edge-size) * 0.9),
+    rgba(0, 0, 0, 0.65) calc(100% - var(--marquee-fade-edge-size) * 0.7),
+    rgba(0, 0, 0, 0.35) calc(100% - var(--marquee-fade-edge-size) * 0.5),
+    rgba(0, 0, 0, 0.1) calc(100% - var(--marquee-fade-edge-size) * 0.25),
+    transparent 100%
   );
   mask-image: linear-gradient(
     to bottom,
-    transparent,
+    transparent 0%,
+    rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
+    rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
+    rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
+    rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
     black var(--marquee-fade-edge-size),
     black calc(100% - var(--marquee-fade-edge-size)),
-    transparent
+    rgba(0, 0, 0, 0.9) calc(100% - var(--marquee-fade-edge-size) * 0.9),
+    rgba(0, 0, 0, 0.65) calc(100% - var(--marquee-fade-edge-size) * 0.7),
+    rgba(0, 0, 0, 0.35) calc(100% - var(--marquee-fade-edge-size) * 0.5),
+    rgba(0, 0, 0, 0.1) calc(100% - var(--marquee-fade-edge-size) * 0.25),
+    transparent 100%
   );
 }
 
 /* Ellipse: radial vignette that fades all around the scroll area.
-   No [data-vertical] variant needed — radial gradients are orientation-independent. */
+   No [data-vertical] variant needed — radial gradients are orientation-independent.
+   closest-side: the ellipse is sized so 100% = center of each edge (not the corner).
+   Without it the default farthest-corner leaves edges un-faded on rectangular boxes. */
 .root[data-fade-edges='ellipse'] {
   isolation: isolate;
   -webkit-mask-image: radial-gradient(
-    ellipse at center,
+    ellipse closest-side at center,
     black calc(100% - var(--marquee-fade-edge-size) * 2),
+    rgba(0, 0, 0, 0.9) calc(100% - var(--marquee-fade-edge-size) * 1.8),
+    rgba(0, 0, 0, 0.65) calc(100% - var(--marquee-fade-edge-size) * 1.4),
+    rgba(0, 0, 0, 0.35) calc(100% - var(--marquee-fade-edge-size) * 0.8),
+    rgba(0, 0, 0, 0.1) calc(100% - var(--marquee-fade-edge-size) * 0.4),
     transparent 100%
   );
   mask-image: radial-gradient(
-    ellipse at center,
+    ellipse closest-side at center,
     black calc(100% - var(--marquee-fade-edge-size) * 2),
+    rgba(0, 0, 0, 0.9) calc(100% - var(--marquee-fade-edge-size) * 1.8),
+    rgba(0, 0, 0, 0.65) calc(100% - var(--marquee-fade-edge-size) * 1.4),
+    rgba(0, 0, 0, 0.35) calc(100% - var(--marquee-fade-edge-size) * 0.8),
+    rgba(0, 0, 0, 0.1) calc(100% - var(--marquee-fade-edge-size) * 0.4),
     transparent 100%
   );
 }
