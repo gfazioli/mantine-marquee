@@ -50,7 +50,7 @@ The Rollup build produces both ESM (`package/dist/esm/*.mjs`) and CJS (`package/
 - `useProps` for default prop merging
 - `useStyles` for the `getStyles` accessor (handles `classNames`, `styles`, `unstyled`)
 
-CSS custom properties defined in `Marquee.module.css` control animation behavior (`--marquee-duration`, `--marquee-gap`, `--marquee-animation-direction`, `--marquee-direction`, `--marquee-play-state`, `--marquee-fade-edge-size`, `--marquee-fade-edge-color`). The `varsResolver` sets these from props; `pauseOnHover` is handled inline via `style` in `useStyles` because it depends on component state (`over`).
+CSS custom properties defined in `Marquee.module.css` control animation behavior (`--marquee-duration`, `--marquee-gap`, `--marquee-animation-direction`, `--marquee-direction`, `--marquee-play-state`, `--marquee-fade-edge-size`). The `varsResolver` sets these from props; `pauseOnHover` is handled inline via `style` in `useStyles` because it depends on component state (`over`).
 
 The component clones `children` into `repeat` number of wrapper `<div>`s to create the seamless loop illusion.
 
@@ -96,13 +96,13 @@ Neither React 19 nor Mantine provides primitives that improve CSS keyframe anima
 
 ### Fade edges — CSS mask system
 
-`fadeEdges` uses `mask-image` (not DOM overlay divs) for true alpha compositing, independent of the background color. The shape is driven by `data-fade-edges="<shape>"` on `.root`; orientation by `data-vertical` (present when `vertical=true`).
+`fadeEdges` uses `mask-image` (not DOM overlay divs) for true alpha compositing, independent of the background color. The prop accepts `boolean | 'linear' | 'ellipse'` (`true` is equivalent to `'linear'`). The resolved shape string is set as `data-fade-edges="<shape>"` on `.root`; orientation by `data-vertical` (present when `vertical=true`).
 
-**Current shapes:**
-- `"linear"` — linear gradient fade on leading/trailing edges (horizontal or vertical)
+The `MarqueeFadeEdges` type is exported from the package. The `resolveFadeEdges()` helper (internal, not exported) converts the union value to the data-attribute string.
 
-**Future shapes (add CSS rules only, no TypeScript changes needed until `fadeEdgesType` prop is introduced):**
-- `"ellipse"` — radial vignette fade all around (placeholder commented in CSS)
+**Shapes:**
+- `"linear"` — linear gradient fade on leading/trailing edges (horizontal or vertical). Uses `[data-vertical]` to switch between `to right` / `to bottom` gradient direction.
+- `"ellipse"` — radial vignette fade all around. Uses `radial-gradient(ellipse at center, ...)`. Orientation-independent — no `[data-vertical]` variant needed. The `* 2` multiplier on `--marquee-fade-edge-size` makes the fade visually comparable to the linear mode.
 
 `isolation: isolate` on the masked element is required to prevent Safari compositing glitches when `will-change: transform` children are present.
 

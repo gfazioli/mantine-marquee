@@ -23,7 +23,26 @@ The `Marquee` component allows you to create a marquee effect with any content.
 
 <Demo data={demos.configurator} />
 
-> `fadeEdges` supports `"linear"` (gradient fade on leading/trailing edges) and `"ellipse"` (radial vignette all around). Passing `true` is equivalent to `"linear"`.
+## Fade edges
+
+The `fadeEdges` prop adds a smooth fade effect at the edges of the scroll area using CSS `mask-image`.
+It accepts `true`, `"linear"`, or `"ellipse"` — passing `true` is equivalent to `"linear"`.
+Use `fadeEdgesSize` to control how much of the edge is faded (`"xs"` | `"sm"` | `"md"` | `"lg"` | `"xl"`).
+
+### Linear
+
+`fadeEdges="linear"` applies a gradient mask on the leading and trailing scroll edges.
+This works for both horizontal and vertical layouts, and it is ideal for content that enters and exits from the sides.
+
+<Demo data={demos.fadeEdgesLinear} />
+
+### Ellipse
+
+`fadeEdges="ellipse"` applies a radial elliptical mask that fades all around the border.
+This is orientation-independent — it works identically for horizontal and vertical marquees.
+It is particularly effective for logo carousels, icon showcases, or any content where a vignette effect is desired.
+
+<Demo data={demos.fadeEdgesEllipse} />
 
 ## Multiple
 
