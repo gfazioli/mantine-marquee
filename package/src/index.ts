@@ -7,4 +7,5 @@ export type {
   MarqueeFactory,
   MarqueeProps,
   MarqueeStylesNames,
+  MarqueeVertical,
 } from './Marquee';

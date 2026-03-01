@@ -78,6 +78,24 @@ describe('Marquee', () => {
     expect(style).toContain('--marquee-fade-edge-size-y');
   });
 
+  it('sets data-vertical when vertical={{ base: true }}', () => {
+    const { container } = render(
+      <Marquee vertical={{ base: true }}>
+        <div>Test</div>
+      </Marquee>
+    );
+    expect(container.querySelector('[data-vertical]')).not.toBeNull();
+  });
+
+  it('does not set data-vertical when vertical={{ base: false }}', () => {
+    const { container } = render(
+      <Marquee vertical={{ base: false }}>
+        <div>Test</div>
+      </Marquee>
+    );
+    expect(container.querySelector('[data-vertical]')).toBeNull();
+  });
+
   it('sets independent --marquee-fade-edge-size-x and -y for a tuple fadeEdgesSize', () => {
     const { container } = render(
       <Marquee fadeEdges="rect" fadeEdgesSize={['md', 'xs']}>
