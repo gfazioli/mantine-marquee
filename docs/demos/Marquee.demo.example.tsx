@@ -67,14 +67,14 @@ function Demo() {
 
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
     return (
-      <ThemeIcon {...props} variant="transparent" size={'120px'}>
+      <ThemeIcon {...props} variant="transparent" size="120px">
         {children}
       </ThemeIcon>
     );
   }
 
   return (
-    <Marquee w={792} pauseOnHover fadeEdges>
+    <Marquee pauseOnHover fadeEdges>
       {iconsBrand.map((icon, index) => (
         <BoxComponent key={index}>{icon}</BoxComponent>
       ))}

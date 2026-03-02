@@ -31,7 +31,9 @@ function Wrapper() {
 }
 
 const code = `
+import { ReactNode } from 'react';
 import { Marquee } from '@gfazioli/mantine-marquee';
+import { Box } from '@mantine/core';
 
 function Demo() {
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
@@ -44,13 +46,13 @@ function Demo() {
 
   return (
     <>
-      <Marquee w={790} mb={16} fadeEdges>
+      <Marquee mb={16} fadeEdges>
         <BoxComponent bg="red">Hello World #1</BoxComponent>
         <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
         <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
         <BoxComponent bg="lime">Goodbye #4</BoxComponent>
       </Marquee>
-      <Marquee reverse w={790} fadeEdges>
+      <Marquee reverse fadeEdges>
         <BoxComponent bg="red">Hello World #1</BoxComponent>
         <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
         <BoxComponent bg="blue">Have a nice day #3</BoxComponent>

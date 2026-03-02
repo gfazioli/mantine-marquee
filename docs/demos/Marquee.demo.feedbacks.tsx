@@ -115,7 +115,7 @@ function Demo() {
   }) {
     return (
       <Card w={200} shadow="sm" padding="lg" radius="md" withBorder>
-        <Card.Section p={'md'}>
+        <Card.Section p="md">
           <Group>
             <Avatar size="md" radius="xl" src={avatar} />
             <Title order={4}>{name}</Title>
@@ -134,7 +134,7 @@ function Demo() {
   }
 
   return (
-    <Marquee w={792} pauseOnHover fadeEdges>
+    <Marquee pauseOnHover fadeEdges>
       {testimonials.map(({ text, ...testimonial }, index) => (
         <BoxComponent key={index} {...testimonial}>
           {text}
