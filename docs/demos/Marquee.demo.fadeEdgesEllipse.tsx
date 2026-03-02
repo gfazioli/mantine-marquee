@@ -74,7 +74,7 @@ function Demo() {
   }
 
   return (
-    <Marquee w={792} pauseOnHover fadeEdges="ellipse" fadeEdgesSize="md">
+    <Marquee pauseOnHover fadeEdges="ellipse" fadeEdgesSize="md">
       {iconsBrand.map((icon, index) => (
         <BoxComponent key={index}>{icon}</BoxComponent>
       ))}

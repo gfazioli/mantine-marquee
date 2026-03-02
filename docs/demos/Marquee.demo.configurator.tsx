@@ -46,8 +46,9 @@ function Wrapper({
 }
 
 const code = `
+import { ReactNode } from 'react';
 import { Marquee } from '@gfazioli/mantine-marquee';
-import { responsiveGap } from "./Marquee.demo.responsiveGap";
+import { Box } from '@mantine/core';
 
 function Demo() {
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {
@@ -59,7 +60,7 @@ function Demo() {
   }
 
   return (
-    <Marquee w={544}{{props}}>
+    <Marquee{{props}}>
       <BoxComponent bg="red">Hello World #1</BoxComponent>
       <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
       <BoxComponent bg="blue">Have a nice day #3</BoxComponent>

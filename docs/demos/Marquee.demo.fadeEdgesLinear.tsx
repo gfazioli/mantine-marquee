@@ -45,14 +45,14 @@ function Demo() {
   }
 
   return (
-    <Flex direction="column" gap="md" w={790}>
-      <Marquee fadeEdges="linear" fadeEdgesSize="sm" w="100%">
+    <Flex direction="column" gap="md">
+      <Marquee fadeEdges="linear" fadeEdgesSize="sm">
         <BoxComponent bg="blue">Hello World #1</BoxComponent>
         <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
         <BoxComponent bg="indigo">Have a nice day #3</BoxComponent>
         <BoxComponent bg="teal">Goodbye #4</BoxComponent>
       </Marquee>
-      <Marquee fadeEdges="linear" fadeEdgesSize="sm" reverse w="100%">
+      <Marquee fadeEdges="linear" fadeEdgesSize="sm" reverse>
         <BoxComponent bg="orange">Hello World #1</BoxComponent>
         <BoxComponent bg="red">Hope you like it #2</BoxComponent>
         <BoxComponent bg="pink">Have a nice day #3</BoxComponent>
