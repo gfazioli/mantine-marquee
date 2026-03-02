@@ -84,6 +84,20 @@ using Mantine's `useMatches` hook under the hood.
 <Marquee vertical={{ base: true, md: false }}>{/* ... */}</Marquee>
 ```
 
+<Demo data={demos.responsiveVertical} />
+
+## Responsive gap
+
+The `gap` prop also accepts a responsive breakpoint object.
+This is useful when switching layout direction at a breakpoint — you can pair it with a different gap size.
+
+```tsx
+// Small gap on mobile, large gap from md breakpoint up
+<Marquee gap={{ base: 'xs', md: 'xl' }}>{/* ... */}</Marquee>
+```
+
+<Demo data={demos.responsiveGap} />
+
 ## Example: Testimonials
 
 Your customers feedback is important to you. Use Marquee to display your testimonials.
