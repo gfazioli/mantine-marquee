@@ -13,7 +13,7 @@ function Wrapper() {
   }
 
   return (
-    <Marquee gap={{ base: 'xs', md: 'xl' }} fadeEdges="linear" w={790}>
+    <Marquee gap={{ base: 'xs', md: 'xl' }} fadeEdges="linear" w="100%">
       <BoxComponent bg="blue">Hello World #1</BoxComponent>
       <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
       <BoxComponent bg="indigo">Have a nice day #3</BoxComponent>
@@ -37,7 +37,7 @@ function Demo() {
   }
 
   return (
-    <Marquee gap={{ base: 'xs', md: 'xl' }} fadeEdges="linear" w={790}>
+    <Marquee gap={{ base: 'xs', md: 'xl' }} fadeEdges="linear" w="100%">
       <BoxComponent bg="blue">Hello World #1</BoxComponent>
       <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
       <BoxComponent bg="indigo">Have a nice day #3</BoxComponent>

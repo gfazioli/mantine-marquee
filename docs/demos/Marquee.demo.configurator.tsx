@@ -1,6 +1,6 @@
 import { ReactNode } from 'react';
 import { Marquee, type MarqueeProps } from '@gfazioli/mantine-marquee';
-import { Box, Center } from '@mantine/core';
+import { Box, Flex } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
 
 function Wrapper({
@@ -24,13 +24,13 @@ function Wrapper({
   }
 
   return (
-    <Center w={544}>
+    <Flex maw={540} align="center" justify="center">
       <Marquee
         {...rest}
         vertical={vertical}
         fadeEdges={fadeEdges}
         fadeEdgesSize={resolvedSize as any}
-        w={vertical ? 200 : '100%'}
+        w={vertical ? 200 : 'auto'}
         h={vertical ? 500 : 60}
       >
         <BoxComponent bg="red">Hello World #1</BoxComponent>
@@ -41,12 +41,13 @@ function Wrapper({
         <BoxComponent bg="dark">Hope you like it #6</BoxComponent>
         <BoxComponent bg="green">Have a nice day #7</BoxComponent>
       </Marquee>
-    </Center>
+    </Flex>
   );
 }
 
 const code = `
 import { Marquee } from '@gfazioli/mantine-marquee';
+import { responsiveGap } from "./Marquee.demo.responsiveGap";
 
 function Demo() {
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {

@@ -32,7 +32,7 @@ function Wrapper() {
   }
 
   return (
-    <Marquee w={792} pauseOnHover fadeEdges>
+    <Marquee pauseOnHover fadeEdges>
       {iconsBrand.map((icon, index) => (
         <BoxComponent key={index}>{icon}</BoxComponent>
       ))}
