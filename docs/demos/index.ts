@@ -7,3 +7,5 @@ export { fadeEdgesRect } from './Marquee.demo.fadeEdgesRect';
 export { feedbacks } from './Marquee.demo.feedbacks';
 export { multiple } from './Marquee.demo.multiple';
 export { multipleVertical } from './Marquee.demo.multiple-vertical';
+export { responsiveGap } from './Marquee.demo.responsiveGap';
+export { responsiveVertical } from './Marquee.demo.responsiveVertical';

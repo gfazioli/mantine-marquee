@@ -10,7 +10,6 @@ export const MarqueeStylesApi: StylesApiData<MarqueeFactory> = {
     root: {
       '--marquee-animation-direction': 'Animation direction',
       '--marquee-duration': 'Animation speed duration',
-      '--marquee-gap': 'Space between elements',
       '--marquee-fade-edge-size':
         'Fade edge size — controls linear gradient extent and ellipse clearance',
       '--marquee-fade-edge-size-x':

@@ -50,7 +50,7 @@ The Rollup build produces both ESM (`package/dist/esm/*.mjs`) and CJS (`package/
 - `useProps` for default prop merging
 - `useStyles` for the `getStyles` accessor (handles `classNames`, `styles`, `unstyled`)
 
-CSS custom properties defined in `Marquee.module.css` control animation behavior (`--marquee-duration`, `--marquee-gap`, `--marquee-animation-direction`, `--marquee-direction`, `--marquee-play-state`, `--marquee-fade-edge-size`). The `varsResolver` sets these from props; `pauseOnHover` is handled inline via `style` in `useStyles` because it depends on component state (`over`).
+CSS custom properties defined in `Marquee.module.css` control animation behavior (`--marquee-duration`, `--marquee-gap`, `--marquee-animation-direction`, `--marquee-direction`, `--marquee-play-state`, `--marquee-fade-edge-size`). The `varsResolver` sets static props (`duration`, `reverse`, `fadeEdgesSize`); three variables are set via inline `style` in `useStyles` because they depend on runtime state or hooks: `--marquee-play-state` (hover state), `--marquee-direction` (responsive `vertical`), `--marquee-gap` (responsive `gap`).
 
 The component clones `children` into `repeat` number of wrapper `<div>`s to create the seamless loop illusion.
 
@@ -80,7 +80,7 @@ Each demo has two parts: a `Wrapper` function (the actual rendered component) an
 
 #### `docs/styles-api/Marquee.styles-api.ts`
 
-Documents the selectors and CSS variables exposed via the Styles API. The `selectors` object must match `MarqueeStylesNames`; the `vars.root` object must match `MarqueeCssVariables` in `Marquee.tsx`. Note: `--marquee-play-state` is intentionally absent — it is set via inline `style` (not through `varsResolver`) because it depends on runtime hover state.
+Documents the selectors and CSS variables exposed via the Styles API. The `selectors` object must match `MarqueeStylesNames`; the `vars.root` object must match `MarqueeCssVariables` in `Marquee.tsx`. Note: `--marquee-play-state`, `--marquee-direction`, and `--marquee-gap` are intentionally absent — they are set via inline `style` (not through `varsResolver`) because they depend on runtime state or `useMatches` hooks.
 
 ### Animation
 
@@ -92,10 +92,15 @@ Key CSS decisions:
 - `overflow: hidden` is only on `.root`, not on `.marqueeContainer` — having it on both would create an extra stacking context that can interfere with GPU layer compositing.
 - `--marquee-play-state` is set via inline `style` on `.root` (not via `varsResolver`) because it depends on runtime hover state (`over`); it is inherited by `.marqueeContent` via CSS cascade.
 - `--marquee-direction` is set via inline `style` on `.root` (not via `varsResolver`) because `vertical` can be a responsive breakpoint object resolved at runtime by `useMatches`. The `varsResolver` only receives raw props and cannot call hooks.
+- `--marquee-gap` is set via inline `style` on `.root` (not via `varsResolver`) because `gap` can be a responsive breakpoint object resolved at runtime by `useMatches`, same pattern as `--marquee-direction`.
 
 ### Responsive `vertical` prop
 
 `vertical` accepts `boolean | Partial<Record<MantineBreakpoint, boolean>>` (exported as `MarqueeVertical`). Inside the component, `useMatches` is always called (React rules of hooks forbid conditional calls). When the prop is a plain boolean it is wrapped as `{ base: bool }`, which is a no-op for `useMatches`. The resolved boolean is stored as `resolvedVertical` and used for `data-vertical`, class selection, and the `--marquee-direction` inline style.
+
+### Responsive `gap` prop
+
+`gap` accepts `MantineSize | (string & {}) | Partial<Record<MantineBreakpoint, MantineSize | (string & {})>>` (exported as `MarqueeGap`). Uses the same `useMatches` pattern as `vertical`. A plain string is wrapped as `{ base: gap }`. The resolved value is passed through `getSize()` and set as `--marquee-gap` via inline style. Removed from `MarqueeCssVariables` and `varsResolver` (same pattern as `--marquee-direction` and `--marquee-play-state`).
 
 Neither React 19 nor Mantine provides primitives that improve CSS keyframe animation smoothness. The CSS keyframe + `transform` approach is optimal: it runs entirely on the GPU compositor thread without touching layout or paint.
 

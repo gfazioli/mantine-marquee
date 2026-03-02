@@ -107,4 +107,26 @@ describe('Marquee', () => {
     expect(style).toContain('--marquee-fade-edge-size-x');
     expect(style).toContain('--marquee-fade-edge-size-y');
   });
+
+  it('sets --marquee-gap via inline style for a string gap value', () => {
+    const { container } = render(
+      <Marquee gap="md" fadeEdges="linear">
+        <div>Test</div>
+      </Marquee>
+    );
+    const root = container.querySelector('[data-fade-edges="linear"]') as HTMLElement;
+    const style = root.getAttribute('style') || '';
+    expect(style).toContain('--marquee-gap');
+  });
+
+  it('sets --marquee-gap via inline style for a responsive gap object', () => {
+    const { container } = render(
+      <Marquee gap={{ base: 'xs' }} fadeEdges="linear">
+        <div>Test</div>
+      </Marquee>
+    );
+    const root = container.querySelector('[data-fade-edges="linear"]') as HTMLElement;
+    const style = root.getAttribute('style') || '';
+    expect(style).toContain('--marquee-gap');
+  });
 });

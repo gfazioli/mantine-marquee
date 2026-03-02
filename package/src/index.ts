@@ -5,6 +5,7 @@ export type {
   MarqueeFadeEdges,
   MarqueeFadeEdgesSize,
   MarqueeFactory,
+  MarqueeGap,
   MarqueeProps,
   MarqueeStylesNames,
   MarqueeVertical,
