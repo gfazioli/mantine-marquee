@@ -84,7 +84,7 @@ function Wrapper() {
   }
 
   return (
-    <Marquee w={792} pauseOnHover fadeEdges>
+    <Marquee pauseOnHover fadeEdges>
       {testimonials.map(({ text, ...testimonial }, index) => (
         <BoxComponent key={index} {...testimonial}>
           {text}
