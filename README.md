@@ -18,6 +18,7 @@
 ## Overview
 
 This component is created on top of the [Mantine](https://mantine.dev/) library.
+It requires **Mantine 9.x** and **React 19**.
 
 [Mantine Marquee](https://gfazioli.github.io/mantine-marquee/) is a versatile React component for the Mantine ecosystem that renders continuous, seamless scrolling of any child elements—cards, boxes, text, or avatars—either horizontally or vertically. It exposes ergonomic props to control behavior and presentation: reverse toggles direction, vertical switches axis, fadeEdges adds gradient masking with configurable size and color, pauseOnHover halts motion on interaction, and duration/gap/repeat fine‑tune speed, spacing, and loop continuity. 
 

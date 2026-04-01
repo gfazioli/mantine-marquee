@@ -1,138 +1,103 @@
 # CLAUDE.md
 
-This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
+## Project
+`@gfazioli/mantine-marquee` — A Mantine 9 marquee component that creates seamless infinite-scrolling content loops with GPU-accelerated CSS keyframe animations, supporting horizontal/vertical directions, responsive props, and CSS-mask fade edges.
 
 ## Commands
-
-Run all commands from the **repository root** using `yarn`:
-
 | Command | Purpose |
 |---------|---------|
-| `yarn dev` | Start Next.js docs dev server at http://localhost:9281 |
-| `yarn build` | Build the npm package via Rollup (output: `package/dist/`) |
-| `yarn test` | Full test suite: syncpack + prettier + typecheck + lint + jest |
-| `yarn jest` | Run Jest unit tests only |
-| `yarn docgen` | Regenerate `docs/docgen.json` from component source (run after changing props) |
-| `yarn docs:build` | Build the static docs site |
-| `yarn docs:deploy` | Build + deploy docs to GitHub Pages |
-| `yarn lint` | ESLint + Stylelint |
-| `yarn prettier:write` | Auto-format all `.ts`, `.tsx`, `.css`, `.mdx` files |
-| `yarn storybook` | Start Storybook at http://localhost:8271 |
-| `yarn clean` | Remove `package/dist/` |
+| `yarn build` | Build the npm package via Rollup |
+| `yarn dev` | Start the Next.js docs dev server (port 9281) |
+| `yarn test` | Full test suite (syncpack + oxfmt + typecheck + lint + jest) |
+| `yarn jest` | Run only Jest unit tests |
+| `yarn docgen` | Generate component API docs (docgen.json) |
+| `yarn docs:build` | Build the Next.js docs site for production |
+| `yarn docs:deploy` | Build and deploy docs to GitHub Pages |
+| `yarn lint` | Run ESLint + Stylelint |
+| `yarn format:write` | Format all files with oxfmt |
+| `yarn storybook` | Start Storybook dev server |
+| `yarn clean` | Remove build artifacts |
+| `yarn release:patch` | Bump patch version and deploy docs |
+| `diny yolo` | AI-assisted commit (stage all, generate message, commit + push) |
 
-To run a single Jest test file:
-```sh
-yarn jest package/src/Marquee.test.tsx
-```
-
-> **Important:** `docs/` imports types from the compiled package (`package/dist/types/`), not from source. After changing the TypeScript API in `package/src/`, always run `yarn clean && yarn build` before `yarn test`, otherwise the docs typecheck will fail with stale types.
+> **Important**: After changing the public API (props, types, exports), always run `yarn clean && yarn build` before `yarn test`, because `yarn docgen` needs the fresh build output.
 
 ## Architecture
 
-### Package structure
+### Workspace Layout
+Yarn workspaces monorepo with two workspaces: `package/` (npm package) and `docs/` (Next.js 15 documentation site).
 
+### Package Source (`package/src/`)
 ```
-package/src/
-  Marquee.tsx          # Component implementation
-  Marquee.module.css   # CSS Modules with animation keyframes
-  Marquee.story.tsx    # Storybook stories
-  Marquee.test.tsx     # Jest unit test
-  index.ts             # Public exports
-```
-
-The Rollup build produces both ESM (`package/dist/esm/*.mjs`) and CJS (`package/dist/cjs/*.cjs`) outputs, plus extracted CSS at `package/dist/styles.css` and `package/dist/styles.layer.css`.
-
-### Component pattern
-
-`Marquee` uses Mantine's **factory pattern** (`factory<MarqueeFactory>`) which requires:
-- A `Factory` type declaring `props`, `ref`, `stylesNames`, and `vars`
-- `createVarsResolver` to map props → CSS custom properties on the `.root` element
-- `useProps` for default prop merging
-- `useStyles` for the `getStyles` accessor (handles `classNames`, `styles`, `unstyled`)
-
-CSS custom properties defined in `Marquee.module.css` control animation behavior (`--marquee-duration`, `--marquee-gap`, `--marquee-animation-direction`, `--marquee-direction`, `--marquee-play-state`, `--marquee-fade-edge-size`). The `varsResolver` sets static props (`duration`, `reverse`, `fadeEdgesSize`); three variables are set via inline `style` in `useStyles` because they depend on runtime state or hooks: `--marquee-play-state` (hover state), `--marquee-direction` (responsive `vertical`), `--marquee-gap` (responsive `gap`).
-
-The component clones `children` into `repeat` number of wrapper `<div>`s to create the seamless loop illusion.
-
-### Docs site
-
-```
-docs/
-  demos/               # MantineDemo objects (configurator, examples)
-  components/          # Shared UI: Shell, Footer, PageHeader, DocsTabs, etc.
-  pages/index.tsx      # Single-page docs using DocsTabs
-  docs.mdx             # Documentation content (MDX)
-  docgen.json          # Auto-generated prop types (via yarn docgen)
-  styles-api/          # Styles API documentation data
-  data.ts              # Package metadata for PageHeader
+Marquee.tsx          # Component implementation (factory pattern)
+Marquee.module.css   # CSS Modules with animation keyframes
+Marquee.story.tsx    # Storybook stories
+Marquee.test.tsx     # Jest unit test
+index.ts             # Public exports
 ```
 
-Demo files export a `MantineDemo` object consumed by `<Demo data={demos.xxx} />` in `docs.mdx`. After modifying component props or adding new demos, run `yarn docgen` to update `docgen.json`.
+Single-component package — `Marquee` is the only exported component, built with Mantine's `factory<MarqueeFactory>` pattern (`useProps`, `useStyles`, `createVarsResolver`).
 
-#### Demo files checklist
+### Build Pipeline
+Rollup bundles to dual ESM (`dist/esm/`) and CJS (`dist/cjs/`) with `'use client'` banner. CSS modules are hashed with `hash-css-selector` (prefix `me`). TypeScript declarations via `rollup-plugin-dts`. CSS is split into `styles.css` and `styles.layer.css` (layered version).
 
-Each demo has two parts: a `Wrapper` function (the actual rendered component) and a `code` string (the snippet shown to users in the docs). These must stay in sync. When editing or adding demos:
+## Component Details
 
-- All imports used in the `code` string must be explicitly declared in the `code` string itself — they are not inherited from the file's top-level imports.
-- The `code` string for `type: 'configurator'` demos must include `function Demo() { ... }` as the outer wrapper.
-- `libraryValue` in configurator controls must match the actual `defaultProps` in `Marquee.tsx`. `initialValue` can differ (it's the demo's starting value, not the library default).
-- Width/height values in the `Wrapper` and in the `code` string must be consistent.
+### Factory pattern
+`Marquee` uses Mantine's `factory<MarqueeFactory>` which requires a `Factory` type declaring `props`, `ref`, `stylesNames`, and `vars`, plus `createVarsResolver` to map props to CSS custom properties on `.root`, `useProps` for default prop merging, and `useStyles` for the `getStyles` accessor.
 
-#### `docs/styles-api/Marquee.styles-api.ts`
+### CSS custom properties split
+CSS custom properties in `Marquee.module.css` control animation: `--marquee-duration`, `--marquee-gap`, `--marquee-animation-direction`, `--marquee-direction`, `--marquee-play-state`, `--marquee-fade-edge-size`. The `varsResolver` sets static props (`duration`, `reverse`, `fadeEdgesSize`). Three variables are set via inline `style` in `useStyles` because they depend on runtime state or hooks:
+- `--marquee-play-state` — depends on hover state (`over`)
+- `--marquee-direction` — `vertical` can be a responsive breakpoint object resolved by `useMatches`
+- `--marquee-gap` — `gap` can be a responsive breakpoint object resolved by `useMatches`
 
-Documents the selectors and CSS variables exposed via the Styles API. The `selectors` object must match `MarqueeStylesNames`; the `vars.root` object must match `MarqueeCssVariables` in `Marquee.tsx`. Note: `--marquee-play-state`, `--marquee-direction`, and `--marquee-gap` are intentionally absent — they are set via inline `style` (not through `varsResolver`) because they depend on runtime state or `useMatches` hooks.
+The `varsResolver` only receives raw props and cannot call hooks, which is why these three are excluded from it and from `MarqueeCssVariables`.
 
-### Animation
-
-The marquee loop works by cloning `children` into `repeat` divs (`.marqueeContent`) that all share the same CSS keyframe animation. Each clone moves by `translateX(calc(-100% - var(--marquee-gap)))`, exactly the distance to the start of the next clone, so the loop is geometrically seamless.
+### Animation mechanics
+The marquee loop clones `children` into `repeat` wrapper `<div>`s (`.marqueeContent`) sharing the same CSS keyframe. Each clone translates by `translateX(calc(-100% - var(--marquee-gap)))`, exactly the distance to the next clone, making the loop geometrically seamless.
 
 Key CSS decisions:
-- `will-change: transform` on `.marqueeContent` / `.marqueeContentVertical` — tells the browser to promote each clone to a dedicated GPU compositor layer, preventing frame drops.
-- `backface-visibility: hidden` — prevents flickering on Safari/iOS during the animation loop reset.
-- `overflow: hidden` is only on `.root`, not on `.marqueeContainer` — having it on both would create an extra stacking context that can interfere with GPU layer compositing.
-- `--marquee-play-state` is set via inline `style` on `.root` (not via `varsResolver`) because it depends on runtime hover state (`over`); it is inherited by `.marqueeContent` via CSS cascade.
-- `--marquee-direction` is set via inline `style` on `.root` (not via `varsResolver`) because `vertical` can be a responsive breakpoint object resolved at runtime by `useMatches`. The `varsResolver` only receives raw props and cannot call hooks.
-- `--marquee-gap` is set via inline `style` on `.root` (not via `varsResolver`) because `gap` can be a responsive breakpoint object resolved at runtime by `useMatches`, same pattern as `--marquee-direction`.
+- `will-change: transform` on `.marqueeContent` / `.marqueeContentVertical` — promotes each clone to a GPU compositor layer, preventing frame drops.
+- `backface-visibility: hidden` — prevents flickering on Safari/iOS during animation loop reset.
+- `overflow: hidden` only on `.root`, not `.marqueeContainer` — having it on both creates an extra stacking context that interferes with GPU layer compositing.
+- The CSS keyframe + `transform` approach runs entirely on the GPU compositor thread without touching layout or paint.
 
 ### Responsive `vertical` prop
-
-`vertical` accepts `boolean | Partial<Record<MantineBreakpoint, boolean>>` (exported as `MarqueeVertical`). Inside the component, `useMatches` is always called (React rules of hooks forbid conditional calls). When the prop is a plain boolean it is wrapped as `{ base: bool }`, which is a no-op for `useMatches`. The resolved boolean is stored as `resolvedVertical` and used for `data-vertical`, class selection, and the `--marquee-direction` inline style.
+`vertical` accepts `boolean | Partial<Record<MantineBreakpoint, boolean>>` (exported as `MarqueeVertical`). `useMatches` is always called (React hooks rules). A plain boolean is wrapped as `{ base: bool }` (no-op for `useMatches`). The resolved boolean is stored as `resolvedVertical` and used for `data-vertical`, class selection, and `--marquee-direction` inline style.
 
 ### Responsive `gap` prop
-
-`gap` accepts `MantineSize | (string & {}) | Partial<Record<MantineBreakpoint, MantineSize | (string & {})>>` (exported as `MarqueeGap`). Uses the same `useMatches` pattern as `vertical`. A plain string is wrapped as `{ base: gap }`. The resolved value is passed through `getSize()` and set as `--marquee-gap` via inline style. Removed from `MarqueeCssVariables` and `varsResolver` (same pattern as `--marquee-direction` and `--marquee-play-state`).
-
-Neither React 19 nor Mantine provides primitives that improve CSS keyframe animation smoothness. The CSS keyframe + `transform` approach is optimal: it runs entirely on the GPU compositor thread without touching layout or paint.
+`gap` accepts `MantineSize | (string & {}) | Partial<Record<MantineBreakpoint, MantineSize | (string & {})>>` (exported as `MarqueeGap`). Same `useMatches` pattern as `vertical`. A plain string is wrapped as `{ base: gap }`. The resolved value passes through `getSize()` and is set as `--marquee-gap` via inline style.
 
 ### Fade edges — CSS mask system
+`fadeEdges` uses `mask-image` (not DOM overlay divs) for true alpha compositing, independent of background color. Accepts `boolean | 'linear' | 'ellipse' | 'rect'` (`true` equals `'linear'`). The resolved shape is set as `data-fade-edges="<shape>"` on `.root`; orientation via `data-vertical`.
 
-`fadeEdges` uses `mask-image` (not DOM overlay divs) for true alpha compositing, independent of the background color. The prop accepts `boolean | 'linear' | 'ellipse' | 'rect'` (`true` is equivalent to `'linear'`). The resolved shape string is set as `data-fade-edges="<shape>"` on `.root`; orientation by `data-vertical` (present when `vertical=true`).
+Types exported: `MarqueeFadeEdges`, `MarqueeFadeEdgesSize`. Internal helpers: `resolveFadeEdges()` converts the union to the data-attribute string; `resolveFadeEdgeSize()` splits the value into `{ single, x, y }`.
 
-The `MarqueeFadeEdges` type is exported from the package. The `resolveFadeEdges()` helper (internal, not exported) converts the union value to the data-attribute string.
+`fadeEdgesSize` accepts `MantineSize | (string & {}) | [x, y]` tuple. For a single value, `single`/`x`/`y` resolve identically. The `varsResolver` sets `--marquee-fade-edge-size`, `--marquee-fade-edge-size-x`, and `--marquee-fade-edge-size-y`.
 
-`fadeEdgesSize` accepts `MantineSize | (string & {}) | [x, y]` tuple. The `MarqueeFadeEdgesSize` type is exported. The `resolveFadeEdgeSize()` helper (internal) splits the value into `{ single, x, y }` — `single` is used by linear/ellipse (backward compat), `x`/`y` by rect. For a single value, all three resolve identically. The varsResolver sets `--marquee-fade-edge-size`, `--marquee-fade-edge-size-x`, and `--marquee-fade-edge-size-y`.
-
-**One-sided gradient technique:** All linear/rect masks use **one-sided gradients** (one per edge) composited with `mask-composite: intersect`, rather than a single double-sided gradient per axis. A double-sided gradient (`transparent → black SIZE → black (100%-SIZE) → transparent`) breaks when `size > 50%` because the left and right stop positions swap, causing the browser to clamp them per CSS spec and produce a hard alpha seam. One-sided gradients (`transparent → black SIZE → black 100%`) can never have overlapping stops, regardless of size.
+**One-sided gradient technique:** All linear/rect masks use one-sided gradients (one per edge) composited with `mask-composite: intersect`, not a single double-sided gradient per axis. A double-sided gradient breaks when `size > 50%` because left/right stop positions swap, causing the browser to clamp them per CSS spec and produce a hard alpha seam. One-sided gradients can never have overlapping stops.
 
 **Shapes:**
-- `"linear"` — 2 one-sided gradients (left + right, or top + bottom for vertical). Uses `[data-vertical]` to switch between horizontal and vertical directions.
-- `"ellipse"` — radial vignette fade all around. Uses `radial-gradient(ellipse at center, ...)`. Orientation-independent — no `[data-vertical]` variant needed. The `* 2` multiplier on `--marquee-fade-edge-size` makes the fade visually comparable to the linear mode.
-- `"rect"` — 4 one-sided gradients (left + right + top + bottom) via `mask-composite: intersect` (`-webkit-mask-composite: source-in`). Fades all 4 edges independently. Uses `--marquee-fade-edge-size-x` for left/right and `--marquee-fade-edge-size-y` for top/bottom. No `[data-vertical]` variant needed — the mask covers all 4 edges. At corners the alpha values multiply naturally (e.g. 0.5 × 0.5 = 0.25).
+- `"linear"` — 2 one-sided gradients (left + right, or top + bottom for vertical). Uses `[data-vertical]` to switch directions.
+- `"ellipse"` — radial vignette fade (`radial-gradient(ellipse at center, ...)`). Orientation-independent. The `* 2` multiplier on `--marquee-fade-edge-size` makes the fade visually comparable to linear mode.
+- `"rect"` — 4 one-sided gradients (left + right + top + bottom) via `mask-composite: intersect` (`-webkit-mask-composite: source-in`). Uses `--marquee-fade-edge-size-x` for left/right and `--marquee-fade-edge-size-y` for top/bottom. At corners alpha values multiply naturally (e.g. 0.5 × 0.5 = 0.25).
 
-`isolation: isolate` on the masked element is required to prevent Safari compositing glitches when `will-change: transform` children are present.
+`isolation: isolate` on the masked element prevents Safari compositing glitches when `will-change: transform` children are present.
 
-`postcss-preset-mantine` does NOT include autoprefixer — `-webkit-mask-image` and `-webkit-mask-composite: source-in` must always be written explicitly alongside `mask-image` and `mask-composite: intersect` in the CSS.
+`postcss-preset-mantine` does NOT include autoprefixer — `-webkit-mask-image` and `-webkit-mask-composite: source-in` must always be written explicitly alongside standard `mask-image` and `mask-composite: intersect`.
 
-`fadeEdgesColor` was removed in the major release that introduced CSS masks (it was a workaround for the old overlay-div approach and has no semantic meaning with mask-based compositing).
+`fadeEdgesColor` was removed in the major release that introduced CSS masks (it was a workaround for the old overlay-div approach).
 
 ### Styling
+CSS Modules with hashed class names (prefix `me`). PostCSS with `postcss-preset-mantine` handles `@mixin dark` and other extensions. Size tokens (`xs`/`sm`/`md`/`lg`/`xl`) map to explicit CSS custom property scales defined in `.root`.
 
-CSS Modules are used with hashed class names (via `hash-css-selector` with prefix `me`). PostCSS with `postcss-preset-mantine` handles Mantine's `@mixin dark` syntax and other extensions. Size tokens (`xs`/`sm`/`md`/`lg`/`xl`) map to explicit CSS custom property scales defined in `.root`.
+## Testing
+Jest with `jsdom` environment, `esbuild-jest` transform, CSS mocked via `identity-obj-proxy`. Component tests use `@mantine-tests/core` render helper. Test file: `package/src/Marquee.test.tsx`.
 
-### Mantine custom component skill
-
-A skill file with the full Mantine component authoring guide lives at `.agents/skills/mantine-custom-components/`. It documents: `factory`/`polymorphicFactory`/`genericFactory`, `useProps`, `useStyles`, `createVarsResolver`, `StylesApiProps`, `BoxProps`, `ElementProps`, `createSafeContext`, theme helper functions (`getSize`, `getSpacing`, `getRadius`, etc.), and compound/polymorphic/generic component patterns. Consult it before modifying or extending the component API.
-
-### Release workflow
-
-`yarn release:patch|minor|major` bumps `package/package.json` version, then runs `docs:deploy`. Always run from repo root. See the parent workspace `CLAUDE.md` for the full update/release workflow.
+## Ecosystem
+This repo is part of the Mantine Extensions ecosystem, derived from the `mantine-base-component` template. See the workspace `CLAUDE.md` (in the parent directory) for:
+- Development checklist (code → test → build → docs → release)
+- Cross-cutting patterns (compound components, responsive CSS, GitHub sync)
+- Update packages workflow
+- Release process
