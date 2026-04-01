@@ -156,7 +156,7 @@ const varsResolver = createVarsResolver<MarqueeFactory>(
   }
 );
 
-export const Marquee = factory<MarqueeFactory>((_props, ref) => {
+export const Marquee = factory<MarqueeFactory>((_props) => {
   const props = useProps('Marquee', defaultProps, _props);
 
   const [over, setOver] = React.useState(false);
@@ -212,7 +212,7 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
 
   const renderContent = useMemo(
     () =>
-      Array.from({ length: repeat < 2 ? 2 : repeat }).map((_, i) => (
+      Array.from({ length: (repeat ?? 2) < 2 ? 2 : (repeat ?? 2) }).map((_, i) => (
         <div
           key={`marquee-item-${repeat}-${resolvedGap}-${duration}-${i}`}
           className={`${classes.marqueeContent} ${resolvedVertical ? classes.marqueeContentVertical : ''}`}
@@ -231,7 +231,6 @@ export const Marquee = factory<MarqueeFactory>((_props, ref) => {
       data-vertical={resolvedVertical || undefined}
     >
       <Box
-        ref={ref}
         className={classes.marqueeContainer}
         onMouseEnter={() => setOver(true)}
         onMouseLeave={() => setOver(false)}
