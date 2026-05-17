@@ -1,4 +1,3 @@
-import React, { useMemo } from 'react';
 import {
   Box,
   BoxProps,
@@ -13,6 +12,7 @@ import {
   useProps,
   useStyles,
 } from '@mantine/core';
+import React, { useMemo } from 'react';
 import classes from './Marquee.module.css';
 
 export type MarqueeVertical = boolean | Partial<Record<MantineBreakpoint, boolean>>;
