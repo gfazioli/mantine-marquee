@@ -1,5 +1,6 @@
-import { ReactNode } from 'react';
 import { Marquee } from '@gfazioli/mantine-marquee';
+import { ThemeIcon } from '@mantine/core';
+import { MantineDemo } from '@mantinex/demo';
 import {
   IconBrand4chan,
   IconBrandAmazon,
@@ -9,8 +10,7 @@ import {
   IconBrandWhatsapp,
   IconBrandWordpress,
 } from '@tabler/icons-react';
-import { ThemeIcon } from '@mantine/core';
-import { MantineDemo } from '@mantinex/demo';
+import { ReactNode } from 'react';
 
 function Wrapper() {
   const iconsBrand = [

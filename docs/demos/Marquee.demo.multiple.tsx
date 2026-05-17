@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
 import { Marquee } from '@gfazioli/mantine-marquee';
 import { Box } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
+import { ReactNode } from 'react';
 
 function Wrapper() {
   function BoxComponent({ children, ...props }: { children: ReactNode; [key: string]: any }) {

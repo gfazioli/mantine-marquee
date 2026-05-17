@@ -1,7 +1,7 @@
-import { ReactNode } from 'react';
 import { Marquee } from '@gfazioli/mantine-marquee';
 import { Avatar, Card, Group, Rating, Stack, Text, Title } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
+import { ReactNode } from 'react';
 
 function Wrapper() {
   const testimonials = [
