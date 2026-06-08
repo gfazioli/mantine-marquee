@@ -86,8 +86,26 @@ flat image on the root element, so `fadeEdges` masks still apply on top of the t
 `linear` fade automatically follows the projected scroll axis, so it keeps fading the leading and
 trailing items even when the plane is rotated.
 
-<div className="marquee-iso-demo">
+<div className="marquee-3d-demo">
 <Demo data={demos.isometric} />
+</div>
+
+## Circle variant
+
+Set `variant="circle"` to distribute the children around a 3D ellipse ring that rotates
+continuously, like a carousel. Each child is positioned once around the ring (no clones) and the
+whole ring spins — `rotateY(360deg)` equals `rotateY(0deg)`, so the loop is perfectly seamless.
+
+The items are mounted on the rim facing outward, so the ring reads as a 3D carousel/cylinder. Use
+`radius` to size the ring (a single number for a circular ring, or a `[rx, ry]` tuple for an
+explicit ellipse), `tilt` for the viewing angle (positive views the ring from above, negative from
+below), and `perspective` for the depth. `reverse`, `duration` and `pauseOnHover` work as usual;
+`repeat`, `gap` and `vertical` do not apply to a ring.
+
+The `circle` variant needs a height — set `h` (or `mih`) on the component.
+
+<div className="marquee-3d-demo">
+<Demo data={demos.circle} />
 </div>
 
 ## Responsive vertical
@@ -125,7 +143,7 @@ after changing the import path, with a few notes:
 - `fadeEdgeColor` is accepted but ignored — fade edges use CSS masks (true alpha, background-independent), so no fade color is required.
 - `duration` is expressed in **seconds** here, while `@mantine/core` measures it in **milliseconds**: core `duration={100000}` corresponds to `duration={100}`.
 
-On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`), per-axis fade sizes, and the `isometric` 3D variant.
+On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`), per-axis fade sizes, and the `isometric` and `circle` 3D variants.
 
 ## Example: Testimonials
 
@@ -138,3 +156,18 @@ Your customers feedback is important to you. Use Marquee to display your testimo
 One of the most common use cases for `Marquee` is to create branding banners.
 
 <Demo data={demos.example} />
+
+## Example: Isometric tech stack
+
+The `isometric` variant turns a plain logo strip into a 3D "tech stack on a desk" hero — perfect for
+landing pages, integrations sections, or a tools showcase.
+
+<Demo data={demos.isometricShowcase} />
+
+## Example: Circle avatar ring
+
+The `circle` variant arranges items around a rotating 3D ring — a carousel for team avatars,
+community members, or a brand showcase. A slightly negative `tilt` views the ring from just below;
+hover to pause and click an avatar.
+
+<Demo data={demos.circleShowcase} />

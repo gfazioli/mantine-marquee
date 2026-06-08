@@ -30,14 +30,20 @@ function injectVariant() {
   docgen.Marquee.props.variant = {
     defaultValue: "'default'",
     description:
-      'Display variant: <code>default</code> (2D scroll) or <code>isometric</code> ' +
-      '(2D scroll laid on a plane tilted in 3D space via the <code>tilt</code> prop).',
+      'Display variant: <code>default</code> (2D scroll), <code>isometric</code> ' +
+      '(2D scroll on a plane tilted in 3D space), or <code>circle</code> (children ' +
+      'distributed around a rotating 3D ellipse ring).',
     name: 'variant',
     required: false,
     type: {
-      name: '"default" | "isometric"',
-      raw: '"default" | "isometric" | undefined',
-      value: [{ value: 'undefined' }, { value: '"default"' }, { value: '"isometric"' }],
+      name: '"default" | "isometric" | "circle"',
+      raw: '"default" | "isometric" | "circle" | undefined',
+      value: [
+        { value: 'undefined' },
+        { value: '"default"' },
+        { value: '"isometric"' },
+        { value: '"circle"' },
+      ],
     },
   };
 
