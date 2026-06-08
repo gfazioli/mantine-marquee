@@ -73,6 +73,23 @@ The `Marquee` component allows you to create a marquee effect with multiple item
 
 <Demo data={demos.multipleVertical} />
 
+## Isometric variant
+
+Set `variant="isometric"` to lay the marquee on a plane tilted back in 3D space — content scrolls
+across a surface, as if the items were resting on a table. The existing scroll loop is reused
+unchanged, so every other prop (`reverse`, `duration`, `pauseOnHover`, `gap`, `vertical`) keeps working.
+
+Use `tilt` to control the plane inclination in degrees and `perspective` to control the depth in
+pixels (smaller values exaggerate the effect). Add `rotate` (in-plane `rotateZ`) and `skew`
+(horizontal `skewX`) to dial in a classic ¾ isometric (2.5D) look. The 3D scene is composited as a
+flat image on the root element, so `fadeEdges` masks still apply on top of the tilted plane — the
+`linear` fade automatically follows the projected scroll axis, so it keeps fading the leading and
+trailing items even when the plane is rotated.
+
+<div className="marquee-iso-demo">
+<Demo data={demos.isometric} />
+</div>
+
 ## Responsive vertical
 
 The `vertical` prop accepts a responsive breakpoint object in addition to a plain boolean.
@@ -97,6 +114,18 @@ This is useful when switching layout direction at a breakpoint — you can pair 
 ```
 
 <Demo data={demos.responsiveGap} />
+
+## Drop-in for Mantine core Marquee
+
+This component is a superset of the built-in `@mantine/core` Marquee — existing snippets keep working
+after changing the import path, with a few notes:
+
+- `orientation="horizontal" | "vertical"` is accepted as an alias of `vertical`.
+- `fadeEdgeSize` is accepted as an alias of `fadeEdgesSize` (singular spelling).
+- `fadeEdgeColor` is accepted but ignored — fade edges use CSS masks (true alpha, background-independent), so no fade color is required.
+- `duration` is expressed in **seconds** here, while `@mantine/core` measures it in **milliseconds**: core `duration={100000}` corresponds to `duration={100}`.
+
+On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`), per-axis fade sizes, and the `isometric` 3D variant.
 
 ## Example: Testimonials
 
