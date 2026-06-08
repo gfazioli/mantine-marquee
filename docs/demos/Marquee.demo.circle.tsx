@@ -61,7 +61,7 @@ function Wrapper(props: MarqueeProps) {
 
 const code = `
 import { Marquee } from '@gfazioli/mantine-marquee';
-import { Box } from '@mantine/core';
+import { Box, Flex } from '@mantine/core';
 
 const SITES = [
   { label: 'Findergit', href: 'https://www.findergit.app/', bg: 'red' },
@@ -89,26 +89,28 @@ function Demo() {
   return (
     <>
       <style>{cardCss}</style>
-      <Marquee variant="circle"{{props}}>
-        {SITES.map((site) => (
-          <Box
-            key={site.label}
-            component="a"
-            href={site.href}
-            target="_blank"
-            rel="noreferrer"
-            className="circle-card"
-            bg={site.bg}
-            w={150}
-            h={90}
-            c="white"
-            fw={600}
-            style={{ display: 'grid', placeItems: 'center', borderRadius: '8px', textDecoration: 'none' }}
-          >
-            {site.label}
-          </Box>
-        ))}
-      </Marquee>
+      <Flex w="100%" h={440} align="center" justify="center">
+        <Marquee variant="circle" w="100%" h={440}{{props}}>
+          {SITES.map((site) => (
+            <Box
+              key={site.label}
+              component="a"
+              href={site.href}
+              target="_blank"
+              rel="noreferrer"
+              className="circle-card"
+              bg={site.bg}
+              w={150}
+              h={90}
+              c="white"
+              fw={600}
+              style={{ display: 'grid', placeItems: 'center', borderRadius: '8px', textDecoration: 'none' }}
+            >
+              {site.label}
+            </Box>
+          ))}
+        </Marquee>
+      </Flex>
     </>
   );
 }
