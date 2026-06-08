@@ -298,6 +298,83 @@
   transition: transform 150ms ease;
 }
 
+/* ============================================================
+   Circle variant — children distributed around a rotating 3D ellipse ring
+
+   Same flattening constraint as isometric: the mask/overflow/isolation stay on
+   the flat .root, the 3D scene lives below in .stage (perspective) → .tilt
+   (rotateX viewing angle) → .ring (rotateY spin) → .item × N. Each item is
+   centered then mounted on the ellipse with translate3d(rx·sinθ, 0, ry·cosθ)
+   and faces outward via rotateY(θ), so the ring reads as a carousel/cylinder.
+
+   The viewing tilt lives on the STATIC .tilt wrapper (so dragging it updates
+   live and `tilt` can be negative to view from below); the .ring keyframe is a
+   pure rotateY(0 → 360deg) — GPU-composited and perfectly seamless (360 ≡ 0).
+   ============================================================ */
+
+@keyframes marquee-ring {
+  from {
+    transform: rotateY(0deg);
+  }
+
+  to {
+    /* negative so the default (reverse off) spins right-to-left; `reverse`
+       flips it back via animation-direction. */
+    transform: rotateY(-360deg);
+  }
+}
+
+.root[data-variant='circle'] {
+  /* the ring's items are absolutely positioned (zero intrinsic height) — give
+     the box a sensible floor so an unsized <Marquee variant="circle"> still
+     shows. Set an explicit height/`mih` for full control. */
+  min-height: calc(2 * var(--marquee-radius-y, 200px));
+}
+
+.root[data-variant='circle'] .stage {
+  position: relative;
+  height: 100%;
+  width: 100%;
+  perspective: var(--marquee-perspective, 800px);
+  perspective-origin: 50% 50%;
+}
+
+.root[data-variant='circle'] .tilt {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  transform: rotateX(var(--marquee-tilt, 45deg));
+  transition: transform 150ms ease;
+}
+
+.root[data-variant='circle'] .ring {
+  position: absolute;
+  inset: 0;
+  transform-style: preserve-3d;
+  animation: marquee-ring var(--marquee-duration) linear infinite;
+  animation-direction: var(--marquee-animation-direction, normal);
+  animation-play-state: var(--marquee-play-state, running);
+  will-change: transform;
+}
+
+.root[data-variant='circle'] .item {
+  --marquee-step: calc(360deg / var(--marquee-count, 1));
+  --marquee-theta: calc(var(--marquee-step) * var(--marquee-index, 0));
+
+  position: absolute;
+  inset: 0;
+  margin: auto;
+  width: max-content;
+  height: max-content;
+  transform: translate3d(
+      calc(var(--marquee-radius-x, 200px) * sin(var(--marquee-theta))),
+      0,
+      calc(var(--marquee-radius-y, 200px) * cos(var(--marquee-theta)))
+    )
+    rotateY(var(--marquee-theta));
+  backface-visibility: visible;
+}
+
 .marqueeContainer {
   display: flex;
   padding: 0;
@@ -349,11 +426,13 @@
    transition) so the marquee renders as a static, legible arrangement. */
 @media (prefers-reduced-motion: reduce) {
   .marqueeContent,
-  .marqueeContentVertical {
+  .marqueeContentVertical,
+  .root[data-variant='circle'] .ring {
     animation: none;
   }
 
-  .root[data-variant='isometric'] .plane {
+  .root[data-variant='isometric'] .plane,
+  .root[data-variant='circle'] .tilt {
     transition: none;
   }
 }

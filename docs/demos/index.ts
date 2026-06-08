@@ -1,3 +1,5 @@
+export { circle } from './Marquee.demo.circle';
+export { circleShowcase } from './Marquee.demo.circleShowcase';
 export { configurator } from './Marquee.demo.configurator';
 export { example } from './Marquee.demo.example';
 export { fadeEdgesCircle } from './Marquee.demo.fadeEdgesCircle';
@@ -6,6 +8,7 @@ export { fadeEdgesLinear } from './Marquee.demo.fadeEdgesLinear';
 export { fadeEdgesRect } from './Marquee.demo.fadeEdgesRect';
 export { feedbacks } from './Marquee.demo.feedbacks';
 export { isometric } from './Marquee.demo.isometric';
+export { isometricShowcase } from './Marquee.demo.isometricShowcase';
 export { multiple } from './Marquee.demo.multiple';
 export { multipleVertical } from './Marquee.demo.multiple-vertical';
 export { responsiveGap } from './Marquee.demo.responsiveGap';

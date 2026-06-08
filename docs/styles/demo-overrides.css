@@ -1,28 +1,28 @@
 /*
  * Demo overrides — force the @mantinex/demo CONFIGURATOR layout to STACKED
- * (controls BELOW the stage) for the ISOMETRIC demo only.
+ * (controls BELOW the stage) for the 3D demos (isometric + circle) only.
  *
- * Why: the isometric play-zone is a wide 3D plane with many controls (tilt,
- * perspective, rotate, skew, fadeEdges, …) and the configurator's default
- * right-hand control rail squeezes it and pushes the controls off-screen. The
- * stacked layout already EXISTS upstream — these are the same rules
- * @mantinex/demo applies inside its own `@container (max-width: 620px)` query —
- * applied unconditionally, but SCOPED to `.marquee-iso-demo` so every other
- * demo keeps the default side rail (which fits fine).
+ * Why: the 3D play-zones are wide with many controls (tilt, perspective,
+ * rotate, skew, radius, faceOrientation, fadeEdges, …) and the configurator's
+ * default right-hand control rail squeezes them and pushes the controls
+ * off-screen. The stacked layout already EXISTS upstream — these are the same
+ * rules @mantinex/demo applies inside its own `@container (max-width: 620px)`
+ * query — applied unconditionally, but SCOPED to `.marquee-3d-demo` so every
+ * other demo keeps the default side rail (which fits fine).
  *
- * The wrapper class lives in docs.mdx: <div className="marquee-iso-demo">.
+ * The wrapper class lives in docs.mdx: <div className="marquee-3d-demo">.
  *
  * NOTE: the m_* hashes are stable per @mantinex/demo version (they ship in the
  * package CSS). Re-check them after a major bump of @mantinex/demo.
  */
 
 /* DemoColumns root: stage above, controls below. */
-.marquee-iso-demo .m_df4e856a {
+.marquee-3d-demo .m_df4e856a {
   flex-direction: column;
 }
 
 /* Controls panel: full-width strip under the stage instead of a side rail. */
-.marquee-iso-demo .m_de00ac9 {
+.marquee-3d-demo .m_de00ac9 {
   flex: unset;
   border-inline-start: none;
   border-right: none !important;

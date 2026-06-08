@@ -31,12 +31,28 @@ export type MarqueeFadeEdgesSize =
 
 /**
  * Display variant. `default` is the classic 2D scroll (existing behavior);
- * `isometric` lays the scroll on a plane tilted in 3D space.
+ * `isometric` lays the scroll on a plane tilted in 3D space; `circle`
+ * distributes the children around a rotating 3D ellipse ring.
  */
-export type MarqueeVariant = 'default' | 'isometric';
+export type MarqueeVariant = 'default' | 'isometric' | 'circle';
 
 /** Scroll orientation — alias of `vertical`, matching `@mantine/core` Marquee. */
 export type MarqueeOrientation = 'horizontal' | 'vertical';
+
+/**
+ * Ring radius for the `circle` variant, in pixels. A single number makes a
+ * circular ring; a `[rx, ry]` tuple makes an ellipse (`rx` = horizontal radius,
+ * `ry` = depth radius).
+ */
+export type MarqueeRadius = number | [number, number];
+
+function resolveRadius(radius: MarqueeRadius | undefined): { x: number; y: number } {
+  if (Array.isArray(radius)) {
+    return { x: radius[0], y: radius[1] };
+  }
+  const r = radius ?? 200;
+  return { x: r, y: r };
+}
 
 function resolveFadeEdges(
   value: MarqueeFadeEdges | undefined
@@ -67,7 +83,7 @@ function resolveFadeEdgeSize(fadeEdgesSize: MarqueeFadeEdgesSize | undefined) {
   return { single: resolved, x: resolved, y: resolved };
 }
 
-export type MarqueeStylesNames = 'root' | 'stage' | 'plane';
+export type MarqueeStylesNames = 'root' | 'stage' | 'plane' | 'tilt' | 'ring' | 'item';
 
 export type MarqueeCssVariables = {
   root:
@@ -80,7 +96,9 @@ export type MarqueeCssVariables = {
     | '--marquee-perspective'
     | '--marquee-rotate'
     | '--marquee-skew'
-    | '--marquee-fade-angle';
+    | '--marquee-fade-angle'
+    | '--marquee-radius-x'
+    | '--marquee-radius-y';
 };
 
 export interface MarqueeBaseProps {
@@ -153,18 +171,27 @@ export interface MarqueeBaseProps {
   gap?: MarqueeGap;
 
   /**
-   * Plane inclination in degrees for the `isometric` variant — the `rotateX`
-   * angle that tips the scroll plane back in 3D space. Ignored by other variants.
+   * Plane inclination in degrees — the `rotateX` angle. For `isometric` it tips
+   * the scroll plane back; for `circle` it is the viewing angle of the ring
+   * (how much it is seen from above). Ignored by the `default` variant.
    * @default 45
    */
   tilt?: number;
 
   /**
-   * CSS `perspective` in pixels applied to the 3D stage for the `isometric`
-   * variant. Smaller values exaggerate depth. Ignored by other variants.
+   * CSS `perspective` in pixels applied to the 3D stage for the `isometric` and
+   * `circle` variants. Smaller values exaggerate depth. Ignored by `default`.
    * @default 800
    */
   perspective?: number;
+
+  /**
+   * Ring radius in pixels for the `circle` variant. A single number makes a
+   * circular ring; a `[rx, ry]` tuple makes an ellipse (`rx` = horizontal
+   * radius, `ry` = depth radius). Ignored by other variants.
+   * @default 200
+   */
+  radius?: MarqueeRadius;
 
   /**
    * In-plane rotation in degrees for the `isometric` variant — the `rotateZ`
@@ -210,11 +237,13 @@ export const defaultProps: Partial<MarqueeProps> = {
   perspective: 800,
   rotate: 0,
   skew: 0,
+  radius: 200,
 };
 
 const varsResolver = createVarsResolver<MarqueeFactory>(
-  (_, { reverse, duration, fadeEdgesSize, tilt, perspective, rotate, skew, variant }) => {
+  (_, { reverse, duration, fadeEdgesSize, tilt, perspective, rotate, skew, radius, variant }) => {
     const { single, x, y } = resolveFadeEdgeSize(fadeEdgesSize);
+    const ringRadius = resolveRadius(radius);
     // Linear fade follows the projected scroll axis when the isometric plane is
     // rotated, so it keeps fading the leading/trailing items instead of the
     // (now empty) screen left/right edges. atan2 of the local +X axis projected
@@ -238,6 +267,8 @@ const varsResolver = createVarsResolver<MarqueeFactory>(
         '--marquee-rotate': `${rotate ?? 0}deg`,
         '--marquee-skew': `${skew ?? 0}deg`,
         '--marquee-fade-angle': `${fadeAngle}deg`,
+        '--marquee-radius-x': `${ringRadius.x}px`,
+        '--marquee-radius-y': `${ringRadius.y}px`,
       },
     };
   }
@@ -271,6 +302,7 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     perspective,
     rotate,
     skew,
+    radius,
 
     // alias props — consumed during normalization above; pulled out so they
     // never leak onto the DOM via `...others`.
@@ -340,6 +372,43 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     </Box>
   );
 
+  // `circle` replaces the clone+translate loop: children are distributed once
+  // around the ellipse ring (one positioned `.item` per child) and the ring
+  // rotates. The seamless animation is the ring's rotateY (0 ≡ 360), no clones.
+  const ringStyles = getStyles('ring');
+  const ring = (
+    <Box
+      {...getStyles('stage')}
+      onMouseEnter={() => setOver(true)}
+      onMouseLeave={() => setOver(false)}
+      onFocus={() => setOver(true)}
+      onBlur={() => setOver(false)}
+    >
+      <div {...getStyles('tilt')}>
+        <div
+          {...ringStyles}
+          style={{
+            ...ringStyles.style,
+            ['--marquee-count' as any]: React.Children.count(children),
+          }}
+        >
+          {React.Children.toArray(children).map((child, index) => {
+            const itemStyles = getStyles('item');
+            return (
+              <div
+                key={(React.isValidElement(child) && child.key) || `marquee-ring-item-${index}`}
+                {...itemStyles}
+                style={{ ...itemStyles.style, ['--marquee-index' as any]: index }}
+              >
+                {child}
+              </div>
+            );
+          })}
+        </div>
+      </div>
+    </Box>
+  );
+
   return (
     <Box
       {...getStyles('root')}
@@ -352,6 +421,8 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
         <Box {...getStyles('stage')}>
           <Box {...getStyles('plane')}>{container}</Box>
         </Box>
+      ) : variant === 'circle' ? (
+        ring
       ) : (
         container
       )}
