@@ -13,6 +13,13 @@
   --marquee-fade-edge-size-xl: 77%;
   --marquee-fade-edge-size: var(--marquee-fade-edge-size-xs, 11%);
 
+  /* isometric variant — overridden inline by varsResolver */
+  --marquee-tilt: 45deg;
+  --marquee-perspective: 800px;
+  --marquee-rotate: 0deg;
+  --marquee-skew: 0deg;
+  --marquee-fade-angle: 0deg;
+
   position: relative;
   display: flex;
   height: 100%;
@@ -40,12 +47,15 @@
    Safari compositing glitches with will-change: transform children.
    ============================================================ */
 
-/* Linear horizontal: two one-sided gradients (left + right) */
+/* Linear horizontal: two one-sided gradients (leading + trailing).
+   The direction is `--marquee-fade-angle` (0 for the default variant →
+   90deg/270deg ≡ to right/to left). The isometric variant sets it to the
+   projected scroll-axis angle so the fade follows the rotated plane. */
 .root[data-fade-edges='linear'] {
   isolation: isolate;
   -webkit-mask-image:
     linear-gradient(
-      to right,
+      calc(90deg + var(--marquee-fade-angle, 0deg)),
       transparent 0%,
       rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
       rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
@@ -55,7 +65,7 @@
       black 100%
     ),
     linear-gradient(
-      to left,
+      calc(270deg + var(--marquee-fade-angle, 0deg)),
       transparent 0%,
       rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
       rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
@@ -67,7 +77,7 @@
   -webkit-mask-composite: source-in;
   mask-image:
     linear-gradient(
-      to right,
+      calc(90deg + var(--marquee-fade-angle, 0deg)),
       transparent 0%,
       rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
       rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
@@ -77,7 +87,7 @@
       black 100%
     ),
     linear-gradient(
-      to left,
+      calc(270deg + var(--marquee-fade-angle, 0deg)),
       transparent 0%,
       rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
       rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
@@ -255,6 +265,39 @@
   );
 }
 
+/* ============================================================
+   Isometric variant — a tilted 3D plane carrying the 2D loop
+
+   The existing clone+translate loop runs UNCHANGED inside a plane
+   tilted by rotateX. The flattening rule (overflow != visible, mask,
+   isolation, opacity < 1 force transform-style: flat on that element
+   and collapse its preserve-3d children) means the 3D scene CANNOT
+   live on .root — .root keeps overflow/mask/isolation and masks the
+   composited 3D result as a flat 2D image. .stage (perspective) and
+   .plane (rotateX, preserve-3d) are inserted BELOW it. A flat ancestor
+   clipping a 3D descendant is fine; flattening only propagates downward.
+   ============================================================ */
+
+.root[data-variant='isometric'] .stage {
+  position: relative;
+  display: flex;
+  height: 100%;
+  width: 100%;
+  align-items: center;
+  justify-content: center;
+  perspective: var(--marquee-perspective, 1000px);
+  perspective-origin: 50% 50%;
+}
+
+.root[data-variant='isometric'] .plane {
+  position: relative;
+  width: 100%;
+  transform: rotateX(var(--marquee-tilt, 45deg)) rotateZ(var(--marquee-rotate, 0deg))
+    skewX(var(--marquee-skew, 0deg));
+  transform-style: preserve-3d;
+  transition: transform 150ms ease;
+}
+
 .marqueeContainer {
   display: flex;
   padding: 0;
@@ -299,5 +342,18 @@
 
   to {
     transform: translateY(calc(-100% - var(--marquee-gap)));
+  }
+}
+
+/* Respect reduced-motion: freeze the scroll (and the isometric tilt
+   transition) so the marquee renders as a static, legible arrangement. */
+@media (prefers-reduced-motion: reduce) {
+  .marqueeContent,
+  .marqueeContentVertical {
+    animation: none;
+  }
+
+  .root[data-variant='isometric'] .plane {
+    transition: none;
   }
 }

@@ -29,6 +29,15 @@ export type MarqueeFadeEdgesSize =
   | (string & {})
   | [MantineSize | (string & {}), MantineSize | (string & {})];
 
+/**
+ * Display variant. `default` is the classic 2D scroll (existing behavior);
+ * `isometric` lays the scroll on a plane tilted in 3D space.
+ */
+export type MarqueeVariant = 'default' | 'isometric';
+
+/** Scroll orientation — alias of `vertical`, matching `@mantine/core` Marquee. */
+export type MarqueeOrientation = 'horizontal' | 'vertical';
+
 function resolveFadeEdges(
   value: MarqueeFadeEdges | undefined
 ): 'linear' | 'ellipse' | 'rect' | undefined {
@@ -58,7 +67,7 @@ function resolveFadeEdgeSize(fadeEdgesSize: MarqueeFadeEdgesSize | undefined) {
   return { single: resolved, x: resolved, y: resolved };
 }
 
-export type MarqueeStylesNames = 'root';
+export type MarqueeStylesNames = 'root' | 'stage' | 'plane';
 
 export type MarqueeCssVariables = {
   root:
@@ -66,7 +75,12 @@ export type MarqueeCssVariables = {
     | '--marquee-duration'
     | '--marquee-fade-edge-size'
     | '--marquee-fade-edge-size-x'
-    | '--marquee-fade-edge-size-y';
+    | '--marquee-fade-edge-size-y'
+    | '--marquee-tilt'
+    | '--marquee-perspective'
+    | '--marquee-rotate'
+    | '--marquee-skew'
+    | '--marquee-fade-angle';
 };
 
 export interface MarqueeBaseProps {
@@ -87,12 +101,20 @@ export interface MarqueeBaseProps {
   vertical?: MarqueeVertical;
 
   /**
+   * Scroll orientation. Alias of `vertical` provided for drop-in parity with
+   * `@mantine/core` Marquee. When set, it takes precedence over `vertical`.
+   */
+  orientation?: MarqueeOrientation;
+
+  /**
    * Pause animation on hover
    */
   pauseOnHover?: boolean;
 
   /**
    * Animation speed/duration in seconds. Minimum value is 0.1.
+   * Note: `@mantine/core` Marquee measures `duration` in milliseconds — here it
+   * is in seconds (core `duration={100000}` ≈ `duration={100}`).
    */
   duration?: number;
 
@@ -112,10 +134,53 @@ export interface MarqueeBaseProps {
   fadeEdgesSize?: MarqueeFadeEdgesSize;
 
   /**
+   * Alias of `fadeEdgesSize` (the singular spelling used by `@mantine/core`
+   * Marquee), provided for drop-in parity. `fadeEdgesSize` wins when both are set.
+   */
+  fadeEdgeSize?: MarqueeFadeEdgesSize;
+
+  /**
+   * Accepted for `@mantine/core` Marquee parity but intentionally unused — fade
+   * edges use CSS masks (true alpha, background-independent), so no fade color
+   * is needed.
+   */
+  fadeEdgeColor?: string;
+
+  /**
    * Gap between marquee items. Accepts a single value or a responsive
    * breakpoint object, e.g. `{ base: 'xs', md: 'xl' }`.
    */
   gap?: MarqueeGap;
+
+  /**
+   * Plane inclination in degrees for the `isometric` variant — the `rotateX`
+   * angle that tips the scroll plane back in 3D space. Ignored by other variants.
+   * @default 45
+   */
+  tilt?: number;
+
+  /**
+   * CSS `perspective` in pixels applied to the 3D stage for the `isometric`
+   * variant. Smaller values exaggerate depth. Ignored by other variants.
+   * @default 800
+   */
+  perspective?: number;
+
+  /**
+   * In-plane rotation in degrees for the `isometric` variant — the `rotateZ`
+   * angle applied after `tilt`. Combine with `tilt` for a classic ¾ isometric
+   * (2.5D) look. Ignored by other variants.
+   * @default 0
+   */
+  rotate?: number;
+
+  /**
+   * Horizontal shear in degrees for the `isometric` variant — the `skewX`
+   * angle applied to the plane. Useful to dial in a sheared/isometric look.
+   * Ignored by other variants.
+   * @default 0
+   */
+  skew?: number;
 
   /** Content */
   children?: React.ReactNode;
@@ -128,6 +193,7 @@ export type MarqueeFactory = Factory<{
   ref: HTMLDivElement;
   stylesNames: MarqueeStylesNames;
   vars: MarqueeCssVariables;
+  variant: MarqueeVariant;
 }>;
 
 export const defaultProps: Partial<MarqueeProps> = {
@@ -139,11 +205,27 @@ export const defaultProps: Partial<MarqueeProps> = {
   fadeEdges: false,
   fadeEdgesSize: 'xs',
   gap: 'xl',
+  variant: 'default',
+  tilt: 45,
+  perspective: 800,
+  rotate: 0,
+  skew: 0,
 };
 
 const varsResolver = createVarsResolver<MarqueeFactory>(
-  (_, { reverse, duration, fadeEdgesSize }) => {
+  (_, { reverse, duration, fadeEdgesSize, tilt, perspective, rotate, skew, variant }) => {
     const { single, x, y } = resolveFadeEdgeSize(fadeEdgesSize);
+    // Linear fade follows the projected scroll axis when the isometric plane is
+    // rotated, so it keeps fading the leading/trailing items instead of the
+    // (now empty) screen left/right edges. atan2 of the local +X axis projected
+    // to screen: rotateZ spins it, rotateX foreshortens its Y; skewX leaves the
+    // scroll axis itself unchanged, so it does not enter the angle.
+    const tiltRad = ((tilt ?? 45) * Math.PI) / 180;
+    const rotateRad = ((rotate ?? 0) * Math.PI) / 180;
+    const fadeAngle =
+      variant === 'isometric'
+        ? (Math.atan2(Math.sin(rotateRad) * Math.cos(tiltRad), Math.cos(rotateRad)) * 180) / Math.PI
+        : 0;
     return {
       root: {
         '--marquee-animation-direction': reverse ? 'reverse' : 'normal',
@@ -151,13 +233,27 @@ const varsResolver = createVarsResolver<MarqueeFactory>(
         '--marquee-fade-edge-size': single,
         '--marquee-fade-edge-size-x': x,
         '--marquee-fade-edge-size-y': y,
+        '--marquee-tilt': `${tilt ?? 45}deg`,
+        '--marquee-perspective': `${perspective ?? 800}px`,
+        '--marquee-rotate': `${rotate ?? 0}deg`,
+        '--marquee-skew': `${skew ?? 0}deg`,
+        '--marquee-fade-angle': `${fadeAngle}deg`,
       },
     };
   }
 );
 
 export const Marquee = factory<MarqueeFactory>((_props) => {
-  const props = useProps('Marquee', defaultProps, _props);
+  // Normalize the `@mantine/core`-parity aliases BEFORE defaults are applied:
+  // `orientation` maps onto `vertical`, `fadeEdgeSize` onto `fadeEdgesSize`.
+  const normalizedProps = {
+    ..._props,
+    vertical:
+      _props.orientation !== undefined ? _props.orientation === 'vertical' : _props.vertical,
+    fadeEdgesSize: _props.fadeEdgesSize ?? _props.fadeEdgeSize,
+  };
+
+  const props = useProps('Marquee', defaultProps, normalizedProps);
 
   const [over, setOver] = React.useState(false);
 
@@ -170,6 +266,17 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     fadeEdges,
     fadeEdgesSize,
     gap,
+    variant,
+    tilt,
+    perspective,
+    rotate,
+    skew,
+
+    // alias props — consumed during normalization above; pulled out so they
+    // never leak onto the DOM via `...others`.
+    orientation,
+    fadeEdgeSize,
+    fadeEdgeColor,
 
     classNames,
     style,
@@ -223,20 +330,31 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     [repeat, resolvedVertical, children, resolvedGap, duration]
   );
 
+  const container = (
+    <Box
+      className={classes.marqueeContainer}
+      onMouseEnter={() => setOver(true)}
+      onMouseLeave={() => setOver(false)}
+    >
+      {renderContent}
+    </Box>
+  );
+
   return (
     <Box
       {...getStyles('root')}
       {...others}
+      data-variant={variant === 'default' ? undefined : variant}
       data-fade-edges={resolveFadeEdges(fadeEdges)}
       data-vertical={resolvedVertical || undefined}
     >
-      <Box
-        className={classes.marqueeContainer}
-        onMouseEnter={() => setOver(true)}
-        onMouseLeave={() => setOver(false)}
-      >
-        {renderContent}
-      </Box>
+      {variant === 'isometric' ? (
+        <Box {...getStyles('stage')}>
+          <Box {...getStyles('plane')}>{container}</Box>
+        </Box>
+      ) : (
+        container
+      )}
     </Box>
   );
 });

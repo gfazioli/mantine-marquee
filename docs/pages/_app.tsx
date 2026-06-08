@@ -6,6 +6,8 @@ import '@mantinex/mantine-header/styles.css';
 import '@mantinex/mantine-logo/styles.css';
 // Component
 import '@gfazioli/mantine-marquee/styles.css';
+// Docs-only: force configurator controls below the stage (wide play-zones)
+import '../styles/demo-overrides.css';
 import { CodeHighlightAdapterProvider, createShikiAdapter } from '@mantine/code-highlight';
 import { MantineProvider } from '@mantine/core';
 import { AppProps } from 'next/app';

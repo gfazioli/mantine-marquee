@@ -5,6 +5,7 @@ export { fadeEdgesEllipse } from './Marquee.demo.fadeEdgesEllipse';
 export { fadeEdgesLinear } from './Marquee.demo.fadeEdgesLinear';
 export { fadeEdgesRect } from './Marquee.demo.fadeEdgesRect';
 export { feedbacks } from './Marquee.demo.feedbacks';
+export { isometric } from './Marquee.demo.isometric';
 export { multiple } from './Marquee.demo.multiple';
 export { multipleVertical } from './Marquee.demo.multiple-vertical';
 export { responsiveGap } from './Marquee.demo.responsiveGap';

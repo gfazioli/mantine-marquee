@@ -13,6 +13,11 @@ export default {
     fadeEdges: false,
     fadeEdgesSize: 'xs',
     gap: 'xl',
+    variant: 'default',
+    tilt: 45,
+    perspective: 800,
+    rotate: 0,
+    skew: 0,
   },
   argTypes: {
     repeat: { control: { type: 'range', min: 2, max: 20, step: 1 } },
@@ -22,6 +27,11 @@ export default {
       control: { type: 'select' },
       options: ['xs', 'sm', 'md', 'lg', 'xl'],
     },
+    variant: { control: { type: 'select' }, options: ['default', 'isometric'] },
+    tilt: { control: { type: 'range', min: -80, max: 80, step: 1 } },
+    perspective: { control: { type: 'range', min: 200, max: 3000, step: 50 } },
+    rotate: { control: { type: 'range', min: -180, max: 180, step: 1 } },
+    skew: { control: { type: 'range', min: -60, max: 60, step: 1 } },
   },
 };
 
@@ -38,6 +48,25 @@ export function Usage(props: MarqueeProps) {
         Have a nice day #3
       </Box>
       <Box bg="lime" p="md" w="200px">
+        Goodbye #4
+      </Box>
+    </Marquee>
+  );
+}
+
+export function Isometric(props: MarqueeProps) {
+  return (
+    <Marquee {...props} variant="isometric" h={320}>
+      <Box bg="red" p="md" w="200px" h={120} c="white">
+        Hello World #1
+      </Box>
+      <Box bg="cyan" p="md" w="200px" h={120}>
+        Hope you like it #2
+      </Box>
+      <Box bg="blue" p="md" w="200px" h={120} c="white">
+        Have a nice day #3
+      </Box>
+      <Box bg="lime" p="md" w="200px" h={120}>
         Goodbye #4
       </Box>
     </Marquee>
