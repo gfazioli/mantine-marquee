@@ -18,6 +18,7 @@ export default {
     perspective: 800,
     rotate: 0,
     skew: 0,
+    radius: 200,
   },
   argTypes: {
     repeat: { control: { type: 'range', min: 2, max: 20, step: 1 } },
@@ -27,11 +28,12 @@ export default {
       control: { type: 'select' },
       options: ['xs', 'sm', 'md', 'lg', 'xl'],
     },
-    variant: { control: { type: 'select' }, options: ['default', 'isometric'] },
+    variant: { control: { type: 'select' }, options: ['default', 'isometric', 'circle'] },
     tilt: { control: { type: 'range', min: -80, max: 80, step: 1 } },
     perspective: { control: { type: 'range', min: 200, max: 3000, step: 50 } },
     rotate: { control: { type: 'range', min: -180, max: 180, step: 1 } },
     skew: { control: { type: 'range', min: -60, max: 60, step: 1 } },
+    radius: { control: { type: 'range', min: 80, max: 420, step: 10 } },
   },
 };
 
@@ -69,6 +71,18 @@ export function Isometric(props: MarqueeProps) {
       <Box bg="lime" p="md" w="200px" h={120}>
         Goodbye #4
       </Box>
+    </Marquee>
+  );
+}
+
+export function Circle(props: MarqueeProps) {
+  return (
+    <Marquee {...props} variant="circle" h={440}>
+      {['red', 'cyan', 'blue', 'lime', 'orange', 'grape', 'teal', 'pink'].map((bg, i) => (
+        <Box key={bg} bg={bg} p="md" w={150} h={90} c="white" fw={600}>
+          Item #{i + 1}
+        </Box>
+      ))}
     </Marquee>
   );
 }

@@ -4,8 +4,11 @@ import type { StylesApiData } from '../components/styles-api.types';
 export const MarqueeStylesApi: StylesApiData<MarqueeFactory> = {
   selectors: {
     root: 'Root element',
-    stage: 'Isometric variant — the 3D viewport that establishes perspective',
+    stage: '3D variants — the viewport that establishes perspective',
     plane: 'Isometric variant — the tilted plane carrying the scroll loop',
+    tilt: 'Circle variant — the static wrapper holding the ring viewing tilt',
+    ring: 'Circle variant — the rotating ellipse ring',
+    item: 'Circle variant — a single item positioned on the ring',
   },
 
   vars: {
@@ -24,6 +27,8 @@ export const MarqueeStylesApi: StylesApiData<MarqueeFactory> = {
       '--marquee-skew': 'Isometric variant — horizontal shear (skewX angle)',
       '--marquee-fade-angle':
         'Isometric variant — projected scroll-axis angle so the linear fade follows the rotated plane (computed)',
+      '--marquee-radius-x': 'Circle variant — horizontal radius of the ring (px)',
+      '--marquee-radius-y': 'Circle variant — depth radius of the ring (px)',
     },
   },
 

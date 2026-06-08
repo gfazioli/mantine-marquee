@@ -8,6 +8,7 @@ export type {
   MarqueeGap,
   MarqueeOrientation,
   MarqueeProps,
+  MarqueeRadius,
   MarqueeStylesNames,
   MarqueeVariant,
   MarqueeVertical,

@@ -172,6 +172,57 @@ describe('Marquee', () => {
     expect(style).toContain('--marquee-skew: 15deg');
   });
 
+  it('sets data-variant="circle" when variant="circle"', () => {
+    const { container } = render(
+      <Marquee variant="circle">
+        <div>A</div>
+        <div>B</div>
+      </Marquee>
+    );
+    expect(container.querySelector('[data-variant="circle"]')).not.toBeNull();
+  });
+
+  it('sets --marquee-radius-x and -y to the same value for a single radius', () => {
+    const { container } = render(
+      <Marquee variant="circle" radius={250}>
+        <div>A</div>
+      </Marquee>
+    );
+    const root = container.querySelector('[data-variant="circle"]') as HTMLElement;
+    const style = root.getAttribute('style') || '';
+    expect(style).toContain('--marquee-radius-x: 250px');
+    expect(style).toContain('--marquee-radius-y: 250px');
+  });
+
+  it('sets independent --marquee-radius-x and -y for a [rx, ry] tuple', () => {
+    const { container } = render(
+      <Marquee variant="circle" radius={[300, 120]}>
+        <div>A</div>
+      </Marquee>
+    );
+    const root = container.querySelector('[data-variant="circle"]') as HTMLElement;
+    const style = root.getAttribute('style') || '';
+    expect(style).toContain('--marquee-radius-x: 300px');
+    expect(style).toContain('--marquee-radius-y: 120px');
+  });
+
+  it('distributes children around the ring with --marquee-count and per-item --marquee-index', () => {
+    const { container } = render(
+      <Marquee variant="circle">
+        <div>A</div>
+        <div>B</div>
+        <div>C</div>
+      </Marquee>
+    );
+    const ring = container.querySelector('[style*="--marquee-count"]') as HTMLElement;
+    expect((ring.getAttribute('style') || '').replace(/\s/g, '')).toContain('--marquee-count:3');
+    expect(ring.children).toHaveLength(3);
+    const firstItem = ring.children[0] as HTMLElement;
+    expect((firstItem.getAttribute('style') || '').replace(/\s/g, '')).toContain(
+      '--marquee-index:0'
+    );
+  });
+
   it('computes a non-zero --marquee-fade-angle for a rotated isometric plane', () => {
     const { container } = render(
       <Marquee variant="isometric" rotate={56} tilt={48}>
