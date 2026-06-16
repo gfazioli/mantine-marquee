@@ -1,6 +1,6 @@
 {
   "name": "@gfazioli/mantine-marquee",
-  "version": "4.1.0",
+  "version": "4.1.1",
   "description": "Mantine component that creates seamless, GPU-accelerated infinite-scrolling content loops — horizontal/vertical directions, responsive props, CSS-mask fade edges, and a 3D isometric variant.",
   "homepage": "https://gfazioli.github.io/mantine-marquee/",
   "packageManager": "yarn@4.0.1",
