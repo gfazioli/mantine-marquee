@@ -74,7 +74,7 @@ export const Cap = ({ title, note }) => (
       <Table.Td ta="center"><Yes /></Table.Td>
     </Table.Tr>
     <Table.Tr>
-      <Table.Td><Cap title="Reverse, pause on hover, gap and repeat" note="Same props in both — repeat defaults to 2 here and 4 in core, and duration is in seconds here, milliseconds in core" /></Table.Td>
+      <Table.Td><Cap title="Reverse, pause on hover, gap and repeat" note="Same props, different defaults — repeat 2 here, 4 in core; duration 20 s here, 100000 ms (100 s) in core; gap xl (16px) here, md theme spacing (16px by default) in core" /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
     </Table.Tr>
@@ -219,6 +219,8 @@ after changing the import path, with a few notes:
 - `fadeEdgeColor` is accepted but ignored — fade edges use CSS masks (true alpha, background-independent), so no fade color is required.
 - `duration` is expressed in **seconds** here, while `@mantine/core` measures it in **milliseconds**: core `duration={100000}` corresponds to `duration={100}`.
 - `fadeEdges` is off by default here and on by default in core: add `fadeEdges` to keep the fade after switching.
+- The default `duration` is 20 s here and 100 s in core: set `duration={100}` to keep core's pace.
+- `gap` tokens use this component's own scale (`xs` 1px, `sm` 2px, `md` 4px, `lg` 8px, `xl` 16px), not `theme.spacing`: core `gap="md"` (16px with the default theme) corresponds to `gap="xl"` here, and a number or any CSS value means the same in both.
 
 On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`), per-axis fade sizes for `rect`, and the `isometric` and `circle` 3D variants.
 
