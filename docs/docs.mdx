@@ -1,3 +1,5 @@
+import { Table, Text } from '@mantine/core';
+import { IconCheck, IconX } from '@tabler/icons-react';
 import { InstallScript } from './components/InstallScript/InstallScript';
 import * as demos from './demos';
 
@@ -16,6 +18,80 @@ You can import styles within a layer `@layer mantine-marquee` by importing `@gfa
 ```tsx
 import '@gfazioli/mantine-marquee/styles.layer.css';
 ```
+
+## Comparison with Mantine core Marquee
+
+Since version 9.0, Mantine core ships a first-party [Marquee](https://mantine.dev/core/marquee/) component. The basics overlap — a seamless loop of repeated children, horizontal or vertical, reverse and pause on hover — but the two make different trade-offs.
+
+export const Yes = () => <IconCheck size={20} stroke={2.5} color="var(--mantine-color-teal-6)" aria-label="Supported" />;
+
+export const No = () => <IconX size={18} stroke={2} color="var(--mantine-color-red-6)" aria-label="Not available" />;
+
+export const Cap = ({ title, note }) => (
+  <>
+    <Text size="sm" fw={500}>{title}</Text>
+    {note && <Text size="xs" c="dimmed">{note}</Text>}
+  </>
+);
+
+<Table striped withTableBorder withColumnBorders verticalSpacing="sm" my="md">
+  <Table.Thead>
+    <Table.Tr>
+      <Table.Th>Capability</Table.Th>
+      <Table.Th ta="center" w={140}>Marquee</Table.Th>
+      <Table.Th ta="center" w={140}>Core Marquee</Table.Th>
+    </Table.Tr>
+  </Table.Thead>
+  <Table.Tbody>
+    <Table.Tr>
+      <Table.Td><Cap title="3D variants" note="variant=&quot;isometric&quot; lays the loop on a tilted plane (tilt, perspective, rotate, skew); variant=&quot;circle&quot; spins the children around a 3D ring (radius, tilt)" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><No /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Fade edges over any background" note="Marquee fades with a CSS mask (true alpha), so it works over images and gradients — core paints a gradient in fadeEdgeColor, which has to match the background" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><No /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Fade edge shapes" note="linear, ellipse or rect, with a separate size per axis ([x, y]) — core fades the two scroll edges" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><No /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Responsive orientation and gap" note="vertical and gap accept Mantine breakpoint maps, e.g. vertical on mobile and horizontal from md" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><No /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Reduced motion" note="With prefers-reduced-motion: reduce the scroll stops and the items stay readable — core keeps animating" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><No /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Horizontal and vertical scrolling" note="Both: orientation=&quot;vertical&quot; in core; vertical in Marquee, which also accepts orientation as an alias" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Reverse, pause on hover, gap and repeat" note="Same props in both — repeat defaults to 2 here and 4 in core, and duration is in seconds here, milliseconds in core" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Styles API" note="Marquee: root, stage, plane, tilt, ring, item — core: root, content, group" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Custom fade color" note="core paints the fade with fadeEdgeColor; Marquee's mask fades to transparent, so the prop is accepted and ignored" /></Table.Td>
+      <Table.Td ta="center"><No /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+    </Table.Tr>
+  </Table.Tbody>
+</Table>
+
+**When to use which.** Reach for the core `Marquee` for a plain logo or text strip on a solid background, with nothing extra to install. Reach for `Marquee` when the strip sits over an image or a gradient, when you want a 3D isometric plane or a rotating ring, when the layout changes at a breakpoint, or when the motion should stop for users who ask for less of it. Moving from core is a matter of changing the import: see [Drop-in for Mantine core Marquee](#drop-in-for-mantine-core-marquee).
 
 ## Usage
 
@@ -142,6 +218,7 @@ after changing the import path, with a few notes:
 - `fadeEdgeSize` is accepted as an alias of `fadeEdgesSize` (singular spelling).
 - `fadeEdgeColor` is accepted but ignored — fade edges use CSS masks (true alpha, background-independent), so no fade color is required.
 - `duration` is expressed in **seconds** here, while `@mantine/core` measures it in **milliseconds**: core `duration={100000}` corresponds to `duration={100}`.
+- `fadeEdges` is off by default here and on by default in core: add `fadeEdges` to keep the fade after switching.
 
 On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`), per-axis fade sizes, and the `isometric` and `circle` 3D variants.
 
