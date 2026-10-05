@@ -54,7 +54,7 @@ export const Cap = ({ title, note }) => (
       <Table.Td ta="center"><No /></Table.Td>
     </Table.Tr>
     <Table.Tr>
-      <Table.Td><Cap title="Fade edge shapes" note="linear, ellipse or rect, with a separate size per axis ([x, y]) — core fades the two scroll edges" /></Table.Td>
+      <Table.Td><Cap title="Fade edge shapes" note="linear, ellipse or rect, and rect takes a separate size per axis ([x, y]) — core fades the two scroll edges" /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
       <Table.Td ta="center"><No /></Table.Td>
     </Table.Tr>
@@ -220,7 +220,7 @@ after changing the import path, with a few notes:
 - `duration` is expressed in **seconds** here, while `@mantine/core` measures it in **milliseconds**: core `duration={100000}` corresponds to `duration={100}`.
 - `fadeEdges` is off by default here and on by default in core: add `fadeEdges` to keep the fade after switching.
 
-On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`), per-axis fade sizes, and the `isometric` and `circle` 3D variants.
+On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`), per-axis fade sizes for `rect`, and the `isometric` and `circle` 3D variants.
 
 ## Example: Testimonials
 
