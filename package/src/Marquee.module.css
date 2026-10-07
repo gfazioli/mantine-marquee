@@ -375,14 +375,14 @@
   backface-visibility: visible;
 }
 
-.marqueeContainer {
+.content {
   display: flex;
   padding: 0;
   gap: var(--marquee-gap);
   flex-direction: var(--marquee-direction);
 }
 
-.marqueeContent {
+.group {
   display: flex;
   justify-content: flex-start;
   gap: var(--marquee-gap);
@@ -393,7 +393,7 @@
   backface-visibility: hidden;
 }
 
-.marqueeContentVertical {
+.group[data-vertical] {
   flex-direction: column;
   animation: marquee-vertical var(--marquee-duration) linear infinite;
   animation-direction: var(--marquee-animation-direction, normal);
@@ -425,8 +425,7 @@
 /* Respect reduced-motion: freeze the scroll (and the isometric tilt
    transition) so the marquee renders as a static, legible arrangement. */
 @media (prefers-reduced-motion: reduce) {
-  .marqueeContent,
-  .marqueeContentVertical,
+  .group,
   .root[data-variant='circle'] .ring {
     animation: none;
   }

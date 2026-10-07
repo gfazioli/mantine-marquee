@@ -2,6 +2,7 @@ import {
   Box,
   BoxProps,
   createVarsResolver,
+  ElementProps,
   Factory,
   factory,
   getSize,
@@ -12,7 +13,7 @@ import {
   useProps,
   useStyles,
 } from '@mantine/core';
-import React, { useMemo } from 'react';
+import React from 'react';
 import classes from './Marquee.module.css';
 
 export type MarqueeVertical = boolean | Partial<Record<MantineBreakpoint, boolean>>;
@@ -83,7 +84,15 @@ function resolveFadeEdgeSize(fadeEdgesSize: MarqueeFadeEdgesSize | undefined) {
   return { single: resolved, x: resolved, y: resolved };
 }
 
-export type MarqueeStylesNames = 'root' | 'stage' | 'plane' | 'tilt' | 'ring' | 'item';
+export type MarqueeStylesNames =
+  | 'root'
+  | 'content'
+  | 'group'
+  | 'stage'
+  | 'plane'
+  | 'tilt'
+  | 'ring'
+  | 'item';
 
 export type MarqueeCssVariables = {
   root:
@@ -213,7 +222,8 @@ export interface MarqueeBaseProps {
   children?: React.ReactNode;
 }
 
-export interface MarqueeProps extends BoxProps, MarqueeBaseProps, StylesApiProps<MarqueeFactory> {}
+export interface MarqueeProps
+  extends BoxProps, MarqueeBaseProps, StylesApiProps<MarqueeFactory>, ElementProps<'div'> {}
 
 export type MarqueeFactory = Factory<{
   props: MarqueeProps;
@@ -315,6 +325,7 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     styles,
     unstyled,
     vars,
+    attributes,
     children,
     className,
 
@@ -345,30 +356,30 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     classNames,
     styles,
     unstyled,
+    attributes,
     vars,
     varsResolver,
   });
 
-  const renderContent = useMemo(
-    () =>
-      Array.from({ length: (repeat ?? 2) < 2 ? 2 : (repeat ?? 2) }).map((_, i) => (
-        <div
-          key={`marquee-item-${repeat}-${resolvedGap}-${duration}-${i}`}
-          className={`${classes.marqueeContent} ${resolvedVertical ? classes.marqueeContentVertical : ''}`}
-        >
-          {children}
-        </div>
-      )),
-    [repeat, resolvedVertical, children, resolvedGap, duration]
-  );
+  // One `group` per copy of the children. The key carries gap and duration so
+  // that changing either remounts the copies and restarts them in step.
+  const groups = Array.from({ length: (repeat ?? 2) < 2 ? 2 : (repeat ?? 2) }).map((_, i) => (
+    <div
+      key={`marquee-item-${repeat}-${resolvedGap}-${duration}-${i}`}
+      {...getStyles('group')}
+      data-vertical={resolvedVertical || undefined}
+    >
+      {children}
+    </div>
+  ));
 
   const container = (
     <Box
-      className={classes.marqueeContainer}
+      {...getStyles('content')}
       onMouseEnter={() => setOver(true)}
       onMouseLeave={() => setOver(false)}
     >
-      {renderContent}
+      {groups}
     </Box>
   );
 
@@ -416,6 +427,9 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
       data-variant={variant === 'default' ? undefined : variant}
       data-fade-edges={resolveFadeEdges(fadeEdges)}
       data-vertical={resolvedVertical || undefined}
+      data-orientation={resolvedVertical ? 'vertical' : 'horizontal'}
+      data-reverse={reverse || undefined}
+      data-pause-on-hover={pauseOnHover || undefined}
     >
       {variant === 'isometric' ? (
         <Box {...getStyles('stage')}>
@@ -431,4 +445,5 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
 });
 
 Marquee.classes = classes;
+Marquee.varsResolver = varsResolver;
 Marquee.displayName = 'Marquee';

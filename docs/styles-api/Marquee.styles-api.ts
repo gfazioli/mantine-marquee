@@ -4,6 +4,9 @@ import type { StylesApiData } from '../components/styles-api.types';
 export const MarqueeStylesApi: StylesApiData<MarqueeFactory> = {
   selectors: {
     root: 'Root element',
+    content: 'Default and isometric variants — the element that holds the repeated copies',
+    group:
+      'Default and isometric variants — one repeated copy of the children (the animated element)',
     stage: '3D variants — the viewport that establishes perspective',
     plane: 'Isometric variant — the tilted plane carrying the scroll loop',
     tilt: 'Circle variant — the static wrapper holding the ring viewing tilt',

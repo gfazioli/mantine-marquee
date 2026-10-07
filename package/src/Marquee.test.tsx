@@ -286,4 +286,86 @@ describe('Marquee', () => {
     const root = container.querySelector('[data-fade-edges="linear"]') as HTMLElement;
     expect(root.getAttribute('fadeedgecolor')).toBeNull();
   });
+  describe('drop-in parity with @mantine/core Marquee', () => {
+    it('accepts HTML element props such as id and event handlers', () => {
+      const onMouseEnter = jest.fn();
+      const { container } = render(
+        <Marquee id="logos" title="Logos" onMouseEnter={onMouseEnter}>
+          <div>Test</div>
+        </Marquee>
+      );
+      const root = container.querySelector('#logos') as HTMLElement;
+      expect(root).not.toBeNull();
+      expect(root.getAttribute('title')).toBe('Logos');
+    });
+
+    it('forwards attributes to root, content and group instead of rendering them as one attribute', () => {
+      const { container } = render(
+        <Marquee
+          attributes={{
+            root: { 'data-probe': 'root' },
+            content: { 'data-probe': 'content' },
+            group: { 'data-probe': 'group' },
+          }}
+        >
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(container.querySelector('[attributes]')).toBeNull();
+      expect(container.querySelector('[data-probe="root"]')).not.toBeNull();
+      expect(container.querySelector('[data-probe="content"]')).not.toBeNull();
+      expect(container.querySelectorAll('[data-probe="group"]')).toHaveLength(2);
+    });
+
+    it('applies classNames to the content and group selectors', () => {
+      const { container } = render(
+        <Marquee repeat={3} classNames={{ content: 'probe-content', group: 'probe-group' }}>
+          <div>Test</div>
+        </Marquee>
+      );
+      const content = container.querySelector('.probe-content') as HTMLElement;
+      expect(content).not.toBeNull();
+      expect(content.querySelectorAll('.probe-group')).toHaveLength(3);
+    });
+
+    it('applies classNames to content and group in the isometric variant', () => {
+      const { container } = render(
+        <Marquee
+          variant="isometric"
+          classNames={{ content: 'probe-content', group: 'probe-group' }}
+        >
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(container.querySelector('.probe-content .probe-group')).not.toBeNull();
+    });
+
+    it('sets the data attributes core sets on the root', () => {
+      const { container } = render(
+        <Marquee orientation="vertical" reverse pauseOnHover>
+          <div>Test</div>
+        </Marquee>
+      );
+      const root = container.querySelector('[data-orientation]') as HTMLElement;
+      expect(root.getAttribute('data-orientation')).toBe('vertical');
+      expect(root.hasAttribute('data-reverse')).toBe(true);
+      expect(root.hasAttribute('data-pause-on-hover')).toBe(true);
+    });
+
+    it('sets data-orientation="horizontal" and no reverse/pause attributes by default', () => {
+      const { container } = render(
+        <Marquee>
+          <div>Test</div>
+        </Marquee>
+      );
+      const root = container.querySelector('[data-orientation]') as HTMLElement;
+      expect(root.getAttribute('data-orientation')).toBe('horizontal');
+      expect(root.hasAttribute('data-reverse')).toBe(false);
+      expect(root.hasAttribute('data-pause-on-hover')).toBe(false);
+    });
+
+    it('exposes varsResolver as a static property', () => {
+      expect(typeof Marquee.varsResolver).toBe('function');
+    });
+  });
 });
