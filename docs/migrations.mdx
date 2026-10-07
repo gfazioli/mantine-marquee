@@ -1,0 +1,53 @@
+import { Table } from '@mantine/core';
+
+## Upgrade guide
+
+This page collects the **breaking changes** and **migration steps** for each major version of `@gfazioli/mantine-marquee`. If you are starting a new project, you can skip this page: everything here is about updating existing code from an older version.
+
+New features that do not break anything are **not** listed here. See the [GitHub Releases](https://github.com/gfazioli/mantine-marquee/releases) page for the full changelog.
+
+## v5
+
+v5 makes `Marquee` a true drop-in for the `@mantine/core` Marquee: code written for core keeps its meaning after changing the import.
+
+### Breaking changes in v5
+
+- **`gap` tokens resolve through `theme.spacing`**, as in core, instead of the component's own scale. The default moves from `"xl"` to `"md"`, so a marquee without `gap` keeps its 16px with the default theme, and a theme with custom spacing now changes the marquee gap too. Numbers and CSS values (`gap={20}`, `gap="2rem"`) mean what they meant before.
+- **The `--marquee-gap-xs` … `--marquee-gap-xl` CSS variables are gone.** `--marquee-gap` still holds the resolved gap.
+- **`pauseOnHover` also pauses on keyboard focus**: while a link or button inside the marquee has `:focus-visible`, the loop stops. The pause is now pure CSS, and the hover area is the whole root, as in core.
+- **`unstyled` now also removes the scroll styles** of the element holding the copies and of each copy, because they are the `content` and `group` selectors of the Styles API now. An `unstyled` marquee no longer animates by itself.
+
+### Migration from v4 to v5
+
+Only a `gap` given as a token changes size. With the default theme:
+
+<Table striped withTableBorder withColumnBorders my="md">
+  <Table.Thead>
+    <Table.Tr>
+      <Table.Th>v4 value</Table.Th>
+      <Table.Th>v4 size</Table.Th>
+      <Table.Th>v5 size of the same token</Table.Th>
+      <Table.Th>Keep the v4 size with</Table.Th>
+    </Table.Tr>
+  </Table.Thead>
+  <Table.Tbody>
+    <Table.Tr><Table.Td>gap="xs"</Table.Td><Table.Td>1px</Table.Td><Table.Td>10px</Table.Td><Table.Td>gap=&#123;1&#125;</Table.Td></Table.Tr>
+    <Table.Tr><Table.Td>gap="sm"</Table.Td><Table.Td>2px</Table.Td><Table.Td>12px</Table.Td><Table.Td>gap=&#123;2&#125;</Table.Td></Table.Tr>
+    <Table.Tr><Table.Td>gap="md"</Table.Td><Table.Td>4px</Table.Td><Table.Td>16px</Table.Td><Table.Td>gap=&#123;4&#125;</Table.Td></Table.Tr>
+    <Table.Tr><Table.Td>gap="lg"</Table.Td><Table.Td>8px</Table.Td><Table.Td>20px</Table.Td><Table.Td>gap=&#123;8&#125;</Table.Td></Table.Tr>
+    <Table.Tr><Table.Td>gap="xl"</Table.Td><Table.Td>16px</Table.Td><Table.Td>32px</Table.Td><Table.Td>gap="md", or leave it out</Table.Td></Table.Tr>
+    <Table.Tr><Table.Td>no gap</Table.Td><Table.Td>16px</Table.Td><Table.Td>16px</Table.Td><Table.Td>nothing to change</Table.Td></Table.Tr>
+  </Table.Tbody>
+</Table>
+
+The same mapping applies to each breakpoint of a responsive `gap`:
+
+```tsx
+// v4
+<Marquee gap={{ base: 'xs', md: 'xl' }} />
+
+// v5, same sizes
+<Marquee gap={{ base: 1, md: 'md' }} />
+```
+
+Numbers are converted to `rem`, so `gap={4}` is 4px at the default scale. If you overrode `--marquee-gap-md` (or another token variable) through `vars` or `styles`, set `--marquee-gap` instead, or change `theme.spacing`.

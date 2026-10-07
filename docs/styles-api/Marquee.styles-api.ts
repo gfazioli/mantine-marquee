@@ -24,6 +24,8 @@ export const MarqueeStylesApi: StylesApiData<MarqueeFactory> = {
         'Fade edge horizontal size — controls left/right fade for rect mode and resolves from the first tuple value',
       '--marquee-fade-edge-size-y':
         'Fade edge vertical size — controls top/bottom fade for rect mode and resolves from the second tuple value',
+      '--marquee-fade-color':
+        'Fade edges color, resolved from fadeEdgeColor (theme key or CSS color); used only when fadeEdgeColor is set',
       '--marquee-tilt': 'Isometric variant — plane inclination (rotateX angle)',
       '--marquee-perspective': 'Isometric variant — CSS perspective applied to the 3D stage',
       '--marquee-rotate': 'Isometric variant — in-plane rotation (rotateZ angle)',

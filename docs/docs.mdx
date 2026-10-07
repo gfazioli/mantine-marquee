@@ -3,6 +3,8 @@ import { IconCheck, IconX } from '@tabler/icons-react';
 import { InstallScript } from './components/InstallScript/InstallScript';
 import * as demos from './demos';
 
+> **Upgrading from v4?** v5 resolves `gap` through `theme.spacing`, like core. See the [Upgrade guide](?t=migrations) for the size table and the other breaking changes.
+
 ## Installation
 
 <InstallScript packages="@gfazioli/mantine-marquee" />
@@ -49,7 +51,7 @@ export const Cap = ({ title, note }) => (
       <Table.Td ta="center"><No /></Table.Td>
     </Table.Tr>
     <Table.Tr>
-      <Table.Td><Cap title="Fade edges over any background" note="Marquee fades with a CSS mask (true alpha), so it works over images and gradients — core paints a gradient in fadeEdgeColor, which has to match the background" /></Table.Td>
+      <Table.Td><Cap title="Fade edges over any background" note="By default Marquee fades with a CSS mask (true alpha), so it works over images and gradients — core always paints a gradient in fadeEdgeColor, which has to match the background" /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
       <Table.Td ta="center"><No /></Table.Td>
     </Table.Tr>
@@ -69,29 +71,39 @@ export const Cap = ({ title, note }) => (
       <Table.Td ta="center"><No /></Table.Td>
     </Table.Tr>
     <Table.Tr>
+      <Table.Td><Cap title="Pause on keyboard focus" note="With pauseOnHover, the loop also stops while a link or button inside has keyboard focus, so it does not scroll away from the user — core pauses on hover only" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><No /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
+      <Table.Td><Cap title="Theme colors for the fade" note="fadeEdgeColor takes a theme key (blue, blue.3, dark.7) as well as any CSS color, and paints every fade shape — core passes the string to CSS as it is, so red means the CSS named color" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
+      <Table.Td ta="center"><No /></Table.Td>
+    </Table.Tr>
+    <Table.Tr>
       <Table.Td><Cap title="Horizontal and vertical scrolling" note="Both: orientation=&quot;vertical&quot; in core; vertical in Marquee, which also accepts orientation as an alias" /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
     </Table.Tr>
     <Table.Tr>
-      <Table.Td><Cap title="Reverse, pause on hover, gap and repeat" note="Same props, different defaults — repeat 2 here, 4 in core; duration 20 s here, 100000 ms (100 s) in core; gap xl (16px) here, md theme spacing (16px by default) in core" /></Table.Td>
+      <Table.Td><Cap title="Reverse, pause on hover, gap and repeat" note="Same props, different defaults — repeat 2 here, 4 in core; duration 20 s here, 100000 ms (100 s) in core. gap takes the same values in both: a theme.spacing key (md by default), a number or any CSS value" /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
     </Table.Tr>
     <Table.Tr>
-      <Table.Td><Cap title="Styles API" note="Marquee: root, stage, plane, tilt, ring, item — core: root, content, group" /></Table.Td>
+      <Table.Td><Cap title="Styles API" note="Both: root, content, group, with classNames, styles, vars and attributes, and the data-orientation, data-reverse and data-pause-on-hover attributes on the root. Marquee adds stage, plane, tilt, ring and item for the 3D variants" /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
     </Table.Tr>
     <Table.Tr>
-      <Table.Td><Cap title="Custom fade color" note="core paints the fade with fadeEdgeColor; Marquee's mask fades to transparent, so the prop is accepted and ignored" /></Table.Td>
-      <Table.Td ta="center"><No /></Table.Td>
+      <Table.Td><Cap title="Custom fade color" note="fadeEdgeColor paints the fade edges in a color, in both" /></Table.Td>
+      <Table.Td ta="center"><Yes /></Table.Td>
       <Table.Td ta="center"><Yes /></Table.Td>
     </Table.Tr>
   </Table.Tbody>
 </Table>
 
-**When to use which.** Reach for the core `Marquee` for a plain logo or text strip on a solid background, with nothing extra to install. Reach for `Marquee` when the strip sits over an image or a gradient, when you want a 3D isometric plane or a rotating ring, when the layout changes at a breakpoint, or when the motion should stop for users who ask for less of it. Moving from core is a matter of changing the import: see [Drop-in for Mantine core Marquee](#drop-in-for-mantine-core-marquee).
+**When to use which.** Reach for the core `Marquee` for a plain logo or text strip on a solid background, with nothing extra to install. Reach for `Marquee` when the strip sits over an image or a gradient, when you want a 3D isometric plane or a rotating ring, when the layout changes at a breakpoint, or when the motion should stop for users who ask for less of it or who reach it with the keyboard. Moving from core is a matter of changing the import: see [Drop-in for Mantine core Marquee](#drop-in-for-mantine-core-marquee).
 
 ## Usage
 
@@ -157,6 +169,14 @@ The `Marquee` component allows you to create a marquee effect with multiple item
 
 <Demo data={demos.multipleVertical} />
 
+## Pause on hover and focus
+
+`pauseOnHover` stops the loop while the pointer is over the marquee, and also while a link or a button inside it has keyboard focus,
+so a keyboard user can stop on an item instead of chasing it. Press <kbd>Tab</kbd> to move into the demo below.
+The pause is pure CSS (`:hover` and `:focus-visible`): it costs no re-render and works before hydration, in all three variants.
+
+<Demo data={demos.pauseOnHover} />
+
 ## Isometric variant
 
 Set `variant="isometric"` to lay the marquee on a plane tilted back in 3D space — content scrolls
@@ -219,18 +239,17 @@ This is useful when switching layout direction at a breakpoint — you can pair 
 
 ## Drop-in for Mantine core Marquee
 
-This component is a superset of the built-in `@mantine/core` Marquee — existing snippets keep working
-after changing the import path, with a few notes:
+This component is a superset of the built-in `@mantine/core` Marquee: existing snippets keep working
+after changing the import path. The props, the `gap` values, the Styles API selectors (`root`, `content`, `group`),
+`attributes` and the root data attributes carry over. A few things to know:
 
-- `orientation="horizontal" | "vertical"` is accepted as an alias of `vertical`.
-- `fadeEdgeSize` is accepted as an alias of `fadeEdgesSize` (singular spelling).
-- `fadeEdgeColor` is accepted but ignored — fade edges use CSS masks (true alpha, background-independent), so no fade color is required.
-- `duration` is expressed in **seconds** here, while `@mantine/core` measures it in **milliseconds**: core `duration={100000}` corresponds to `duration={100}`.
-- `fadeEdges` is off by default here and on by default in core: add `fadeEdges` to keep the fade after switching.
-- The default `duration` is 20 s here and 100 s in core: set `duration={100}` to keep core's pace.
-- `gap` tokens use this component's own scale (`xs` 1px, `sm` 2px, `md` 4px, `lg` 8px, `xl` 16px), not `theme.spacing`: core `gap="md"` (16px with the default theme) corresponds to `gap="xl"` here, and a number or any CSS value means the same in both.
+- `orientation="horizontal" | "vertical"` is accepted as an alias of `vertical`, and `fadeEdgeSize` as an alias of `fadeEdgesSize` (singular spelling).
+- `duration` is expressed in **seconds** here, while `@mantine/core` measures it in **milliseconds**: core `duration={100000}` corresponds to `duration={100}`. The default is 20 s here and 100 s in core: set `duration={100}` to keep core's pace.
+- `fadeEdges` is off by default here and on by default in core: add `fadeEdges` to keep the fade after switching. Its default size is `"xs"` (11%) here and 5% in core: set `fadeEdgeSize="5%"` to match.
+- `fadeEdgeColor` resolves theme colors: `"red"` is the theme's red here, while core hands the string to CSS as the named color. Any other CSS color means the same in both.
 
-On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`), per-axis fade sizes for `rect`, and the `isometric` and `circle` 3D variants.
+On top of that you get responsive `gap` and `vertical`, fade-edge shapes (`linear`, `ellipse`, `rect`) as a mask or in a color, per-axis fade sizes for `rect`,
+a pause on keyboard focus, and the `isometric` and `circle` 3D variants.
 
 ## Example: Testimonials
 

@@ -47,27 +47,28 @@ Rollup bundles to dual ESM (`dist/esm/`) and CJS (`dist/cjs/`) with `'use client
 `Marquee` uses Mantine's `factory<MarqueeFactory>` which requires a `Factory` type declaring `props`, `ref`, `stylesNames`, and `vars`, plus `createVarsResolver` to map props to CSS custom properties on `.root`, `useProps` for default prop merging, and `useStyles` for the `getStyles` accessor.
 
 ### CSS custom properties split
-CSS custom properties in `Marquee.module.css` control animation: `--marquee-duration`, `--marquee-gap`, `--marquee-animation-direction`, `--marquee-direction`, `--marquee-play-state`, `--marquee-fade-edge-size`. The `varsResolver` sets static props (`duration`, `reverse`, `fadeEdgesSize`). Three variables are set via inline `style` in `useStyles` because they depend on runtime state or hooks:
-- `--marquee-play-state` — depends on hover state (`over`)
+CSS custom properties in `Marquee.module.css` control animation: `--marquee-duration`, `--marquee-gap`, `--marquee-animation-direction`, `--marquee-direction`, `--marquee-play-state`, `--marquee-fade-edge-size`, `--marquee-fade-color`. The `varsResolver` sets static props (`duration`, `reverse`, `fadeEdgesSize`, `fadeEdgeColor`, the 3D props). Two variables are set via inline `style` in `useStyles` because they depend on hooks:
 - `--marquee-direction` — `vertical` can be a responsive breakpoint object resolved by `useMatches`
 - `--marquee-gap` — `gap` can be a responsive breakpoint object resolved by `useMatches`
 
-The `varsResolver` only receives raw props and cannot call hooks, which is why these three are excluded from it and from `MarqueeCssVariables`.
+The `varsResolver` only receives raw props and cannot call hooks, which is why these two are excluded from it and from `MarqueeCssVariables`.
+
+`--marquee-play-state` is never set inline: `.root` declares it `running`, and `.root[data-pause-on-hover]:where(:hover, :has(:focus-visible))` sets it to `paused`. That is the whole of `pauseOnHover` (hover and keyboard focus, all variants, no React state). An inline value would beat the rule, so keep it out of `style`.
 
 ### Animation mechanics
-The marquee loop clones `children` into `repeat` wrapper `<div>`s (`.marqueeContent`) sharing the same CSS keyframe. Each clone translates by `translateX(calc(-100% - var(--marquee-gap)))`, exactly the distance to the next clone, making the loop geometrically seamless.
+The marquee loop clones `children` into `repeat` wrapper `<div>`s (the `group` selector) inside one holder (the `content` selector), all sharing the same CSS keyframe. `content` and `group` are core's selector names, reached through `getStyles` so `classNames`, `styles` and `attributes` apply; vertical is a `data-vertical` attribute on each group, not a class, so nested marquees cannot inherit it. Each clone translates by `translateX(calc(-100% - var(--marquee-gap)))`, exactly the distance to the next clone, making the loop geometrically seamless.
 
 Key CSS decisions:
-- `will-change: transform` on `.marqueeContent` / `.marqueeContentVertical` — promotes each clone to a GPU compositor layer, preventing frame drops.
+- `will-change: transform` on `.group` — promotes each clone to a GPU compositor layer, preventing frame drops.
 - `backface-visibility: hidden` — prevents flickering on Safari/iOS during animation loop reset.
-- `overflow: hidden` only on `.root`, not `.marqueeContainer` — having it on both creates an extra stacking context that interferes with GPU layer compositing.
+- `overflow: hidden` only on `.root`, not `.content` — having it on both creates an extra stacking context that interferes with GPU layer compositing.
 - The CSS keyframe + `transform` approach runs entirely on the GPU compositor thread without touching layout or paint.
 
 ### Responsive `vertical` prop
-`vertical` accepts `boolean | Partial<Record<MantineBreakpoint, boolean>>` (exported as `MarqueeVertical`). `useMatches` is always called (React hooks rules). A plain boolean is wrapped as `{ base: bool }` (no-op for `useMatches`). The resolved boolean is stored as `resolvedVertical` and used for `data-vertical`, class selection, and `--marquee-direction` inline style.
+`vertical` accepts `boolean | Partial<Record<MantineBreakpoint, boolean>>` (exported as `MarqueeVertical`). `useMatches` is always called (React hooks rules). A plain boolean is wrapped as `{ base: bool }` (no-op for `useMatches`). The resolved boolean is stored as `resolvedVertical` and used for `data-vertical` (on the root and on each group), `data-orientation`, and the `--marquee-direction` inline style.
 
 ### Responsive `gap` prop
-`gap` accepts `MantineSize | (string & {}) | Partial<Record<MantineBreakpoint, MantineSize | (string & {})>>` (exported as `MarqueeGap`). Same `useMatches` pattern as `vertical`. A plain string is wrapped as `{ base: gap }`. The resolved value passes through `getSize()` and is set as `--marquee-gap` via inline style.
+`gap` accepts `MantineSpacing | Partial<Record<MantineBreakpoint, MantineSpacing>>` (exported as `MarqueeGap`), default `'md'`. Same `useMatches` pattern as `vertical`. A plain value is wrapped as `{ base: gap }`. The resolved value passes through `getSpacing()`, as in core (tokens → `theme.spacing`, numbers → rem), and is set as `--marquee-gap` via inline style. Until v5 the tokens used a private 1/2/4/8/16px scale; the Upgrade guide (`docs/migrations.mdx`) has the mapping.
 
 ### Fade edges — CSS mask system
 `fadeEdges` uses `mask-image` (not DOM overlay divs) for true alpha compositing, independent of background color. Accepts `boolean | 'linear' | 'ellipse' | 'rect'` (`true` equals `'linear'`). The resolved shape is set as `data-fade-edges="<shape>"` on `.root`; orientation via `data-vertical`.
@@ -87,10 +88,13 @@ Types exported: `MarqueeFadeEdges`, `MarqueeFadeEdgesSize`. Internal helpers: `r
 
 `postcss-preset-mantine` does NOT include autoprefixer — `-webkit-mask-image` and `-webkit-mask-composite: source-in` must always be written explicitly alongside standard `mask-image` and `mask-composite: intersect`.
 
-`fadeEdgesColor` was removed in the major release that introduced CSS masks (it was a workaround for the old overlay-div approach).
+### Fade edges — `fadeEdgeColor`
+With `fadeEdgeColor` set (and `fadeEdges` on) the root gets `data-fade-color`, the mask rules are skipped (`:not([data-fade-color])`: a mask on the root would mask the overlay too) and one `::after` overlay paints the same gradients inverted: the color at the edge, transparent at the fade size, with `color-mix()` stops matching the mask's eased alpha. Background layers composite "over", which for inverted layers equals the masks' intersect, so rect corners fall off identically. The color goes through `getThemeColor` (`'blue'`, `'blue.3'`, or any CSS color) into `--marquee-fade-color`, core's variable name. The overlay has `pointer-events: none` and `z-index: 1` inside the isolated root.
+
+`fadeEdgesColor` (plural) was removed in the major release that introduced CSS masks; `fadeEdgeColor` (singular, core's name) came back as the painted mode in v5.
 
 ### Styling
-CSS Modules with hashed class names (prefix `me`). PostCSS with `postcss-preset-mantine` handles `@mixin dark` and other extensions. Size tokens (`xs`/`sm`/`md`/`lg`/`xl`) map to explicit CSS custom property scales defined in `.root`.
+CSS Modules with hashed class names (prefix `me`). PostCSS with `postcss-preset-mantine` handles `@mixin dark` and other extensions. Fade size tokens (`xs`/`sm`/`md`/`lg`/`xl`) map to an explicit CSS custom property scale defined in `.root`; `gap` tokens map to `theme.spacing`.
 
 ## Testing
 Jest with `jsdom` environment, `esbuild-jest` transform, CSS mocked via `identity-obj-proxy`. Component tests use `@mantine-tests/core` render helper. Test file: `package/src/Marquee.test.tsx`.

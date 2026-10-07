@@ -4,6 +4,7 @@ import { Shell } from '../components/Shell';
 import { PACKAGE_DATA } from '../data';
 import docgen from '../docgen.json';
 import Docs from '../docs.mdx';
+import Migrations from '../migrations.mdx';
 import { STYLES_API_DATA } from '../styles-api';
 
 export default function HomePage() {
@@ -15,6 +16,7 @@ export default function HomePage() {
         componentsProps={['Marquee']}
         componentsStyles={['Marquee']}
         stylesApiData={STYLES_API_DATA}
+        migrations={<Migrations />}
       >
         <Docs />
       </DocsTabs>
