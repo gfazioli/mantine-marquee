@@ -12,5 +12,6 @@ export { isometric } from './Marquee.demo.isometric';
 export { isometricShowcase } from './Marquee.demo.isometricShowcase';
 export { multiple } from './Marquee.demo.multiple';
 export { multipleVertical } from './Marquee.demo.multiple-vertical';
+export { pauseOnHover } from './Marquee.demo.pauseOnHover';
 export { responsiveGap } from './Marquee.demo.responsiveGap';
 export { responsiveVertical } from './Marquee.demo.responsiveVertical';

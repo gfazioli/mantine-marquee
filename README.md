@@ -20,7 +20,17 @@
 This component is created on top of the [Mantine](https://mantine.dev/) library.
 It requires **Mantine 9.x** and **React 19**.
 
-[Mantine Marquee](https://gfazioli.github.io/mantine-marquee/) is a versatile React component for the Mantine ecosystem that renders continuous, seamless scrolling of any child elements—cards, boxes, text, or avatars—either horizontally or vertically. It exposes ergonomic props to control behavior and presentation: reverse toggles direction, vertical switches axis, fadeEdges adds CSS‑mask gradient masking (`linear`, `ellipse`, `rect`) with configurable per‑axis size, pauseOnHover halts motion on interaction, and duration/gap/repeat fine‑tune speed, spacing, and loop continuity. Two 3D variants extend it: `isometric` lays the scroll on a plane tilted in 3D space (adjustable `tilt`, `rotate`, `skew`, `perspective`), and `circle` distributes the items around a rotating 3D ellipse ring (a carousel, with adjustable `radius`, `tilt` and `perspective`). The component is a drop‑in superset of the built‑in `@mantine/core` Marquee.
+[Mantine Marquee](https://gfazioli.github.io/mantine-marquee/) is a versatile React component for the Mantine ecosystem that renders continuous, seamless scrolling of any child elements—cards, boxes, text, or avatars—either horizontally or vertically. It exposes ergonomic props to control behavior and presentation: reverse toggles direction, vertical switches axis, fadeEdges fades the edges (`linear`, `ellipse`, `rect`) with configurable per‑axis size, as a CSS mask or painted in a color with fadeEdgeColor, pauseOnHover halts motion on hover and on keyboard focus, and duration/gap/repeat fine‑tune speed, spacing (`theme.spacing` keys, numbers or any CSS value), and loop continuity. Two 3D variants extend it: `isometric` lays the scroll on a plane tilted in 3D space (adjustable `tilt`, `rotate`, `skew`, `perspective`), and `circle` distributes the items around a rotating 3D ellipse ring (a carousel, with adjustable `radius`, `tilt` and `perspective`). The component is a drop‑in superset of the built‑in `@mantine/core` Marquee.
+
+### Key features
+
+- Seamless loop of any React content, horizontal or vertical, with `orientation` accepted as in core
+- Fade edges in three shapes (`linear`, `ellipse`, `rect`), as a background‑independent CSS mask or painted in any theme or CSS color
+- `pauseOnHover` that also pauses on keyboard focus, in pure CSS
+- Responsive `gap` and `vertical`, with `gap` on `theme.spacing` like core
+- `isometric` and `circle` 3D variants
+- Styles API with core's `root`, `content` and `group` selectors, plus `attributes`
+- Stops for `prefers-reduced-motion: reduce`
 
 The component fits neatly into layouts with explicit width/height and Mantine spacing props, and ships with dedicated stylesheets, including an optional @layer import for clean, scoped CSS integration. Example demos show simple colored boxes, mirrored horizontal tracks, stacked vertical tracks, and testimonial cards with avatars and ratings—all demonstrating how arbitrary React content can be animated into a polished marquee without custom animation code.
 

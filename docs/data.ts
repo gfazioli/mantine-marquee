@@ -27,7 +27,7 @@ export interface PackageData {
 export const PACKAGE_DATA: PackageData = {
   packageName: '@gfazioli/mantine-marquee',
   packageDescription:
-    'A Mantine component that allows you to create a marquee effect with a list of elements.',
+    'Mantine component for seamless, GPU-accelerated infinite-scrolling loops — a drop-in superset of the core Marquee with responsive props, masked or colored fade edges, a keyboard-focus pause, and 3D isometric and circle variants.',
   mdxFileUrl: 'https://github.com/gfazioli/mantine-marquee/blob/master/docs/docs.mdx',
   repositoryUrl: 'https://github.com/gfazioli/mantine-marquee',
   licenseUrl: 'https://github.com/gfazioli/mantine-marquee/blob/master/LICENSE',

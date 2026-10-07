@@ -1,5 +1,5 @@
 import { Marquee, type MarqueeProps } from '@gfazioli/mantine-marquee';
-import { Box } from '@mantine/core';
+import { Box, Flex } from '@mantine/core';
 import { MantineDemo } from '@mantinex/demo';
 import { ReactNode } from 'react';
 
@@ -13,14 +13,16 @@ function BoxComponent({ children, ...props }: { children: ReactNode; [key: strin
 
 function Wrapper(props: MarqueeProps) {
   return (
-    <Marquee {...props} h={140}>
-      <BoxComponent bg="red">Hello World #1</BoxComponent>
-      <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
-      <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
-      <BoxComponent bg="lime">Goodbye #4</BoxComponent>
-      <BoxComponent bg="orange">Hello World #5</BoxComponent>
-      <BoxComponent bg="grape">Hope you like it #6</BoxComponent>
-    </Marquee>
+    <Flex maw={540} align="center" justify="center">
+      <Marquee {...props}>
+        <BoxComponent bg="red">Hello World #1</BoxComponent>
+        <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
+        <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
+        <BoxComponent bg="lime">Goodbye #4</BoxComponent>
+        <BoxComponent bg="orange">Hello World #5</BoxComponent>
+        <BoxComponent bg="grape">Hope you like it #6</BoxComponent>
+      </Marquee>
+    </Flex>
   );
 }
 
@@ -39,7 +41,7 @@ function BoxComponent({ children, ...props }: { children: ReactNode; [key: strin
 
 function Demo() {
   return (
-    <Marquee{{props}} h={140}>
+    <Marquee{{props}}>
       <BoxComponent bg="red">Hello World #1</BoxComponent>
       <BoxComponent bg="cyan">Hope you like it #2</BoxComponent>
       <BoxComponent bg="blue">Have a nice day #3</BoxComponent>
@@ -75,6 +77,5 @@ export const fadeEdgeColor: MantineDemo = {
       initialValue: 'md',
       libraryValue: 'xs',
     },
-    { prop: 'vertical', type: 'boolean', initialValue: false, libraryValue: false },
   ],
 };
