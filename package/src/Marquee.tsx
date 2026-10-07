@@ -333,6 +333,7 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     duration,
     fadeEdges,
     fadeEdgesSize,
+    fadeEdgeColor,
     gap,
     variant,
     tilt,
@@ -345,8 +346,6 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     // never leak onto the DOM via `...others`.
     orientation,
     fadeEdgeSize,
-
-    fadeEdgeColor,
 
     classNames,
     style,
@@ -441,7 +440,7 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
       {...others}
       data-variant={variant === 'default' ? undefined : variant}
       data-fade-edges={fadeShape}
-      data-fade-color={(fadeShape && fadeEdgeColor && true) || undefined}
+      data-fade-color={fadeShape && fadeEdgeColor ? true : undefined}
       data-vertical={resolvedVertical || undefined}
       data-orientation={resolvedVertical ? 'vertical' : 'horizontal'}
       data-reverse={reverse || undefined}
