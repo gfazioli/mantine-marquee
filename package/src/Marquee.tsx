@@ -134,7 +134,10 @@ export interface MarqueeBaseProps {
   orientation?: MarqueeOrientation;
 
   /**
-   * Pause animation on hover
+   * Pause the animation while the pointer is over the marquee, or while an
+   * element inside it has keyboard focus (`:focus-visible`), so a keyboard user
+   * can stop on a link. Driven by CSS: no re-render, and it works before
+   * hydration.
    */
   pauseOnHover?: boolean;
 
@@ -296,8 +299,6 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
 
   const props = useProps('Marquee', defaultProps, normalizedProps);
 
-  const [over, setOver] = React.useState(false);
-
   const {
     reverse,
     repeat,
@@ -349,7 +350,6 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     className,
     style: {
       ...style,
-      '--marquee-play-state': over && pauseOnHover ? 'paused' : 'running',
       '--marquee-direction': resolvedVertical ? 'column' : 'row',
       '--marquee-gap': getSize(resolvedGap, 'marquee-gap'),
     },
@@ -373,28 +373,14 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     </div>
   ));
 
-  const container = (
-    <Box
-      {...getStyles('content')}
-      onMouseEnter={() => setOver(true)}
-      onMouseLeave={() => setOver(false)}
-    >
-      {groups}
-    </Box>
-  );
+  const container = <Box {...getStyles('content')}>{groups}</Box>;
 
   // `circle` replaces the clone+translate loop: children are distributed once
   // around the ellipse ring (one positioned `.item` per child) and the ring
   // rotates. The seamless animation is the ring's rotateY (0 ≡ 360), no clones.
   const ringStyles = getStyles('ring');
   const ring = (
-    <Box
-      {...getStyles('stage')}
-      onMouseEnter={() => setOver(true)}
-      onMouseLeave={() => setOver(false)}
-      onFocus={() => setOver(true)}
-      onBlur={() => setOver(false)}
-    >
+    <Box {...getStyles('stage')}>
       <div {...getStyles('tilt')}>
         <div
           {...ringStyles}
