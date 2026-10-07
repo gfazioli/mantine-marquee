@@ -137,6 +137,14 @@ For example `fadeEdgesSize={['lg', 'xs']}` applies a large fade on left/right an
 
 <Demo data={demos.fadeEdgesRect} />
 
+### Fade color
+
+By default the fade is a mask: the content fades to transparent, into whatever is behind the marquee, so it works over images and gradients.
+Set `fadeEdgeColor` to paint the edges in a color instead. It takes a theme color key (`"blue"`, `"blue.3"`, `"dark.7"`) or any CSS color, and works with every shape and variant; `fadeEdges` still turns the fade on.
+Use it to fade into a brand color that differs from the background, or to reproduce the core Marquee look with `fadeEdgeColor="var(--mantine-color-body)"`.
+
+<Demo data={demos.fadeEdgeColor} />
+
 ## Multiple
 
 The `Marquee` component allows you to create a marquee effect with multiple items.

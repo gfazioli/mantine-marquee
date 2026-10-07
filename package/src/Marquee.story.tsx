@@ -144,6 +144,89 @@ export function FadeEllipseVertical(props: MarqueeProps) {
   );
 }
 
+export function FadeColor(props: MarqueeProps) {
+  const items = (
+    <>
+      <Box bg="red" p="md" w="160px" c="white">
+        Item #1
+      </Box>
+      <Box bg="cyan" p="md" w="160px">
+        Item #2
+      </Box>
+      <Box bg="blue" p="md" w="160px" c="white">
+        Item #3
+      </Box>
+      <Box bg="lime" p="md" w="160px">
+        Item #4
+      </Box>
+    </>
+  );
+  return (
+    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 16 }}>
+      {(['default', 'isometric', 'circle'] as const).map((variant) =>
+        (['linear', 'ellipse', 'rect'] as const).map((shape) => (
+          <div key={`${variant}-${shape}`}>
+            <div style={{ marginBottom: 4, fontWeight: 600 }}>
+              {variant} / {shape}
+            </div>
+            <Marquee
+              {...props}
+              variant={variant}
+              fadeEdges={shape}
+              fadeEdgesSize="md"
+              fadeEdgeColor="grape.9"
+              radius={140}
+              h={variant === 'default' ? 120 : 280}
+              style={{ border: '1px solid gray' }}
+            >
+              {items}
+            </Marquee>
+          </div>
+        ))
+      )}
+    </div>
+  );
+}
+
+export function FadeColorVertical(props: MarqueeProps) {
+  return (
+    <Marquee
+      {...props}
+      vertical
+      fadeEdges
+      fadeEdgesSize="md"
+      fadeEdgeColor="orange"
+      h={300}
+      w={220}
+    >
+      <Box bg="red" p="md" w="200px">
+        Hello World #1
+      </Box>
+      <Box bg="cyan" p="md" w="200px">
+        Hope you like it #2
+      </Box>
+      <Box bg="blue" p="md" w="200px">
+        Have a nice day #3
+      </Box>
+      <Box bg="lime" p="md" w="200px">
+        Goodbye #4
+      </Box>
+    </Marquee>
+  );
+}
+
+export function PauseOnHoverAndFocus(props: MarqueeProps) {
+  return (
+    <Marquee {...props} pauseOnHover duration={8}>
+      {['One', 'Two', 'Three', 'Four'].map((label) => (
+        <a key={label} href={`#${label}`} style={{ padding: 16, display: 'block' }}>
+          Link {label}
+        </a>
+      ))}
+    </Marquee>
+  );
+}
+
 export function FadeEdgesSizes(props: MarqueeProps) {
   return (
     <div style={{ display: 'flex', flexDirection: 'column', gap: 16 }}>
