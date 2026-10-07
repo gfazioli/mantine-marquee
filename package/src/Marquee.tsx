@@ -353,6 +353,7 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     unstyled,
     vars,
     attributes,
+    mod,
     children,
     className,
 
@@ -368,7 +369,7 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
 
   const resolvedGap =
     useMatches<MantineSpacing | undefined>(
-      typeof gap === 'object' && gap !== null ? gap : { base: gap ?? 'md' }
+      typeof gap === 'object' && gap !== null ? gap : { base: gap }
     ) ?? 'md';
 
   const getStyles = useStyles<MarqueeFactory>({
@@ -376,11 +377,14 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     props,
     classes,
     className,
-    style: {
-      ...style,
-      '--marquee-direction': resolvedVertical ? 'column' : 'row',
-      '--marquee-gap': getSpacing(resolvedGap),
-    },
+    // An array, not a spread: `style` may be a theme function or an array too.
+    style: [
+      style,
+      {
+        '--marquee-direction': resolvedVertical ? 'column' : 'row',
+        '--marquee-gap': getSpacing(resolvedGap),
+      },
+    ],
     classNames,
     styles,
     unstyled,
@@ -391,35 +395,40 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
 
   // One `group` per copy of the children. The key carries gap and duration so
   // that changing either remounts the copies and restarts them in step.
-  const groups = Array.from({ length: (repeat ?? 2) < 2 ? 2 : (repeat ?? 2) }).map((_, i) => (
-    <div
-      key={`marquee-item-${repeat}-${resolvedGap}-${duration}-${i}`}
-      {...getStyles('group')}
-      data-vertical={resolvedVertical || undefined}
-    >
-      {children}
-    </div>
-  ));
-
-  const container = <Box {...getStyles('content')}>{groups}</Box>;
+  const renderLoop = () => {
+    const groupProps = getStyles('group');
+    return (
+      <Box {...getStyles('content')}>
+        {Array.from({ length: Math.max(repeat ?? 2, 2) }, (_, i) => (
+          <div
+            key={`marquee-item-${repeat}-${resolvedGap}-${duration}-${i}`}
+            {...groupProps}
+            data-vertical={resolvedVertical || undefined}
+          >
+            {children}
+          </div>
+        ))}
+      </Box>
+    );
+  };
 
   // `circle` replaces the clone+translate loop: children are distributed once
   // around the ellipse ring (one positioned `.item` per child) and the ring
   // rotates. The seamless animation is the ring's rotateY (0 ≡ 360), no clones.
-  const ringStyles = getStyles('ring');
-  const ring = (
-    <Box {...getStyles('stage')}>
-      <div {...getStyles('tilt')}>
-        <div
-          {...ringStyles}
-          style={{
-            ...ringStyles.style,
-            ['--marquee-count' as any]: React.Children.count(children),
-          }}
-        >
-          {React.Children.toArray(children).map((child, index) => {
-            const itemStyles = getStyles('item');
-            return (
+  const renderRing = () => {
+    const ringStyles = getStyles('ring');
+    const itemStyles = getStyles('item');
+    return (
+      <Box {...getStyles('stage')}>
+        <div {...getStyles('tilt')}>
+          <div
+            {...ringStyles}
+            style={{
+              ...ringStyles.style,
+              ['--marquee-count' as any]: React.Children.count(children),
+            }}
+          >
+            {React.Children.toArray(children).map((child, index) => (
               <div
                 key={(React.isValidElement(child) && child.key) || `marquee-ring-item-${index}`}
                 {...itemStyles}
@@ -427,33 +436,38 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
               >
                 {child}
               </div>
-            );
-          })}
+            ))}
+          </div>
         </div>
-      </div>
-    </Box>
-  );
+      </Box>
+    );
+  };
 
   return (
     <Box
       {...getStyles('root')}
       {...others}
-      data-variant={variant === 'default' ? undefined : variant}
-      data-fade-edges={fadeShape}
-      data-fade-color={fadeShape && fadeEdgeColor ? true : undefined}
-      data-vertical={resolvedVertical || undefined}
-      data-orientation={resolvedVertical ? 'vertical' : 'horizontal'}
-      data-reverse={reverse || undefined}
-      data-pause-on-hover={pauseOnHover || undefined}
+      mod={[
+        {
+          variant: variant === 'default' ? undefined : variant,
+          'fade-edges': fadeShape,
+          'fade-color': !!(fadeShape && fadeEdgeColor),
+          vertical: resolvedVertical,
+          orientation: resolvedVertical ? 'vertical' : 'horizontal',
+          reverse,
+          'pause-on-hover': pauseOnHover,
+        },
+        mod,
+      ]}
     >
       {variant === 'isometric' ? (
         <Box {...getStyles('stage')}>
-          <Box {...getStyles('plane')}>{container}</Box>
+          <Box {...getStyles('plane')}>{renderLoop()}</Box>
         </Box>
       ) : variant === 'circle' ? (
-        ring
+        renderRing()
       ) : (
-        container
+        renderLoop()
       )}
     </Box>
   );

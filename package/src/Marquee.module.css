@@ -1,6 +1,4 @@
 .root {
-  --marquee-gap: var(--mantine-spacing-md);
-
   --marquee-fade-edge-size-xs: 11%;
   --marquee-fade-edge-size-sm: 22%;
   --marquee-fade-edge-size-md: 33%;
@@ -35,262 +33,72 @@
 }
 
 /* ============================================================
-   Fade edges — CSS mask-image system
+   Fade edges
 
-   Each edge gets its own one-sided gradient layer (transparent → black),
-   composited via mask-composite: intersect (alpha multiplication).
-   This prevents gradient-stop overlap when size > 50%.
+   Each shape is ONE gradient list, --_fade-image, used two ways: as the
+   root's mask (the default) or, with fadeEdgeColor, painted by an ::after
+   overlay. Six stop colours, --_s0 at the edge to --_s5 past the fade,
+   switch between the two:
+   - mask: transparent to black, through the eased alpha 0.1 / 0.35 / 0.65 / 0.9
+   - paint: the fade colour to transparent, through 90 / 65 / 35 / 10 %
+   The paint ramp is the mask ramp inverted, and the overlay's layers composite
+   "over" where the mask's layers intersect, so both fall off the same way: at a
+   rect corner the content shows through by a1 × a2 either way.
 
-   A double-sided gradient (transparent → black → transparent) breaks
-   when size > 50% because the left and right stops swap positions.
-   The browser clamps them (CSS spec), creating a hard alpha seam.
-   One-sided gradients can never overlap, regardless of size.
+   One one-sided gradient per edge, never one double-sided gradient per axis:
+   past a size of 50% a double-sided gradient's stops swap, the browser clamps
+   them (CSS spec) and leaves a hard alpha seam. One-sided stops never overlap.
 
-   -webkit-mask-composite: source-in = mask-composite: intersect
-   (same operation, different keywords for WebKit vs standard).
-
-   isolation: isolate is required on the masked element to prevent
-   Safari compositing glitches with will-change: transform children.
+   -webkit-mask-composite: source-in is mask-composite: intersect under its
+   WebKit keyword. postcss-preset-mantine has no autoprefixer, so the -webkit-
+   forms are written by hand. isolation: isolate prevents Safari compositing
+   glitches with the will-change: transform children, and scopes the overlay.
    ============================================================ */
 
-/* Linear horizontal: two one-sided gradients (leading + trailing).
-   The direction is `--marquee-fade-angle` (0 for the default variant →
-   90deg/270deg ≡ to right/to left). The isometric variant sets it to the
-   projected scroll-axis angle so the fade follows the rotated plane. */
-.root[data-fade-edges='linear']:not([data-fade-color]) {
+.root[data-fade-edges] {
+  --_s0: transparent;
+  --_s1: rgba(0, 0, 0, 0.1);
+  --_s2: rgba(0, 0, 0, 0.35);
+  --_s3: rgba(0, 0, 0, 0.65);
+  --_s4: rgba(0, 0, 0, 0.9);
+  --_s5: black;
+  --_ramp:
+    var(--_s0) 0%, var(--_s1) calc(var(--marquee-fade-edge-size) * 0.25),
+    var(--_s2) calc(var(--marquee-fade-edge-size) * 0.5),
+    var(--_s3) calc(var(--marquee-fade-edge-size) * 0.7),
+    var(--_s4) calc(var(--marquee-fade-edge-size) * 0.9), var(--_s5) var(--marquee-fade-edge-size);
+  --_ramp-x:
+    var(--_s0) 0%, var(--_s1) calc(var(--marquee-fade-edge-size-x) * 0.25),
+    var(--_s2) calc(var(--marquee-fade-edge-size-x) * 0.5),
+    var(--_s3) calc(var(--marquee-fade-edge-size-x) * 0.7),
+    var(--_s4) calc(var(--marquee-fade-edge-size-x) * 0.9),
+    var(--_s5) var(--marquee-fade-edge-size-x);
+  --_ramp-y:
+    var(--_s0) 0%, var(--_s1) calc(var(--marquee-fade-edge-size-y) * 0.25),
+    var(--_s2) calc(var(--marquee-fade-edge-size-y) * 0.5),
+    var(--_s3) calc(var(--marquee-fade-edge-size-y) * 0.7),
+    var(--_s4) calc(var(--marquee-fade-edge-size-y) * 0.9),
+    var(--_s5) var(--marquee-fade-edge-size-y);
+
   isolation: isolate;
-  -webkit-mask-image:
-    linear-gradient(
-      calc(90deg + var(--marquee-fade-angle, 0deg)),
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
-      black var(--marquee-fade-edge-size),
-      black 100%
-    ),
-    linear-gradient(
-      calc(270deg + var(--marquee-fade-angle, 0deg)),
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
-      black var(--marquee-fade-edge-size),
-      black 100%
-    );
+  -webkit-mask-image: var(--_fade-image);
   -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(
-      calc(90deg + var(--marquee-fade-angle, 0deg)),
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
-      black var(--marquee-fade-edge-size),
-      black 100%
-    ),
-    linear-gradient(
-      calc(270deg + var(--marquee-fade-angle, 0deg)),
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
-      black var(--marquee-fade-edge-size),
-      black 100%
-    );
+  mask-image: var(--_fade-image);
   mask-composite: intersect;
 }
 
-/* Linear vertical: two one-sided gradients (top + bottom) */
-.root[data-fade-edges='linear'][data-vertical]:not([data-fade-color]) {
-  -webkit-mask-image:
-    linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
-      black var(--marquee-fade-edge-size),
-      black 100%
-    ),
-    linear-gradient(
-      to top,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
-      black var(--marquee-fade-edge-size),
-      black 100%
-    );
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
-      black var(--marquee-fade-edge-size),
-      black 100%
-    ),
-    linear-gradient(
-      to top,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size) * 0.9),
-      black var(--marquee-fade-edge-size),
-      black 100%
-    );
-  mask-composite: intersect;
-}
-
-/* Rect: four one-sided gradients (left + right + top + bottom).
-   -x controls left/right, -y controls top/bottom.
-   No [data-vertical] variant needed — the mask covers all 4 edges.
-   At corners the alpha multiplies naturally (e.g. 0.5 × 0.5 = 0.25). */
-.root[data-fade-edges='rect']:not([data-fade-color]) {
-  isolation: isolate;
-  -webkit-mask-image:
-    linear-gradient(
-      to right,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size-x) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size-x) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size-x) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size-x) * 0.9),
-      black var(--marquee-fade-edge-size-x),
-      black 100%
-    ),
-    linear-gradient(
-      to left,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size-x) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size-x) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size-x) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size-x) * 0.9),
-      black var(--marquee-fade-edge-size-x),
-      black 100%
-    ),
-    linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size-y) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size-y) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size-y) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size-y) * 0.9),
-      black var(--marquee-fade-edge-size-y),
-      black 100%
-    ),
-    linear-gradient(
-      to top,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size-y) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size-y) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size-y) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size-y) * 0.9),
-      black var(--marquee-fade-edge-size-y),
-      black 100%
-    );
-  -webkit-mask-composite: source-in;
-  mask-image:
-    linear-gradient(
-      to right,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size-x) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size-x) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size-x) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size-x) * 0.9),
-      black var(--marquee-fade-edge-size-x),
-      black 100%
-    ),
-    linear-gradient(
-      to left,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size-x) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size-x) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size-x) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size-x) * 0.9),
-      black var(--marquee-fade-edge-size-x),
-      black 100%
-    ),
-    linear-gradient(
-      to bottom,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size-y) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size-y) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size-y) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size-y) * 0.9),
-      black var(--marquee-fade-edge-size-y),
-      black 100%
-    ),
-    linear-gradient(
-      to top,
-      transparent 0%,
-      rgba(0, 0, 0, 0.1) calc(var(--marquee-fade-edge-size-y) * 0.25),
-      rgba(0, 0, 0, 0.35) calc(var(--marquee-fade-edge-size-y) * 0.5),
-      rgba(0, 0, 0, 0.65) calc(var(--marquee-fade-edge-size-y) * 0.7),
-      rgba(0, 0, 0, 0.9) calc(var(--marquee-fade-edge-size-y) * 0.9),
-      black var(--marquee-fade-edge-size-y),
-      black 100%
-    );
-  mask-composite: intersect;
-}
-
-/* Ellipse: radial vignette that fades all around the scroll area.
-   No [data-vertical] variant needed — radial gradients are orientation-independent.
-   closest-side: the ellipse is sized so 100% = center of each edge (not the corner).
-   Without it the default farthest-corner leaves edges un-faded on rectangular boxes. */
-.root[data-fade-edges='ellipse']:not([data-fade-color]) {
-  isolation: isolate;
-  -webkit-mask-image: radial-gradient(
-    ellipse closest-side at center,
-    black calc(100% - var(--marquee-fade-edge-size) * 2),
-    rgba(0, 0, 0, 0.9) calc(100% - var(--marquee-fade-edge-size) * 1.8),
-    rgba(0, 0, 0, 0.65) calc(100% - var(--marquee-fade-edge-size) * 1.4),
-    rgba(0, 0, 0, 0.35) calc(100% - var(--marquee-fade-edge-size) * 0.8),
-    rgba(0, 0, 0, 0.1) calc(100% - var(--marquee-fade-edge-size) * 0.4),
-    transparent 100%
-  );
-  mask-image: radial-gradient(
-    ellipse closest-side at center,
-    black calc(100% - var(--marquee-fade-edge-size) * 2),
-    rgba(0, 0, 0, 0.9) calc(100% - var(--marquee-fade-edge-size) * 1.8),
-    rgba(0, 0, 0, 0.65) calc(100% - var(--marquee-fade-edge-size) * 1.4),
-    rgba(0, 0, 0, 0.35) calc(100% - var(--marquee-fade-edge-size) * 0.8),
-    rgba(0, 0, 0, 0.1) calc(100% - var(--marquee-fade-edge-size) * 0.4),
-    transparent 100%
-  );
-}
-
-/* ============================================================
-   Fade edges — fadeEdgeColor
-
-   With a color the edges are painted instead of masked. One ::after overlay
-   carries the same gradients as the masks above, inverted: the fade color at
-   the edge, transparent at the fade size. The overlay's layers composite
-   "over", and over-compositing the inverted layers gives exactly what
-   intersecting the masks gives: at a rect corner the content shows through by
-   a1 × a2 either way. The mask rules skip [data-fade-color], because a mask on
-   the root would mask the overlay too.
-   ============================================================ */
-
+/* fadeEdgeColor: same gradients, painted instead of masked. The mask has to go,
+   or it would mask the overlay too. */
 .root[data-fade-color] {
-  --_fade-100: var(--marquee-fade-color);
-  --_fade-90: color-mix(in srgb, var(--marquee-fade-color) 90%, transparent);
-  --_fade-65: color-mix(in srgb, var(--marquee-fade-color) 65%, transparent);
-  --_fade-35: color-mix(in srgb, var(--marquee-fade-color) 35%, transparent);
-  --_fade-10: color-mix(in srgb, var(--marquee-fade-color) 10%, transparent);
+  --_s0: var(--marquee-fade-color);
+  --_s1: color-mix(in srgb, var(--marquee-fade-color) 90%, transparent);
+  --_s2: color-mix(in srgb, var(--marquee-fade-color) 65%, transparent);
+  --_s3: color-mix(in srgb, var(--marquee-fade-color) 35%, transparent);
+  --_s4: color-mix(in srgb, var(--marquee-fade-color) 10%, transparent);
+  --_s5: transparent;
 
-  isolation: isolate;
+  -webkit-mask-image: none;
+  mask-image: none;
 }
 
 .root[data-fade-color]::after {
@@ -299,101 +107,43 @@
   inset: 0;
   z-index: 1;
   pointer-events: none;
+  background-image: var(--_fade-image);
 }
 
-.root[data-fade-color][data-fade-edges='linear']::after {
-  background-image:
-    linear-gradient(
-      calc(90deg + var(--marquee-fade-angle, 0deg)),
-      var(--_fade-100) 0%,
-      var(--_fade-90) calc(var(--marquee-fade-edge-size) * 0.25),
-      var(--_fade-65) calc(var(--marquee-fade-edge-size) * 0.5),
-      var(--_fade-35) calc(var(--marquee-fade-edge-size) * 0.7),
-      var(--_fade-10) calc(var(--marquee-fade-edge-size) * 0.9),
-      transparent var(--marquee-fade-edge-size)
-    ),
-    linear-gradient(
-      calc(270deg + var(--marquee-fade-angle, 0deg)),
-      var(--_fade-100) 0%,
-      var(--_fade-90) calc(var(--marquee-fade-edge-size) * 0.25),
-      var(--_fade-65) calc(var(--marquee-fade-edge-size) * 0.5),
-      var(--_fade-35) calc(var(--marquee-fade-edge-size) * 0.7),
-      var(--_fade-10) calc(var(--marquee-fade-edge-size) * 0.9),
-      transparent var(--marquee-fade-edge-size)
-    );
+/* Linear: the leading and trailing edges. The angle is --marquee-fade-angle
+   (0 for the default variant, so 90deg/270deg = to right/to left); the
+   isometric variant sets it to the projected scroll axis, so the fade follows
+   the rotated plane. */
+.root[data-fade-edges='linear'] {
+  --_fade-image:
+    linear-gradient(calc(90deg + var(--marquee-fade-angle, 0deg)), var(--_ramp)),
+    linear-gradient(calc(270deg + var(--marquee-fade-angle, 0deg)), var(--_ramp));
 }
 
-.root[data-fade-color][data-fade-edges='linear'][data-vertical]::after {
-  background-image:
-    linear-gradient(
-      to bottom,
-      var(--_fade-100) 0%,
-      var(--_fade-90) calc(var(--marquee-fade-edge-size) * 0.25),
-      var(--_fade-65) calc(var(--marquee-fade-edge-size) * 0.5),
-      var(--_fade-35) calc(var(--marquee-fade-edge-size) * 0.7),
-      var(--_fade-10) calc(var(--marquee-fade-edge-size) * 0.9),
-      transparent var(--marquee-fade-edge-size)
-    ),
-    linear-gradient(
-      to top,
-      var(--_fade-100) 0%,
-      var(--_fade-90) calc(var(--marquee-fade-edge-size) * 0.25),
-      var(--_fade-65) calc(var(--marquee-fade-edge-size) * 0.5),
-      var(--_fade-35) calc(var(--marquee-fade-edge-size) * 0.7),
-      var(--_fade-10) calc(var(--marquee-fade-edge-size) * 0.9),
-      transparent var(--marquee-fade-edge-size)
-    );
+.root[data-fade-edges='linear'][data-vertical] {
+  --_fade-image: linear-gradient(to bottom, var(--_ramp)), linear-gradient(to top, var(--_ramp));
 }
 
-.root[data-fade-color][data-fade-edges='rect']::after {
-  background-image:
-    linear-gradient(
-      to right,
-      var(--_fade-100) 0%,
-      var(--_fade-90) calc(var(--marquee-fade-edge-size-x) * 0.25),
-      var(--_fade-65) calc(var(--marquee-fade-edge-size-x) * 0.5),
-      var(--_fade-35) calc(var(--marquee-fade-edge-size-x) * 0.7),
-      var(--_fade-10) calc(var(--marquee-fade-edge-size-x) * 0.9),
-      transparent var(--marquee-fade-edge-size-x)
-    ),
-    linear-gradient(
-      to left,
-      var(--_fade-100) 0%,
-      var(--_fade-90) calc(var(--marquee-fade-edge-size-x) * 0.25),
-      var(--_fade-65) calc(var(--marquee-fade-edge-size-x) * 0.5),
-      var(--_fade-35) calc(var(--marquee-fade-edge-size-x) * 0.7),
-      var(--_fade-10) calc(var(--marquee-fade-edge-size-x) * 0.9),
-      transparent var(--marquee-fade-edge-size-x)
-    ),
-    linear-gradient(
-      to bottom,
-      var(--_fade-100) 0%,
-      var(--_fade-90) calc(var(--marquee-fade-edge-size-y) * 0.25),
-      var(--_fade-65) calc(var(--marquee-fade-edge-size-y) * 0.5),
-      var(--_fade-35) calc(var(--marquee-fade-edge-size-y) * 0.7),
-      var(--_fade-10) calc(var(--marquee-fade-edge-size-y) * 0.9),
-      transparent var(--marquee-fade-edge-size-y)
-    ),
-    linear-gradient(
-      to top,
-      var(--_fade-100) 0%,
-      var(--_fade-90) calc(var(--marquee-fade-edge-size-y) * 0.25),
-      var(--_fade-65) calc(var(--marquee-fade-edge-size-y) * 0.5),
-      var(--_fade-35) calc(var(--marquee-fade-edge-size-y) * 0.7),
-      var(--_fade-10) calc(var(--marquee-fade-edge-size-y) * 0.9),
-      transparent var(--marquee-fade-edge-size-y)
-    );
+/* Rect: all four edges, -x sizing left/right and -y top/bottom. */
+.root[data-fade-edges='rect'] {
+  --_fade-image:
+    linear-gradient(to right, var(--_ramp-x)), linear-gradient(to left, var(--_ramp-x)),
+    linear-gradient(to bottom, var(--_ramp-y)), linear-gradient(to top, var(--_ramp-y));
 }
 
-.root[data-fade-color][data-fade-edges='ellipse']::after {
-  background-image: radial-gradient(
+/* Ellipse: a radial vignette, orientation-independent, so the ramp runs from
+   the centre out. closest-side makes 100% the middle of each edge: the default
+   farthest-corner would leave the edges of a wide box un-faded. The * 2 makes
+   the fade comparable to linear at the same size. */
+.root[data-fade-edges='ellipse'] {
+  --_fade-image: radial-gradient(
     ellipse closest-side at center,
-    transparent calc(100% - var(--marquee-fade-edge-size) * 2),
-    var(--_fade-10) calc(100% - var(--marquee-fade-edge-size) * 1.8),
-    var(--_fade-35) calc(100% - var(--marquee-fade-edge-size) * 1.4),
-    var(--_fade-65) calc(100% - var(--marquee-fade-edge-size) * 0.8),
-    var(--_fade-90) calc(100% - var(--marquee-fade-edge-size) * 0.4),
-    var(--_fade-100) 100%
+    var(--_s5) calc(100% - var(--marquee-fade-edge-size) * 2),
+    var(--_s4) calc(100% - var(--marquee-fade-edge-size) * 1.8),
+    var(--_s3) calc(100% - var(--marquee-fade-edge-size) * 1.4),
+    var(--_s2) calc(100% - var(--marquee-fade-edge-size) * 0.8),
+    var(--_s1) calc(100% - var(--marquee-fade-edge-size) * 0.4),
+    var(--_s0) 100%
   );
 }
 
@@ -525,13 +275,11 @@
   backface-visibility: hidden;
 }
 
-.group[data-vertical] {
+/* :where() keeps this at .group's specificity, so the reduced-motion rule
+   below still stops a vertical marquee. */
+.group:where([data-vertical]) {
   flex-direction: column;
-  animation: marquee-vertical var(--marquee-duration) linear infinite;
-  animation-direction: var(--marquee-animation-direction, normal);
-  animation-play-state: var(--marquee-play-state, running);
-  will-change: transform;
-  backface-visibility: hidden;
+  animation-name: marquee-vertical;
 }
 
 @keyframes marquee {
