@@ -512,6 +512,21 @@ describe('Marquee', () => {
       expect(root.hasAttribute('data-pause-on-hover')).toBe(false);
     });
 
+    it('keeps the root state attributes on the resolved props over forwarded data attributes', () => {
+      const { container } = render(
+        <Marquee
+          fadeEdges="linear"
+          data-fade-edges="rect"
+          attributes={{ root: { 'data-orientation': 'vertical' } as any }}
+        >
+          <div>Test</div>
+        </Marquee>
+      );
+      const root = container.querySelector('[data-orientation]') as HTMLElement;
+      expect(root.getAttribute('data-fade-edges')).toBe('linear');
+      expect(root.getAttribute('data-orientation')).toBe('horizontal');
+    });
+
     it('exposes varsResolver as a static property', () => {
       expect(typeof Marquee.varsResolver).toBe('function');
     });
