@@ -77,21 +77,29 @@ Types exported: `MarqueeFadeEdges`, `MarqueeFadeEdgesSize`. Internal helpers: `r
 
 `fadeEdgesSize` accepts `MantineSize | (string & {}) | [x, y]` tuple. For a single value, `single`/`x`/`y` resolve identically. The `varsResolver` sets `--marquee-fade-edge-size`, `--marquee-fade-edge-size-x`, and `--marquee-fade-edge-size-y`.
 
-**One-sided gradient technique:** All linear/rect masks use one-sided gradients (one per edge) composited with `mask-composite: intersect`, not a single double-sided gradient per axis. A double-sided gradient breaks when `size > 50%` because left/right stop positions swap, causing the browser to clamp them per CSS spec and produce a hard alpha seam. One-sided gradients can never have overlapping stops.
+**One gradient list per shape, two uses.** Each shape rule sets one custom property, `--_fade-image`, built from a ramp (`--_ramp`, or `--_ramp-x` / `--_ramp-y` for rect) of six stop colours `--_s0` (edge) … `--_s5` (past the fade). `.root[data-fade-edges]` applies it as `mask-image` with the mask stops (transparent → black through alpha 0.1 / 0.35 / 0.65 / 0.9). `.root[data-fade-color]` swaps the stops for the fade colour (`color-mix()` at 90 / 65 / 35 / 10 %) → transparent, removes the mask (a mask on the root would mask the overlay too) and paints the same `--_fade-image` as the `background-image` of a `::after` overlay (`pointer-events: none`, `z-index: 1`). The `var()`s resolve on `.root`, where the size, angle and colour variables live, and `::after` inherits the substituted value. Background layers composite "over" where mask layers intersect, so the inverted ramp gives the same falloff, rect corners included. A matrix of every shape × variant × mode rendered byte-identical before and after this refactor.
+
+**One-sided gradient technique:** linear and rect use one one-sided gradient per edge, never one double-sided gradient per axis. A double-sided gradient breaks when `size > 50%` because the stop positions swap, the browser clamps them (CSS spec) and leaves a hard alpha seam. One-sided gradients can never have overlapping stops.
 
 **Shapes:**
-- `"linear"` — 2 one-sided gradients (left + right, or top + bottom for vertical). Uses `[data-vertical]` to switch directions.
-- `"ellipse"` — radial vignette fade (`radial-gradient(ellipse at center, ...)`). Orientation-independent. The `* 2` multiplier on `--marquee-fade-edge-size` makes the fade visually comparable to linear mode.
-- `"rect"` — 4 one-sided gradients (left + right + top + bottom) via `mask-composite: intersect` (`-webkit-mask-composite: source-in`). Uses `--marquee-fade-edge-size-x` for left/right and `--marquee-fade-edge-size-y` for top/bottom. At corners alpha values multiply naturally (e.g. 0.5 × 0.5 = 0.25).
+- `"linear"` — 2 gradients (leading + trailing). Horizontal ones use `--marquee-fade-angle` (0 except for a rotated isometric plane, where it follows the projected scroll axis); `[data-vertical]` switches to top + bottom.
+- `"ellipse"` — `radial-gradient(ellipse closest-side at center, …)`, ramp reversed (centre out). Orientation-independent. `closest-side` makes 100% the middle of each edge; the `* 2` multiplier makes the fade comparable to linear.
+- `"rect"` — 4 gradients, `-x` sizing left/right and `-y` top/bottom. At corners alpha values multiply (e.g. 0.5 × 0.5 = 0.25).
 
-`isolation: isolate` on the masked element prevents Safari compositing glitches when `will-change: transform` children are present.
+`isolation: isolate` on the root prevents Safari compositing glitches when `will-change: transform` children are present, and scopes the overlay's `z-index`.
 
-`postcss-preset-mantine` does NOT include autoprefixer — `-webkit-mask-image` and `-webkit-mask-composite: source-in` must always be written explicitly alongside standard `mask-image` and `mask-composite: intersect`.
+`postcss-preset-mantine` does NOT include autoprefixer — `-webkit-mask-image` and `-webkit-mask-composite: source-in` (= `mask-composite: intersect`) are written by hand.
 
 ### Fade edges — `fadeEdgeColor`
-With `fadeEdgeColor` set (and `fadeEdges` on) the root gets `data-fade-color`, the mask rules are skipped (`:not([data-fade-color])`: a mask on the root would mask the overlay too) and one `::after` overlay paints the same gradients inverted: the color at the edge, transparent at the fade size, with `color-mix()` stops matching the mask's eased alpha. Background layers composite "over", which for inverted layers equals the masks' intersect, so rect corners fall off identically. The color goes through `getThemeColor` (`'blue'`, `'blue.3'`, or any CSS color) into `--marquee-fade-color`, core's variable name. The overlay has `pointer-events: none` and `z-index: 1` inside the isolated root.
+The colour goes through `getThemeColor` (`'blue'`, `'blue.3'`, or any CSS color) into `--marquee-fade-color`, core's variable name; the root gets `data-fade-color` only when `fadeEdges` is on too. Setting `--marquee-fade-color` through `vars` alone does not switch to painted mode: the attribute comes from the prop.
 
 `fadeEdgesColor` (plural) was removed in the major release that introduced CSS masks; `fadeEdgeColor` (singular, core's name) came back as the painted mode in v5.
+
+### Root state attributes
+`data-variant`, `data-fade-edges`, `data-fade-color`, `data-vertical`, `data-orientation`, `data-reverse` and `data-pause-on-hover` are written as JSX attributes **after** `{...others}`, never through `mod`: Box spreads `mod` before the remaining props, so a forwarded `data-*` (or `attributes.root`) would override the state the CSS reads. A test pins it.
+
+### Reduced motion
+`.group:where([data-vertical])` keeps the vertical rule at `.group`'s specificity and only swaps `animation-name`, so the `prefers-reduced-motion` rule (`.group { animation: none }`, later in the file) still wins. A `.group[data-vertical]` selector (0,2,0) would keep vertical marquees scrolling.
 
 ### Styling
 CSS Modules with hashed class names (prefix `me`). PostCSS with `postcss-preset-mantine` handles `@mixin dark` and other extensions. Fade size tokens (`xs`/`sm`/`md`/`lg`/`xl`) map to an explicit CSS custom property scale defined in `.root`; `gap` tokens map to `theme.spacing`.
