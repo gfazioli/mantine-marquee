@@ -20,12 +20,23 @@
   --marquee-skew: 0deg;
   --marquee-fade-angle: 0deg;
 
+  /* paused by the rule below — never set inline, so CSS alone drives it */
+  --marquee-play-state: running;
+
   position: relative;
   display: flex;
   height: 100%;
   width: 100%;
   flex-direction: column;
   overflow: hidden;
+}
+
+/* pauseOnHover: pause on hover, and while a descendant has keyboard focus.
+   :focus-visible, not :focus-within, so a mouse click on a link does not leave
+   the strip paused once the pointer has gone. :where() takes a forgiving
+   selector list: an engine without :has() drops that branch and keeps :hover. */
+.root[data-pause-on-hover]:where(:hover, :has(:focus-visible)) {
+  --marquee-play-state: paused;
 }
 
 /* ============================================================

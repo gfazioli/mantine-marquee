@@ -1,4 +1,5 @@
 import { render } from '@mantine-tests/core';
+import { fireEvent } from '@testing-library/react';
 import React from 'react';
 import { Marquee } from './Marquee';
 
@@ -286,6 +287,32 @@ describe('Marquee', () => {
     const root = container.querySelector('[data-fade-edges="linear"]') as HTMLElement;
     expect(root.getAttribute('fadeedgecolor')).toBeNull();
   });
+  describe('pauseOnHover', () => {
+    it('leaves the pause to CSS: no inline play state, before or after hover', () => {
+      const { container } = render(
+        <Marquee pauseOnHover>
+          <div>Test</div>
+        </Marquee>
+      );
+      const root = container.querySelector('[data-pause-on-hover]') as HTMLElement;
+      expect(root.getAttribute('style') || '').not.toContain('--marquee-play-state');
+      fireEvent.mouseEnter(root.firstElementChild as HTMLElement);
+      expect(root.getAttribute('style') || '').not.toContain('--marquee-play-state');
+    });
+
+    it('marks the root in every variant, so one CSS rule covers hover and keyboard focus', () => {
+      (['default', 'isometric', 'circle'] as const).forEach((variant) => {
+        const { container, unmount } = render(
+          <Marquee variant={variant} pauseOnHover>
+            <a href="#a">A</a>
+          </Marquee>
+        );
+        expect(container.querySelector('[data-pause-on-hover]')).not.toBeNull();
+        unmount();
+      });
+    });
+  });
+
   describe('drop-in parity with @mantine/core Marquee', () => {
     it('accepts HTML element props such as id and event handlers', () => {
       const onMouseEnter = jest.fn();
