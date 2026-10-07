@@ -122,7 +122,7 @@ export const configurator: MantineDemo = {
       min: 0.1,
       max: 60,
     },
-    { type: 'size', prop: 'gap', initialValue: 'sm', libraryValue: 'xl' },
+    { type: 'size', prop: 'gap', initialValue: 'sm', libraryValue: 'md' },
     {
       type: 'number',
       prop: 'fadeEdgesSize',

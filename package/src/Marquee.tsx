@@ -6,10 +6,12 @@ import {
   Factory,
   factory,
   getSize,
+  getSpacing,
   getThemeColor,
   MantineBreakpoint,
   MantineColor,
   MantineSize,
+  MantineSpacing,
   StylesApiProps,
   useMatches,
   useProps,
@@ -20,10 +22,12 @@ import classes from './Marquee.module.css';
 
 export type MarqueeVertical = boolean | Partial<Record<MantineBreakpoint, boolean>>;
 
-export type MarqueeGap =
-  | MantineSize
-  | (string & {})
-  | Partial<Record<MantineBreakpoint, MantineSize | (string & {})>>;
+/**
+ * Gap between the repeated copies: a `theme.spacing` key, a number (converted
+ * to rem) or any CSS value, like `@mantine/core` Marquee, or a responsive
+ * object of those, e.g. `{ base: 'xs', md: 'xl' }`.
+ */
+export type MarqueeGap = MantineSpacing | Partial<Record<MantineBreakpoint, MantineSpacing>>;
 
 export type MarqueeFadeEdges = boolean | 'linear' | 'ellipse' | 'rect';
 
@@ -182,8 +186,10 @@ export interface MarqueeBaseProps {
   fadeEdgeColor?: MantineColor | (string & {});
 
   /**
-   * Gap between marquee items. Accepts a single value or a responsive
-   * breakpoint object, e.g. `{ base: 'xs', md: 'xl' }`.
+   * Gap between the repeated copies: a key of `theme.spacing`, a number
+   * (converted to rem) or any CSS value, as in `@mantine/core` Marquee. Also
+   * accepts a responsive breakpoint object, e.g. `{ base: 'xs', md: 'xl' }`.
+   * @default 'md'
    */
   gap?: MarqueeGap;
 
@@ -249,7 +255,7 @@ export const defaultProps: Partial<MarqueeProps> = {
   duration: 20,
   fadeEdges: false,
   fadeEdgesSize: 'xs',
-  gap: 'xl',
+  gap: 'md',
   variant: 'default',
   tilt: 45,
   perspective: 800,
@@ -362,9 +368,9 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     ) ?? false;
 
   const resolvedGap =
-    useMatches<string | undefined>(
-      typeof gap === 'object' && gap !== null ? gap : { base: (gap as string) ?? 'xl' }
-    ) ?? 'xl';
+    useMatches<MantineSpacing | undefined>(
+      typeof gap === 'object' && gap !== null ? gap : { base: gap ?? 'md' }
+    ) ?? 'md';
 
   const getStyles = useStyles<MarqueeFactory>({
     name: 'Marquee',
@@ -374,7 +380,7 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     style: {
       ...style,
       '--marquee-direction': resolvedVertical ? 'column' : 'row',
-      '--marquee-gap': getSize(resolvedGap, 'marquee-gap'),
+      '--marquee-gap': getSpacing(resolvedGap),
     },
     classNames,
     styles,

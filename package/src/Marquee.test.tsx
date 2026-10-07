@@ -352,6 +352,62 @@ describe('Marquee', () => {
       });
     });
   });
+  describe('gap resolves through theme.spacing, like core', () => {
+    const gapOf = (container: HTMLElement) => {
+      const style =
+        (container.querySelector('[data-orientation]') as HTMLElement).getAttribute('style') || '';
+      return style.match(/--marquee-gap:\s*([^;]+)/)?.[1].trim();
+    };
+
+    it('defaults to theme.spacing.md', () => {
+      const { container } = render(
+        <Marquee>
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(gapOf(container)).toBe('var(--mantine-spacing-md)');
+    });
+
+    it('maps every token onto theme.spacing', () => {
+      (['xs', 'sm', 'md', 'lg', 'xl'] as const).forEach((token) => {
+        const { container, unmount } = render(
+          <Marquee gap={token}>
+            <div>Test</div>
+          </Marquee>
+        );
+        expect(gapOf(container)).toBe(`var(--mantine-spacing-${token})`);
+        unmount();
+      });
+    });
+
+    it('accepts a number, converted to rem like core', () => {
+      const { container } = render(
+        <Marquee gap={20}>
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(gapOf(container)).toBe('calc(1.25rem * var(--mantine-scale))');
+    });
+
+    it('passes any other CSS value through', () => {
+      const { container } = render(
+        <Marquee gap="3vw">
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(gapOf(container)).toBe('3vw');
+    });
+
+    it('resolves the base value of a responsive object through theme.spacing', () => {
+      const { container } = render(
+        <Marquee gap={{ base: 'xs', md: 40 }}>
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(gapOf(container)).toBe('var(--mantine-spacing-xs)');
+    });
+  });
+
   describe('pauseOnHover', () => {
     it('leaves the pause to CSS: no inline play state, before or after hover', () => {
       const { container } = render(

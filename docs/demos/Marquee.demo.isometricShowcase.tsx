@@ -32,7 +32,6 @@ function Wrapper() {
       skew={10}
       perspective={650}
       duration={16}
-      gap="xl"
       fadeEdges="ellipse"
       pauseOnHover
       h={340}
@@ -85,7 +84,6 @@ function Demo() {
       skew={10}
       perspective={650}
       duration={16}
-      gap="xl"
       fadeEdges="ellipse"
       pauseOnHover
       h={340}
