@@ -1,9 +1,23 @@
-import { render } from '@mantine-tests/core';
+import { render, tests } from '@mantine-tests/core';
 import { fireEvent } from '@testing-library/react';
 import React from 'react';
-import { Marquee } from './Marquee';
+import { Marquee, MarqueeProps, MarqueeStylesNames } from './Marquee';
+
+const rootStyle = (container: HTMLElement) =>
+  (container.querySelector('[data-orientation]') as HTMLElement).getAttribute('style') || '';
 
 describe('Marquee', () => {
+  // The suite core runs on its own Marquee: Styles API on root/content/group,
+  // className, style (object, theme function, array), provider props, mod,
+  // ref, extend and withProps.
+  tests.itSupportsSystemProps<MarqueeProps, MarqueeStylesNames>({
+    component: Marquee,
+    props: { children: 'Test content' },
+    children: false,
+    displayName: 'Marquee',
+    stylesApiSelectors: ['root', 'content', 'group'],
+  });
+
   it('renders without crashing', () => {
     const { container } = render(
       <Marquee>
@@ -279,9 +293,6 @@ describe('Marquee', () => {
   });
 
   describe('fadeEdgeColor', () => {
-    const rootStyle = (container: HTMLElement) =>
-      (container.querySelector('[data-orientation]') as HTMLElement).getAttribute('style') || '';
-
     it('paints the fade in a raw CSS color and marks the root', () => {
       const { container } = render(
         <Marquee fadeEdges="linear" fadeEdgeColor="#ff0000">
@@ -353,11 +364,10 @@ describe('Marquee', () => {
     });
   });
   describe('gap resolves through theme.spacing, like core', () => {
-    const gapOf = (container: HTMLElement) => {
-      const style =
-        (container.querySelector('[data-orientation]') as HTMLElement).getAttribute('style') || '';
-      return style.match(/--marquee-gap:\s*([^;]+)/)?.[1].trim();
-    };
+    const gapOf = (container: HTMLElement) =>
+      rootStyle(container)
+        .match(/--marquee-gap:\s*([^;]+)/)?.[1]
+        .trim();
 
     it('defaults to theme.spacing.md', () => {
       const { container } = render(
@@ -443,8 +453,9 @@ describe('Marquee', () => {
         </Marquee>
       );
       const root = container.querySelector('#logos') as HTMLElement;
-      expect(root).not.toBeNull();
       expect(root.getAttribute('title')).toBe('Logos');
+      fireEvent.mouseEnter(root);
+      expect(onMouseEnter).toHaveBeenCalledTimes(1);
     });
 
     it('forwards attributes to root, content and group instead of rendering them as one attribute', () => {
@@ -463,17 +474,6 @@ describe('Marquee', () => {
       expect(container.querySelector('[data-probe="root"]')).not.toBeNull();
       expect(container.querySelector('[data-probe="content"]')).not.toBeNull();
       expect(container.querySelectorAll('[data-probe="group"]')).toHaveLength(2);
-    });
-
-    it('applies classNames to the content and group selectors', () => {
-      const { container } = render(
-        <Marquee repeat={3} classNames={{ content: 'probe-content', group: 'probe-group' }}>
-          <div>Test</div>
-        </Marquee>
-      );
-      const content = container.querySelector('.probe-content') as HTMLElement;
-      expect(content).not.toBeNull();
-      expect(content.querySelectorAll('.probe-group')).toHaveLength(3);
     });
 
     it('applies classNames to content and group in the isometric variant', () => {
