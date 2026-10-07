@@ -353,7 +353,6 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     unstyled,
     vars,
     attributes,
-    mod,
     children,
     className,
 
@@ -447,18 +446,15 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     <Box
       {...getStyles('root')}
       {...others}
-      mod={[
-        {
-          variant: variant === 'default' ? undefined : variant,
-          'fade-edges': fadeShape,
-          'fade-color': !!(fadeShape && fadeEdgeColor),
-          vertical: resolvedVertical,
-          orientation: resolvedVertical ? 'vertical' : 'horizontal',
-          reverse,
-          'pause-on-hover': pauseOnHover,
-        },
-        mod,
-      ]}
+      // Written after `...others`, not through `mod` (which Box spreads before
+      // the remaining props): the state the CSS reads must come from the props.
+      data-variant={variant === 'default' ? undefined : variant}
+      data-fade-edges={fadeShape}
+      data-fade-color={fadeShape && fadeEdgeColor ? true : undefined}
+      data-vertical={resolvedVertical || undefined}
+      data-orientation={resolvedVertical ? 'vertical' : 'horizontal'}
+      data-reverse={reverse || undefined}
+      data-pause-on-hover={pauseOnHover || undefined}
     >
       {variant === 'isometric' ? (
         <Box {...getStyles('stage')}>
