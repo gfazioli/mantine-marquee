@@ -31,7 +31,8 @@ export function TableOfContents({ withTabs }: TableOfContentsProps) {
       __vars={{ '--toc-link-offset': `${heading.depth - 1}` }}
       onClick={(event) => {
         event.preventDefault();
-        router.replace(`${router.pathname}#${heading.id}`);
+        // keep the query (`?t=migrations`), or a reload of the link lands on the default tab
+        router.replace(`${router.pathname}${window.location.search}#${heading.id}`);
       }}
     >
       {heading.value}
