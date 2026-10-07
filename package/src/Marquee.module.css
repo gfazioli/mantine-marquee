@@ -1,10 +1,5 @@
 .root {
-  --marquee-gap-xs: 1px;
-  --marquee-gap-sm: 2px;
-  --marquee-gap-md: 4px;
-  --marquee-gap-lg: 8px;
-  --marquee-gap-xl: 16px;
-  --marquee-gap: var(--marquee-gap-xl, 16px);
+  --marquee-gap: var(--mantine-spacing-md);
 
   --marquee-fade-edge-size-xs: 11%;
   --marquee-fade-edge-size-sm: 22%;

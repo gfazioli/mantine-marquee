@@ -132,6 +132,6 @@ export const isometric: MantineDemo = {
       min: 0.1,
       max: 60,
     },
-    { type: 'size', prop: 'gap', initialValue: 'md', libraryValue: 'xl' },
+    { type: 'size', prop: 'gap', initialValue: 'xs', libraryValue: 'md' },
   ],
 };

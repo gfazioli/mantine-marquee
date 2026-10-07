@@ -12,7 +12,7 @@ export default {
     duration: 10,
     fadeEdges: false,
     fadeEdgesSize: 'xs',
-    gap: 'xl',
+    gap: 'md',
     variant: 'default',
     tilt: 45,
     perspective: 800,
