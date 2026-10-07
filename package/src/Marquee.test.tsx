@@ -278,14 +278,79 @@ describe('Marquee', () => {
     expect(style).toContain('--marquee-fade-edge-size-y');
   });
 
-  it('accepts fadeEdgeColor without leaking it onto the DOM (core parity, unused)', () => {
-    const { container } = render(
-      <Marquee fadeEdges="linear" fadeEdgeColor="red">
-        <div>Test</div>
-      </Marquee>
-    );
-    const root = container.querySelector('[data-fade-edges="linear"]') as HTMLElement;
-    expect(root.getAttribute('fadeedgecolor')).toBeNull();
+  describe('fadeEdgeColor', () => {
+    const rootStyle = (container: HTMLElement) =>
+      (container.querySelector('[data-orientation]') as HTMLElement).getAttribute('style') || '';
+
+    it('paints the fade in a raw CSS color and marks the root', () => {
+      const { container } = render(
+        <Marquee fadeEdges="linear" fadeEdgeColor="#ff0000">
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(container.querySelector('[data-fade-color]')).not.toBeNull();
+      expect(rootStyle(container)).toContain('--marquee-fade-color: #ff0000');
+    });
+
+    it('resolves a theme color key and a key with a shade', () => {
+      const { container: a } = render(
+        <Marquee fadeEdges fadeEdgeColor="blue">
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(rootStyle(a)).toContain('--marquee-fade-color: var(--mantine-color-blue-filled)');
+      const { container: b } = render(
+        <Marquee fadeEdges fadeEdgeColor="blue.3">
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(rootStyle(b)).toContain('--marquee-fade-color: var(--mantine-color-blue-3)');
+    });
+
+    it('passes a CSS variable through untouched', () => {
+      const { container } = render(
+        <Marquee fadeEdges fadeEdgeColor="var(--mantine-color-body)">
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(rootStyle(container)).toContain('--marquee-fade-color: var(--mantine-color-body)');
+    });
+
+    it('keeps the mask (no data-fade-color, no color variable) when fadeEdgeColor is omitted', () => {
+      const { container } = render(
+        <Marquee fadeEdges="rect">
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(container.querySelector('[data-fade-color]')).toBeNull();
+      expect(rootStyle(container)).not.toContain('--marquee-fade-color');
+    });
+
+    it('does nothing without fadeEdges, and never leaks the prop onto the DOM', () => {
+      const { container } = render(
+        <Marquee fadeEdgeColor="red">
+          <div>Test</div>
+        </Marquee>
+      );
+      expect(container.querySelector('[data-fade-color]')).toBeNull();
+      expect(container.querySelector('[fadeedgecolor]')).toBeNull();
+    });
+
+    it('marks every fade shape and variant', () => {
+      (['linear', 'ellipse', 'rect'] as const).forEach((shape) => {
+        (['default', 'isometric', 'circle'] as const).forEach((variant) => {
+          const { container, unmount } = render(
+            <Marquee variant={variant} fadeEdges={shape} fadeEdgeColor="dark.7">
+              <div>Test</div>
+            </Marquee>
+          );
+          expect(
+            container.querySelector(`[data-fade-edges="${shape}"][data-fade-color]`)
+          ).not.toBeNull();
+          unmount();
+        });
+      });
+    });
   });
   describe('pauseOnHover', () => {
     it('leaves the pause to CSS: no inline play state, before or after hover', () => {

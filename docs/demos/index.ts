@@ -2,6 +2,7 @@ export { circle } from './Marquee.demo.circle';
 export { circleShowcase } from './Marquee.demo.circleShowcase';
 export { configurator } from './Marquee.demo.configurator';
 export { example } from './Marquee.demo.example';
+export { fadeEdgeColor } from './Marquee.demo.fadeEdgeColor';
 export { fadeEdgesCircle } from './Marquee.demo.fadeEdgesCircle';
 export { fadeEdgesEllipse } from './Marquee.demo.fadeEdgesEllipse';
 export { fadeEdgesLinear } from './Marquee.demo.fadeEdgesLinear';

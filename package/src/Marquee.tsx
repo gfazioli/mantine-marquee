@@ -6,7 +6,9 @@ import {
   Factory,
   factory,
   getSize,
+  getThemeColor,
   MantineBreakpoint,
+  MantineColor,
   MantineSize,
   StylesApiProps,
   useMatches,
@@ -101,6 +103,7 @@ export type MarqueeCssVariables = {
     | '--marquee-fade-edge-size'
     | '--marquee-fade-edge-size-x'
     | '--marquee-fade-edge-size-y'
+    | '--marquee-fade-color'
     | '--marquee-tilt'
     | '--marquee-perspective'
     | '--marquee-rotate'
@@ -170,11 +173,13 @@ export interface MarqueeBaseProps {
   fadeEdgeSize?: MarqueeFadeEdgesSize;
 
   /**
-   * Accepted for `@mantine/core` Marquee parity but intentionally unused — fade
-   * edges use CSS masks (true alpha, background-independent), so no fade color
-   * is needed.
+   * Paint the fade edges in this color instead of masking them to transparent.
+   * Accepts any CSS color or a theme color key (`'blue'`, `'blue.3'`, `'dark.7'`),
+   * like `@mantine/core` Marquee, and works with every `fadeEdges` shape and
+   * variant. `fadeEdges` still turns the fade on. Without it (the default) the
+   * edges are a CSS mask, which fades into whatever is behind the marquee.
    */
-  fadeEdgeColor?: string;
+  fadeEdgeColor?: MantineColor | (string & {});
 
   /**
    * Gap between marquee items. Accepts a single value or a responsive
@@ -254,7 +259,21 @@ export const defaultProps: Partial<MarqueeProps> = {
 };
 
 const varsResolver = createVarsResolver<MarqueeFactory>(
-  (_, { reverse, duration, fadeEdgesSize, tilt, perspective, rotate, skew, radius, variant }) => {
+  (
+    theme,
+    {
+      reverse,
+      duration,
+      fadeEdgesSize,
+      fadeEdgeColor,
+      tilt,
+      perspective,
+      rotate,
+      skew,
+      radius,
+      variant,
+    }
+  ) => {
     const { single, x, y } = resolveFadeEdgeSize(fadeEdgesSize);
     const ringRadius = resolveRadius(radius);
     // Linear fade follows the projected scroll axis when the isometric plane is
@@ -275,6 +294,7 @@ const varsResolver = createVarsResolver<MarqueeFactory>(
         '--marquee-fade-edge-size': single,
         '--marquee-fade-edge-size-x': x,
         '--marquee-fade-edge-size-y': y,
+        '--marquee-fade-color': fadeEdgeColor ? getThemeColor(fadeEdgeColor, theme) : undefined,
         '--marquee-tilt': `${tilt ?? 45}deg`,
         '--marquee-perspective': `${perspective ?? 800}px`,
         '--marquee-rotate': `${rotate ?? 0}deg`,
@@ -319,6 +339,7 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
     // never leak onto the DOM via `...others`.
     orientation,
     fadeEdgeSize,
+
     fadeEdgeColor,
 
     classNames,
@@ -332,6 +353,8 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
 
     ...others
   } = props;
+
+  const fadeShape = resolveFadeEdges(fadeEdges);
 
   const resolvedVertical =
     useMatches<boolean | undefined>(
@@ -411,7 +434,8 @@ export const Marquee = factory<MarqueeFactory>((_props) => {
       {...getStyles('root')}
       {...others}
       data-variant={variant === 'default' ? undefined : variant}
-      data-fade-edges={resolveFadeEdges(fadeEdges)}
+      data-fade-edges={fadeShape}
+      data-fade-color={(fadeShape && fadeEdgeColor && true) || undefined}
       data-vertical={resolvedVertical || undefined}
       data-orientation={resolvedVertical ? 'vertical' : 'horizontal'}
       data-reverse={reverse || undefined}
